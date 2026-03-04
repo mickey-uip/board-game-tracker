@@ -1,0 +1,116 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  margin-top: var(--space-sm);
+  padding-top: var(--space-sm);
+  border-top: 1px solid var(--color-border);
+}
+
+.label {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--color-text-muted);
+}
+
+.inputRow {
+  display: flex;
+  gap: var(--space-sm);
+}
+
+.codeInput {
+  flex: 1;
+  padding: 10px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-size: var(--font-size-md);
+  outline: none;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.codeInput:focus {
+  border-color: var(--color-primary);
+}
+
+.codeInput::placeholder {
+  text-transform: none;
+  letter-spacing: normal;
+}
+
+.inviteBtn {
+  padding: 10px 16px;
+  border: none;
+  border-radius: var(--radius-md);
+  background: var(--gradient-primary);
+  color: var(--color-primary-fg);
+  font-weight: 700;
+  font-size: var(--font-size-sm);
+  white-space: nowrap;
+}
+
+.inviteBtn:disabled {
+  opacity: 0.5;
+}
+
+.message {
+  font-size: var(--font-size-sm);
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: var(--radius-sm);
+}
+
+.messageSuccess {
+  color: #34d399;
+  background: rgba(52, 211, 153, 0.1);
+}
+
+.messageError {
+  color: var(--color-danger);
+  background: rgba(224, 80, 80, 0.1);
+}
+
+.inviteList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.inviteItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  background: var(--color-card);
+  border: 1px solid var(--color-card-border);
+  border-radius: var(--radius-md);
+}
+
+.inviteName {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.inviteStatus {
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  padding: 2px 10px;
+  border-radius: 999px;
+}
+
+.statusPending {
+  color: var(--color-text-muted);
+  background: var(--color-surface);
+}
+
+.statusAccepted {
+  color: #34d399;
+  background: rgba(52, 211, 153, 0.12);
+}
+
+.statusDeclined {
+  color: var(--color-danger);
+  background: rgba(224, 80, 80, 0.1);
+}

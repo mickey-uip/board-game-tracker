@@ -2,15 +2,12 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PageHeader } from '../../components/layout/PageHeader';
 import { TabBar } from '../../components/ui/TabBar';
-import { PlayerList } from '../../components/player/PlayerList';
-import { PlayerForm } from '../../components/player/PlayerForm';
 import { GameList } from '../../components/game/GameList';
 import { GameForm } from '../../components/game/GameForm';
 import { Modal } from '../../components/ui/Modal';
 import { Button } from '../../components/ui/Button';
 import { Input } from '../../components/ui/Input';
 import { useAuth } from '../../contexts/AuthContext';
-import { usePlayers } from '../../hooks/usePlayers';
 import { useGames } from '../../hooks/useGames';
 import { useGameImages } from '../../hooks/useGameImages';
 import { useGameFavorites } from '../../hooks/useGameFavorites';
@@ -19,7 +16,6 @@ import type { Genre } from '../../types';
 
 const TABS = [
   { key: 'account', label: 'アカウント' },
-  { key: 'players', label: 'プレイヤー' },
   { key: 'games', label: 'ゲーム' },
 ] as const;
 
@@ -28,23 +24,16 @@ type TabKey = typeof TABS[number]['key'];
 export function SettingsPage() {
   const navigate = useNavigate();
   const { profile, signOut } = useAuth();
-  const { localPlayers, addPlayer, updatePlayer, deletePlayer } = usePlayers();
   const { games, addGame, deleteGame } = useGames();
   const { getGameImage, setGameImage } = useGameImages();
   const { isFavorite, toggleFavorite } = useGameFavorites();
   const [activeTab, setActiveTab] = useState<TabKey>('account');
-  const [showPlayerForm, setShowPlayerForm] = useState(false);
   const [showGameForm, setShowGameForm] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
 
   const filteredGames = searchQuery.trim()
     ? games.filter((g) => g.name.toLowerCase().includes(searchQuery.toLowerCase()))
     : games;
-
-  const handleAddPlayer = async (name: string, _avatarBase64: string | null | undefined) => {
-    await addPlayer(name);
-    setShowPlayerForm(false);
-  };
 
   const handleAddGame = (name: string, genres: Genre[], imageBase64: string | null) => {
     const newGame = addGame(name, genres);
@@ -85,29 +74,6 @@ export function SettingsPage() {
             <Button variant="primary" fullWidth onClick={handleSignOut}>
               ログアウト
             </Button>
-          </section>
-        )}
-        {activeTab === 'players' && (
-          <section className={styles.section}>
-            <div className={styles.myPlayerSection}>
-              <p className={styles.sectionTitle}>ローカルプレイヤー</p>
-              <p className={styles.myPlayerHint}>
-                アカウントを持っていない人を追加できます
-              </p>
-            </div>
-
-            <Button variant="primary" fullWidth onClick={() => setShowPlayerForm(true)}>
-              + プレイヤーを追加
-            </Button>
-            <PlayerList
-              players={localPlayers}
-              currentPlayerId={null}
-              onSetAsMe={() => {}}
-              onUpdate={(id, name) => updatePlayer(id, name)}
-              onDelete={(id) => deletePlayer(id)}
-              getAvatar={() => null}
-              onSetAvatar={() => {}}
-            />
           </section>
         )}
         {activeTab === 'games' && (
@@ -156,13 +122,6 @@ export function SettingsPage() {
           <span className={styles.appInfoArrow}>›</span>
         </button>
       </div>
-
-      <Modal open={showPlayerForm} onClose={() => setShowPlayerForm(false)} title="プレイヤーを追加">
-        <PlayerForm
-          onSubmit={handleAddPlayer}
-          onCancel={() => setShowPlayerForm(false)}
-        />
-      </Modal>
 
       <Modal open={showGameForm} onClose={() => setShowGameForm(false)} title="ゲームを追加">
         <GameForm onSubmit={handleAddGame} onCancel={() => setShowGameForm(false)} />

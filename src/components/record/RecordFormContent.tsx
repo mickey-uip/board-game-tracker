@@ -1,12 +1,14 @@
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback, useMemo, useEffect, useRef } from 'react';
 import { GameSearchSelect } from './GameSearchSelect';
+import { InviteByCode } from './InviteByCode';
 import { Button } from '../ui/Button';
 import { Badge } from '../ui/Badge';
 import { PlayerRankInput } from './PlayerRankInput';
-import { EmptyState } from '../ui/EmptyState';
 import { usePlayers } from '../../hooks/usePlayers';
 import { useGames } from '../../hooks/useGames';
 import { useRecords } from '../../hooks/useRecords';
+import { useGameInvites } from '../../hooks/useGameInvites';
+import { useAuth } from '../../contexts/AuthContext';
 import { GENRE_LABEL } from '../../constants/genres';
 import { RULEBOOK } from '../../data/rulebook';
 import styles from './RecordFormContent.module.css';
@@ -17,13 +19,20 @@ interface RecordFormContentProps {
 }
 
 export function RecordFormContent({ initialDate, onSuccess }: RecordFormContentProps) {
+  const { user } = useAuth();
   const { players } = usePlayers();
   const { games, getGameById } = useGames();
   const { addRecord } = useRecords();
+  const { outgoingInvites, sendInvite, cleanupInvites } = useGameInvites();
 
   const [gameId, setGameId] = useState('');
-  const [selectedPlayerIds, setSelectedPlayerIds] = useState<string[]>([]);
-  const [ranks, setRanks] = useState<Record<string, number>>({});
+  // 自分は常に選択済み
+  const [selectedPlayerIds, setSelectedPlayerIds] = useState<string[]>(
+    user ? [user.uid] : [],
+  );
+  const [ranks, setRanks] = useState<Record<string, number>>(
+    user ? { [user.uid]: 1 } : {},
+  );
 
   const selectedGame = gameId ? getGameById(gameId) : null;
 
@@ -38,7 +47,47 @@ export function RecordFormContent({ initialDate, onSuccess }: RecordFormContentP
     return singleMatch ? parseInt(singleMatch[1], 10) : null;
   }, [gameId]);
 
+  // 承諾済みの招待プレイヤーを自動的にselectedPlayerIdsに追加
+  const acceptedInvites = useMemo(
+    () => outgoingInvites.filter((inv) => inv.status === 'accepted'),
+    [outgoingInvites],
+  );
+
+  useEffect(() => {
+    for (const inv of acceptedInvites) {
+      setSelectedPlayerIds((prev) => {
+        if (prev.includes(inv.toUid)) return prev;
+        const next = [...prev, inv.toUid];
+        setRanks((r) => ({ ...r, [inv.toUid]: next.length }));
+        return next;
+      });
+    }
+  }, [acceptedInvites]);
+
+  // アンマウント時に招待をクリーンアップ
+  const cleanupRef = useRef(cleanupInvites);
+  cleanupRef.current = cleanupInvites;
+  useEffect(() => {
+    return () => {
+      cleanupRef.current();
+    };
+  }, []);
+
+  // 全参加者 = 通常プレイヤー + 招待で承諾したプレイヤー（名前解決用）
+  const allParticipants = useMemo(() => {
+    const base = [...players];
+    for (const inv of acceptedInvites) {
+      if (!base.find((p) => p.id === inv.toUid)) {
+        base.push({ id: inv.toUid, name: inv.toName, createdAt: '' });
+      }
+    }
+    return base;
+  }, [players, acceptedInvites]);
+
   const togglePlayer = useCallback((playerId: string) => {
+    // 自分は外せない
+    if (playerId === user?.uid) return;
+
     setSelectedPlayerIds((prev) => {
       if (prev.includes(playerId)) {
         // 除外: ranks からも削除
@@ -55,7 +104,7 @@ export function RecordFormContent({ initialDate, onSuccess }: RecordFormContentP
         return next;
       }
     });
-  }, []);
+  }, [user]);
 
   const setRank = useCallback((playerId: string, rank: number) => {
     setRanks((prev) => ({ ...prev, [playerId]: rank }));
@@ -79,15 +128,6 @@ export function RecordFormContent({ initialDate, onSuccess }: RecordFormContentP
     await addRecord(gameId, initialDate, playerResults, game?.name ?? '');
     onSuccess();
   };
-
-  if (players.length === 0) {
-    return (
-      <EmptyState
-        message="プレイヤーがいません"
-        description="設定からプレイヤーを追加してください"
-      />
-    );
-  }
 
   return (
     <div className={styles.container}>
@@ -117,11 +157,22 @@ export function RecordFormContent({ initialDate, onSuccess }: RecordFormContentP
                 type="checkbox"
                 checked={selectedPlayerIds.includes(player.id)}
                 onChange={() => togglePlayer(player.id)}
+                disabled={player.id === user?.uid}
               />
-              <span>{player.name}</span>
+              <span>
+                {player.name}
+                {player.id === user?.uid && ' (自分)'}
+              </span>
             </label>
           ))}
         </div>
+
+        {/* IDでプレイヤーを招待 */}
+        <InviteByCode
+          outgoingInvites={outgoingInvites}
+          onSendInvite={sendInvite}
+        />
+
         {isOverMaxPlayers && (
           <p className={styles.playerAlert}>
             このゲームのプレイ人数は最大 {maxPlayers} 人です
@@ -134,11 +185,11 @@ export function RecordFormContent({ initialDate, onSuccess }: RecordFormContentP
         <div className={styles.rankSection}>
           <p className={styles.fieldLabel}>順位入力</p>
           {selectedPlayerIds.map((playerId) => {
-            const player = players.find((p) => p.id === playerId)!;
+            const player = allParticipants.find((p) => p.id === playerId);
             return (
               <PlayerRankInput
                 key={playerId}
-                playerName={player.name}
+                playerName={player?.name ?? '???'}
                 rank={ranks[playerId] ?? 1}
                 maxRank={selectedPlayerIds.length}
                 onChange={(rank) => setRank(playerId, rank)}

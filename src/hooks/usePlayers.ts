@@ -1,21 +1,13 @@
 import { useMemo } from 'react';
 import { useAuth } from '../contexts/AuthContext';
-import { useLocalPlayers } from './useLocalPlayers';
 import { useFriends } from './useFriends';
 import type { Player } from '../types';
 
 /**
- * 自分 + フレンド + ローカルプレイヤーを統合して返す
+ * 自分 + フレンドを統合して返す
  */
 export function usePlayers() {
   const { user, profile } = useAuth();
-  const {
-    localPlayers,
-    loading: localLoading,
-    addLocalPlayer,
-    updateLocalPlayer,
-    deleteLocalPlayer,
-  } = useLocalPlayers();
   const { friends, loading: friendsLoading } = useFriends();
 
   // ログインユーザー自身を Player として表現
@@ -28,23 +20,18 @@ export function usePlayers() {
     };
   }, [user, profile]);
 
-  // 全プレイヤー = 自分 + フレンド + ローカル
+  // 全プレイヤー = 自分 + フレンド
   const players: Player[] = useMemo(() => {
     const list: Player[] = [];
     if (selfPlayer) list.push(selfPlayer);
     list.push(...friends);
-    list.push(...localPlayers);
     return list;
-  }, [selfPlayer, friends, localPlayers]);
+  }, [selfPlayer, friends]);
 
   return {
     players,
     selfPlayer,
     friends,
-    localPlayers,
-    loading: localLoading || friendsLoading,
-    addPlayer: addLocalPlayer,
-    updatePlayer: updateLocalPlayer,
-    deletePlayer: deleteLocalPlayer,
+    loading: friendsLoading,
   };
 }

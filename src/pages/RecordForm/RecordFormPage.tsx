@@ -1,14 +1,16 @@
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback, useMemo, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PageHeader } from '../../components/layout/PageHeader';
 import { Select } from '../../components/ui/Select';
 import { Button } from '../../components/ui/Button';
 import { Badge } from '../../components/ui/Badge';
 import { PlayerRankInput } from '../../components/record/PlayerRankInput';
-import { EmptyState } from '../../components/ui/EmptyState';
+import { InviteByCode } from '../../components/record/InviteByCode';
 import { usePlayers } from '../../hooks/usePlayers';
 import { useGames } from '../../hooks/useGames';
 import { useRecords } from '../../hooks/useRecords';
+import { useGameInvites } from '../../hooks/useGameInvites';
+import { useAuth } from '../../contexts/AuthContext';
 import { GENRE_LABEL } from '../../constants/genres';
 import { todayString } from '../../utils/dateUtils';
 import { RULEBOOK } from '../../data/rulebook';
@@ -16,14 +18,21 @@ import styles from './RecordFormPage.module.css';
 
 export function RecordFormPage() {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const { players } = usePlayers();
   const { games, getGameById } = useGames();
   const { addRecord } = useRecords();
+  const { outgoingInvites, sendInvite, cleanupInvites } = useGameInvites();
 
   const [date, setDate] = useState(todayString());
   const [gameId, setGameId] = useState('');
-  const [selectedPlayerIds, setSelectedPlayerIds] = useState<string[]>([]);
-  const [ranks, setRanks] = useState<Record<string, number>>({});
+  // 自分は常に選択済み
+  const [selectedPlayerIds, setSelectedPlayerIds] = useState<string[]>(
+    user ? [user.uid] : [],
+  );
+  const [ranks, setRanks] = useState<Record<string, number>>(
+    user ? { [user.uid]: 1 } : {},
+  );
 
   const selectedGame = gameId ? getGameById(gameId) : null;
 
@@ -38,18 +47,63 @@ export function RecordFormPage() {
     return singleMatch ? parseInt(singleMatch[1], 10) : null;
   }, [gameId]);
 
-  const togglePlayer = (playerId: string) => {
+  // 承諾済みの招待プレイヤーを自動追加
+  const acceptedInvites = useMemo(
+    () => outgoingInvites.filter((inv) => inv.status === 'accepted'),
+    [outgoingInvites],
+  );
+
+  useEffect(() => {
+    for (const inv of acceptedInvites) {
+      setSelectedPlayerIds((prev) => {
+        if (prev.includes(inv.toUid)) return prev;
+        const next = [...prev, inv.toUid];
+        setRanks((r) => ({ ...r, [inv.toUid]: next.length }));
+        return next;
+      });
+    }
+  }, [acceptedInvites]);
+
+  // アンマウント時に招待をクリーンアップ
+  const cleanupRef = useRef(cleanupInvites);
+  cleanupRef.current = cleanupInvites;
+  useEffect(() => {
+    return () => {
+      cleanupRef.current();
+    };
+  }, []);
+
+  // 全参加者 = 通常プレイヤー + 招待で承諾したプレイヤー（名前解決用）
+  const allParticipants = useMemo(() => {
+    const base = [...players];
+    for (const inv of acceptedInvites) {
+      if (!base.find((p) => p.id === inv.toUid)) {
+        base.push({ id: inv.toUid, name: inv.toName, createdAt: '' });
+      }
+    }
+    return base;
+  }, [players, acceptedInvites]);
+
+  const togglePlayer = useCallback((playerId: string) => {
+    // 自分は外せない
+    if (playerId === user?.uid) return;
+
     setSelectedPlayerIds((prev) => {
       const next = prev.includes(playerId)
         ? prev.filter((id) => id !== playerId)
         : [...prev, playerId];
-      // 追加時はデフォルト順位をセット
       if (!prev.includes(playerId)) {
         setRanks((r) => ({ ...r, [playerId]: next.length }));
+      } else {
+        setRanks((r) => {
+          const updated = { ...r };
+          delete updated[playerId];
+          return updated;
+        });
       }
       return next;
     });
-  };
+  }, [user]);
 
   const setRank = useCallback((playerId: string, rank: number) => {
     setRanks((prev) => ({ ...prev, [playerId]: rank }));
@@ -73,18 +127,6 @@ export function RecordFormPage() {
     await addRecord(gameId, date, playerResults, game?.name ?? '');
     navigate('/records');
   };
-
-  if (players.length === 0) {
-    return (
-      <div>
-        <PageHeader title="対戦記録" showBack />
-        <EmptyState
-          message="プレイヤーがいません"
-          description="設定からプレイヤーを追加してください"
-        />
-      </div>
-    );
-  }
 
   return (
     <div>
@@ -133,11 +175,22 @@ export function RecordFormPage() {
                   type="checkbox"
                   checked={selectedPlayerIds.includes(player.id)}
                   onChange={() => togglePlayer(player.id)}
+                  disabled={player.id === user?.uid}
                 />
-                <span>{player.name}</span>
+                <span>
+                  {player.name}
+                  {player.id === user?.uid && ' (自分)'}
+                </span>
               </label>
             ))}
           </div>
+
+          {/* IDでプレイヤーを招待 */}
+          <InviteByCode
+            outgoingInvites={outgoingInvites}
+            onSendInvite={sendInvite}
+          />
+
           {isOverMaxPlayers && (
             <p className={styles.playerAlert}>
               このゲームのプレイ人数は最大 {maxPlayers} 人です
@@ -150,11 +203,11 @@ export function RecordFormPage() {
           <div className={styles.rankSection}>
             <p className={styles.fieldLabel}>順位入力</p>
             {selectedPlayerIds.map((playerId) => {
-              const player = players.find((p) => p.id === playerId)!;
+              const player = allParticipants.find((p) => p.id === playerId);
               return (
                 <PlayerRankInput
                   key={playerId}
-                  playerName={player.name}
+                  playerName={player?.name ?? '???'}
                   rank={ranks[playerId] ?? 1}
                   maxRank={selectedPlayerIds.length}
                   onChange={(rank) => setRank(playerId, rank)}
