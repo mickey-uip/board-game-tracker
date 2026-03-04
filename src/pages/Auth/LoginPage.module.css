@@ -1,11 +1,29 @@
 .container {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   min-height: 100vh;
   padding: var(--space-lg);
-  background: var(--color-bg);
+  background: #1a1a2e;
+  overflow: hidden;
+}
+
+/* 背景画像: 暗く + ブラー */
+.container::before {
+  content: '';
+  position: absolute;
+  inset: -20px; /* ブラーの端漏れ防止 */
+  background: url('/login-bg.jpg') center / cover no-repeat;
+  filter: blur(6px) brightness(0.35);
+  z-index: 0;
+}
+
+/* コンテンツをz-index: 1で前面に */
+.container > * {
+  position: relative;
+  z-index: 1;
 }
 
 .logo {
