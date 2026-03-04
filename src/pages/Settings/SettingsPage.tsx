@@ -11,11 +11,14 @@ import { useAuth } from '../../contexts/AuthContext';
 import { useGames } from '../../hooks/useGames';
 import { useGameImages } from '../../hooks/useGameImages';
 import { useGameFavorites } from '../../hooks/useGameFavorites';
+import { useFriends } from '../../hooks/useFriends';
+import { useFriendRequests } from '../../hooks/useFriendRequests';
 import styles from './SettingsPage.module.css';
+import friendStyles from '../Friends/FriendsPage.module.css';
 import type { Genre } from '../../types';
 
 const TABS = [
-  { key: 'account', label: 'アカウント' },
+  { key: 'friends', label: 'フレンド' },
   { key: 'games', label: 'ゲーム' },
 ] as const;
 
@@ -27,9 +30,23 @@ export function SettingsPage() {
   const { games, addGame, deleteGame } = useGames();
   const { getGameImage, setGameImage } = useGameImages();
   const { isFavorite, toggleFavorite } = useGameFavorites();
-  const [activeTab, setActiveTab] = useState<TabKey>('account');
+  const { friends, removeFriend } = useFriends();
+  const {
+    incomingRequests,
+    outgoingRequests,
+    sendRequest,
+    acceptRequest,
+    rejectRequest,
+  } = useFriendRequests();
+
+  const [activeTab, setActiveTab] = useState<TabKey>('friends');
   const [showGameForm, setShowGameForm] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+
+  // フレンド検索用state
+  const [friendCode, setFriendCode] = useState('');
+  const [searchMessage, setSearchMessage] = useState<{ text: string; success: boolean } | null>(null);
+  const [sending, setSending] = useState(false);
 
   const filteredGames = searchQuery.trim()
     ? games.filter((g) => g.name.toLowerCase().includes(searchQuery.toLowerCase()))
@@ -46,6 +63,31 @@ export function SettingsPage() {
     navigate('/login');
   };
 
+  // フレンド検索
+  const handleFriendSearch = async () => {
+    if (!friendCode.trim()) return;
+    setSending(true);
+    setSearchMessage(null);
+    const result = await sendRequest(friendCode);
+    setSearchMessage({ text: result.message, success: result.success });
+    if (result.success) setFriendCode('');
+    setSending(false);
+  };
+
+  const handleAccept = async (requestId: string, fromUid: string) => {
+    await acceptRequest(requestId, fromUid);
+  };
+
+  const handleReject = async (requestId: string) => {
+    await rejectRequest(requestId);
+  };
+
+  const handleRemoveFriend = async (friendDocId: string) => {
+    if (confirm('このフレンドを削除しますか？')) {
+      await removeFriend(friendDocId);
+    }
+  };
+
   return (
     <div>
       <PageHeader title="設定" />
@@ -55,8 +97,9 @@ export function SettingsPage() {
         onChange={(key) => setActiveTab(key as TabKey)}
       />
       <div className={styles.container}>
-        {activeTab === 'account' && (
+        {activeTab === 'friends' && (
           <section className={styles.section}>
+            {/* アカウント情報 */}
             <div className={styles.myPlayerSection}>
               <p className={styles.sectionTitle}>アカウント情報</p>
               {profile && (
@@ -71,9 +114,99 @@ export function SettingsPage() {
                 </>
               )}
             </div>
-            <Button variant="primary" fullWidth onClick={handleSignOut}>
-              ログアウト
-            </Button>
+
+            {/* フレンドを追加 */}
+            <div className={friendStyles.searchSection}>
+              <p className={friendStyles.sectionTitle}>フレンドを追加</p>
+              <div className={friendStyles.searchRow}>
+                <input
+                  className={friendStyles.searchInput}
+                  type="text"
+                  value={friendCode}
+                  onChange={(e) => setFriendCode(e.target.value)}
+                  placeholder="フレンドコードを入力"
+                  maxLength={10}
+                />
+                <button
+                  className={friendStyles.searchBtn}
+                  onClick={handleFriendSearch}
+                  disabled={sending || !friendCode.trim()}
+                >
+                  {sending ? '送信中...' : '検索'}
+                </button>
+              </div>
+              {searchMessage && (
+                <p className={`${friendStyles.searchMessage} ${searchMessage.success ? friendStyles.searchSuccess : friendStyles.searchError}`}>
+                  {searchMessage.text}
+                </p>
+              )}
+            </div>
+
+            {/* 受信リクエスト */}
+            {incomingRequests.length > 0 && (
+              <div className={friendStyles.section}>
+                <p className={friendStyles.sectionTitle}>フレンドリクエスト</p>
+                {incomingRequests.map((req) => (
+                  <div key={req.id} className={friendStyles.requestCard}>
+                    <span className={friendStyles.requestName}>{req.fromName}</span>
+                    <div className={friendStyles.requestActions}>
+                      <button
+                        className={friendStyles.acceptBtn}
+                        onClick={() => handleAccept(req.id, req.fromUid)}
+                      >
+                        承認
+                      </button>
+                      <button
+                        className={friendStyles.rejectBtn}
+                        onClick={() => handleReject(req.id)}
+                      >
+                        拒否
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* 送信中リクエスト */}
+            {outgoingRequests.length > 0 && (
+              <div className={friendStyles.section}>
+                <p className={friendStyles.sectionTitle}>送信中のリクエスト</p>
+                {outgoingRequests.map((req) => (
+                  <div key={req.id} className={friendStyles.requestCard}>
+                    <span className={friendStyles.requestName}>{req.fromName}</span>
+                    <span className={friendStyles.pendingLabel}>承認待ち</span>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* フレンドリスト */}
+            <div className={friendStyles.section}>
+              <p className={friendStyles.sectionTitle}>フレンド一覧（{friends.length}人）</p>
+              {friends.length === 0 ? (
+                <p className={friendStyles.emptyText}>
+                  フレンドコードを交換してフレンドを追加しよう
+                </p>
+              ) : (
+                friends.map((friend) => (
+                  <div key={friend.id} className={friendStyles.friendCard}>
+                    <div className={friendStyles.friendInfo}>
+                      <div className={friendStyles.friendAvatar}>
+                        {friend.name.charAt(0)}
+                      </div>
+                      <span className={friendStyles.friendName}>{friend.name}</span>
+                    </div>
+                    <button
+                      className={friendStyles.removeBtn}
+                      onClick={() => handleRemoveFriend(friend.friendDocId)}
+                    >
+                      削除
+                    </button>
+                  </div>
+                ))
+              )}
+            </div>
           </section>
         )}
         {activeTab === 'games' && (
@@ -114,6 +247,13 @@ export function SettingsPage() {
 
       <div className={styles.appInfo}>
         <p className={styles.appInfoTitle}>アプリ情報</p>
+        <button
+          className={styles.appInfoLink}
+          onClick={handleSignOut}
+        >
+          <span>ログアウト</span>
+          <span className={styles.appInfoArrow}>›</span>
+        </button>
         <button
           className={styles.appInfoLink}
           onClick={() => navigate('/privacy-policy')}
