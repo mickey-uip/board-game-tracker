@@ -1,0 +1,89 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-lg);
+  padding: var(--space-lg) var(--space-md);
+}
+
+/* ── 3D シーン（perspective の起点） ── */
+.scene {
+  width: 120px;
+  height: 120px;
+  perspective: 480px;
+  cursor: pointer;
+  filter: drop-shadow(0 16px 32px rgba(0, 0, 0, 0.7))
+          drop-shadow(0 4px 8px rgba(0, 0, 0, 0.5));
+  transition: filter 0.1s ease;
+}
+
+.scene:active {
+  filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.6));
+}
+
+/* ── コイン本体（2面を持つ円盤） ── */
+.coin {
+  width: 120px;
+  height: 120px;
+  position: relative;
+  transform-style: preserve-3d;
+  transform: rotateY(0deg);
+}
+
+/* ── 全面共通 ── */
+.face {
+  position: absolute;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+/* ── 表面 ── */
+.heads {
+  transform: translateZ(4px);
+}
+
+/* ── 裏面 ── */
+.tails {
+  transform: rotateY(180deg) translateZ(4px);
+}
+
+/* ── コインの厚み（側面） ── */
+.face::after {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  border-radius: 50%;
+  background: transparent;
+}
+
+/* ── 画像 ── */
+.faceImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  user-select: none;
+  pointer-events: none;
+}
+
+/* ── ヒントテキスト ── */
+.hint {
+  font-size: var(--font-size-lg);
+  color: var(--color-text-muted);
+}
+
+/* タップして投げる時の点滅 */
+.hintPulse {
+  animation: hintBlink 2s ease-in-out infinite;
+}
+
+@keyframes hintBlink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.3; }
+}

@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Manus-like Subtle Organic Dots</title>
+<style>
+  html, body {
+    margin: 0;
+    height: 100%;
+    overflow: hidden;
+    background: #f5f5f5;
+  }
+  /* 反映確認用（これが出ないなら別ファイル見てます） */
+  #ver {
+    position: fixed;
+    top: 10px;
+    left: 12px;
+    font: 12px/1.2 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+    color: rgba(0,0,0,0.45);
+    background: rgba(255,255,255,0.6);
+    border: 1px solid rgba(0,0,0,0.06);
+    border-radius: 10px;
+    padding: 6px 10px;
+    z-index: 5;
+    user-select: none;
+    pointer-events: none;
+    backdrop-filter: blur(6px);
+  }
+
+  svg {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  /* ドットは完全静止（rもtransformも一切変えない） */
+  .dot {
+    fill: #e3e3e3;
+    opacity: 0.62;
+    shape-rendering: geometricPrecision;
+  }
+
+  /* 光のオーバーレイ（極薄） */
+  .light {
+    opacity: 0.22; /* ← 強いと感じたら 0.12 まで下げてOK */
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .light { opacity: 0 !important; }
+  }
+</style>
+</head>
+<body>
+<div id="ver">VERSION: 2026-03-04 / manus-subtle-v1</div>
+
+<svg id="bg" aria-hidden="true">
+  <defs>
+    <!-- 有機的ノイズ（これが“群れ”感の正体） -->
+    <filter id="organicNoise" x="-20%" y="-20%" width="140%" height="140%">
+      <feTurbulence id="turb"
+        type="fractalNoise"
+        baseFrequency="0.006 0.008"
+        numOctaves="2"
+        seed="7"
+        stitchTiles="stitch"
+        result="noise"/>
+      <!-- ノイズを“柔らかい明暗”にする -->
+      <feColorMatrix in="noise" type="matrix"
+        values="
+          1 0 0 0 0
+          0 1 0 0 0
+          0 0 1 0 0
+          0 0 0 0.9 0" result="alphaNoise"/>
+      <!-- さらにぼかして上品に -->
+      <feGaussianBlur in="alphaNoise" stdDeviation="14" result="softNoise"/>
+    </filter>
+
+    <!-- 中心の“呼吸する光”（波の伝播は“光の輪郭”でやる） -->
+    <radialGradient id="centerGlow" cx="50%" cy="45%" r="65%">
+      <stop offset="0%"  stop-color="rgba(255,255,255,0.95)" />
+      <stop offset="22%" stop-color="rgba(255,255,255,0.45)" />
+      <stop offset="55%" stop-color="rgba(245,245,245,0.00)" />
+    </radialGradient>
+
+    <!-- ノイズ＋中心光を合成するためのマスク -->
+    <mask id="lightMask">
+      <!-- まずは全体を薄く通す -->
+      <rect width="100%" height="100%" fill="white" opacity="0.20"></rect>
+      <!-- ノイズを足す（有機感） -->
+      <rect width="100%" height="100%" filter="url(#organicNoise)" opacity="0.55"></rect>
+      <!-- 中心光（呼吸） -->
+      <circle id="breath" cx="50%" cy="45%" r="260" fill="url(#centerGlow)" opacity="0.9"></circle>
+    </mask>
+  </defs>
+
+  <!-- ドットレイヤー -->
+  <g id="dots"></g>
+
+  <!-- 光のオーバーレイ（ドットの上に被せて“呼吸してる感”を作る） -->
+  <g class="light" mask="url(#lightMask)">
+    <rect width="100%" height="100%" fill="white"></rect>
+  </g>
+</svg>
+
+<script>
+/**
+ * 重要：
+ * - ドットは完全静止（rもtransformも更新しない）
+ * - “動き”はマスク内のノイズ（turbulence）と中心円の半径だけ
+ *   → チラつき/泳ぎが激減し、manusっぽい上品さに寄る
+ */
+
+// === ドット生成（規則性は保持） ===
+const CONFIG = {
+  spacing: 56,
+  radius: 2.2
+};
+
+const svg = document.getElementById("bg");
+const dotsG = document.getElementById("dots");
+const NS = "http://www.w3.org/2000/svg";
+
+function buildDots() {
+  dotsG.innerHTML = "";
+  const w = window.innerWidth;
+  const h = window.innerHeight;
+  svg.setAttribute("viewBox", `0 0 ${w} ${h}`);
+
+  const cols = Math.ceil(w / CONFIG.spacing);
+  const rows = Math.ceil(h / CONFIG.spacing);
+
+  for (let y = 0; y <= rows; y++) {
+    for (let x = 0; x <= cols; x++) {
+      const cx = x * CONFIG.spacing;
+      const cy = y * CONFIG.spacing;
+      const c = document.createElementNS(NS, "circle");
+      c.setAttribute("cx", cx);
+      c.setAttribute("cy", cy);
+      c.setAttribute("r", CONFIG.radius);
+      c.setAttribute("vector-effect", "non-scaling-stroke");
+      c.classList.add("dot");
+      dotsG.appendChild(c);
+    }
+  }
+}
+
+buildDots();
+window.addEventListener("resize", buildDots);
+
+// === “有機的だけど上品”な動き：低周波でゆっくり ===
+const turb = document.getElementById("turb");
+const breath = document.getElementById("breath");
+
+let start = performance.now();
+
+function tick(now) {
+  const t = (now - start) * 0.001; // seconds
+
+  // 超ゆっくり揺れる baseFrequency（Perlinっぽい群れ感）
+  // ※変化量を極小にして“動いてるかどうかギリ”にする
+  const bfX = 0.006 + Math.sin(t * 0.06) * 0.0006;
+  const bfY = 0.008 + Math.cos(t * 0.05) * 0.0007;
+  turb.setAttribute("baseFrequency", `${bfX.toFixed(6)} ${bfY.toFixed(6)}`);
+
+  // 中心光の呼吸（波の伝播っぽさを“光の広がり”で表現）
+  // ※半径の変化を小さく・周期を長く
+  const r = 260 + Math.sin(t * 0.09) * 18; // 260 ± 18
+  breath.setAttribute("r", r.toFixed(2));
+
+  requestAnimationFrame(tick);
+}
+requestAnimationFrame(tick);
+</script>
+
+</body>
+</html>

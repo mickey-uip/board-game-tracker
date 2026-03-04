@@ -1,0 +1,93 @@
+.wrapper {
+  position: fixed;
+  right: 16px;
+  bottom: calc(var(--bottom-nav-height) + 16px);
+  z-index: 100;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  gap: 0;
+  pointer-events: none;
+  opacity: 1;
+  transition: opacity 0.5s ease;
+}
+
+.wrapperHidden {
+  opacity: 0;
+}
+
+/* SVG吹き出しのラッパー（相対配置でテキストを重ねる） */
+.bubbleWrap {
+  position: relative;
+  flex-shrink: 0;
+}
+
+/* SVG本体 */
+.bubbleSvg {
+  display: block;
+}
+
+/* SVGパスの塗り・ストローク */
+.bubblePath {
+  fill: #fff0d0;
+  stroke: #d4b483;
+  stroke-width: 1;
+}
+
+/* テキストをSVGの上に絶対配置 */
+.bubbleText {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 280px; /* BUBBLE_W と合わせる */
+  height: 100%;
+  display: flex;
+  align-items: center;
+  padding: 8px 12px;
+  font-size: var(--font-size-xs);
+  color: #211a10;
+  line-height: 1.6;
+  white-space: nowrap;
+  box-sizing: border-box;
+}
+
+/* タイプライターカーソル */
+.cursor {
+  display: inline-block;
+  margin-left: 1px;
+  color: #211a10;
+  animation: blink 0.8s step-end infinite;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+}
+
+/* キャラクターエリア */
+.character {
+  width: 80px;
+  height: 80px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: -16px;
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-6px); }
+}
+
+.characterImg {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.characterFallback {
+  font-size: 40px;
+  line-height: 1;
+}

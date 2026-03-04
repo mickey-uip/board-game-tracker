@@ -1,0 +1,498 @@
+/* ========== コンテナ ========== */
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-sm) 0 var(--space-xl);
+}
+
+.hint {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+}
+
+/* ========== 本棚全体 ========== */
+.shelves {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  /* 本棚外枠：古びた木のフレーム */
+  background:
+    repeating-linear-gradient(
+      90deg,
+      rgba(0,0,0,0.08) 0px, rgba(0,0,0,0.08) 1px,
+      transparent 1px, transparent 40px
+    ),
+    linear-gradient(180deg, #1a0d05 0%, #2a1408 100%);
+  border-left:  10px solid #3d1f0a;
+  border-right: 10px solid #3d1f0a;
+  box-shadow:
+    inset 4px 0 12px rgba(0,0,0,0.5),
+    inset -4px 0 12px rgba(0,0,0,0.5),
+    0 4px 24px rgba(0,0,0,0.6);
+}
+
+/* 1段分の本棚 */
+.shelf {
+  width: 100%;
+  position: relative;
+}
+
+/* 本が並ぶエリア */
+.books {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  gap: 4px;
+  padding: 12px 10px 0;
+  /* 棚内の背景：木目風ノイズ */
+  background:
+    repeating-linear-gradient(
+      180deg,
+      rgba(255,255,255,0.015) 0px, rgba(255,255,255,0.015) 1px,
+      transparent 1px, transparent 8px
+    ),
+    linear-gradient(180deg, #1c0e06 0%, #251208 60%, #1c0e06 100%);
+  min-height: 148px;
+}
+
+/* 本棚の棚板（厚みのある木の板） */
+.shelfBottom {
+  width: 100%;
+  height: 20px;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      rgba(255,255,255,0.03) 0px, rgba(255,255,255,0.03) 2px,
+      transparent 2px, transparent 20px
+    ),
+    linear-gradient(180deg,
+      #3e2208 0%,
+      #52300e 25%,
+      #6b4018 50%,
+      #52300e 75%,
+      #341a06 100%
+    );
+  box-shadow:
+    0 3px 10px rgba(0,0,0,0.7),
+    inset 0 2px 4px rgba(255,255,255,0.08),
+    inset 0 -2px 4px rgba(0,0,0,0.5);
+}
+
+/* ========== 本（背表紙） ========== */
+.book {
+  flex: 1;
+  min-width: 0;
+  height: 128px;
+  border: none;
+  border-radius: 2px 4px 4px 2px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  /* 背表紙の色はCSS変数経由 */
+  background-color: var(--spine-color);
+  /* 経年劣化・紙のテクスチャ風オーバーレイ */
+  background-image:
+    repeating-linear-gradient(
+      180deg,
+      rgba(0,0,0,0.10) 0px, rgba(0,0,0,0.10) 1px,
+      transparent 1px, transparent 4px
+    ),
+    linear-gradient(
+      90deg,
+      rgba(0,0,0,0.50) 0%,
+      rgba(0,0,0,0.20) 20%,
+      rgba(255,255,255,0.04) 50%,
+      rgba(0,0,0,0.25) 80%,
+      rgba(0,0,0,0.55) 100%
+    );
+  box-shadow:
+    inset -3px 0 6px rgba(0,0,0,0.45),
+    inset  2px 0 4px rgba(255,255,255,0.1),
+    1px 2px 6px rgba(0,0,0,0.5);
+}
+
+/* 本の上下に装飾ライン（ゴールドグラデーション） */
+.book::before {
+  content: '';
+  position: absolute;
+  top: 6px;
+  left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(180,145,50,0.72) 30%,
+    rgba(200,165,65,0.88) 42%,
+    rgba(215,178,80,1) 50%,
+    rgba(200,165,65,0.88) 58%,
+    rgba(180,145,50,0.72) 70%,
+    transparent 100%
+  );
+  box-shadow: 0 0 5px rgba(190,155,55,0.4);
+}
+.book::after {
+  content: '';
+  position: absolute;
+  bottom: 6px;
+  left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(180,145,50,0.72) 30%,
+    rgba(200,165,65,0.88) 42%,
+    rgba(215,178,80,1) 50%,
+    rgba(200,165,65,0.88) 58%,
+    rgba(180,145,50,0.72) 70%,
+    transparent 100%
+  );
+  box-shadow: 0 0 5px rgba(190,155,55,0.4);
+}
+
+.book:hover,
+.book:active {
+  transform: translateY(-10px) rotate(-1.5deg);
+  box-shadow:
+    inset -3px 0 6px rgba(0,0,0,0.45),
+    inset  2px 0 4px rgba(255,255,255,0.1),
+    4px 12px 20px rgba(0,0,0,0.6);
+  z-index: 1;
+}
+
+/* 空き棚（本なし） */
+.bookEmpty {
+  background-color: transparent;
+  background-image: none;
+  box-shadow: none;
+  cursor: default;
+  pointer-events: none;
+}
+.bookEmpty::before,
+.bookEmpty::after {
+  display: none;
+}
+
+/* 背表紙のタイトル（縦書き） */
+.bookTitle {
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  font-size: 10px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.85);
+  letter-spacing: 0.08em;
+  line-height: 1.1;
+  text-shadow:
+    0 1px 2px rgba(0,0,0,0.8),
+    0 0 8px rgba(0,0,0,0.5);
+  max-height: 108px;
+  overflow: hidden;
+  padding: 0 3px;
+  position: relative;
+  z-index: 1;
+}
+
+/* ========== モーダルオーバーレイ ========== */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  z-index: 200;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 0;
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* ========== モーダル本体（ボトムシート風） ========== */
+.modal {
+  position: relative;
+  width: 100%;
+  max-width: 480px;
+  max-height: 88vh;
+  overflow-y: auto;
+  background: var(--color-bg);
+  border-radius: 20px 20px 0 0;
+  animation: slideUp 0.3s cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to   { transform: translateY(0); }
+}
+
+/* 閉じるボタン */
+.closeBtn {
+  position: absolute;
+  top: var(--space-md);
+  right: var(--space-md);
+  z-index: 10;
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.4);
+  color: #fff;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* カバー画像エリア */
+.coverWrap {
+  width: 100%;
+  height: 180px;
+  overflow: hidden;
+  border-radius: 20px 20px 0 0;
+}
+
+.coverImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+}
+
+.coverFallback {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 64px;
+}
+
+/* ========== ゲーム情報エリア ========== */
+.info {
+  padding: var(--space-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.gameName {
+  font-size: var(--font-size-lg);
+  font-weight: 700;
+  color: var(--color-text);
+  margin: 0;
+}
+
+/* バッジ群 */
+.badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  background: var(--color-card);
+  color: var(--color-text-muted);
+  border: 1px solid var(--color-card-border);
+}
+
+/* 概要テキスト */
+.summary {
+  font-size: var(--font-size-sm);
+  color: var(--color-text);
+  line-height: 1.8;
+  margin: 0;
+}
+
+/* YouTube ボタン */
+.youtubeBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-xs);
+  width: 100%;
+  padding: 10px 20px;
+  border: none;
+  border-radius: var(--radius-md);
+  background: var(--gradient-primary);
+  color: var(--color-primary-fg);
+  font-size: var(--font-size-md);
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s;
+  margin-top: var(--space-xs);
+  white-space: nowrap;
+}
+
+.youtubeBtn:disabled {
+  background: var(--color-card);
+  color: var(--color-text-muted);
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+.youtubeBtn:not(:disabled):hover {
+  opacity: 0.88;
+}
+
+/* ========== 検索ポップアップ ========== */
+
+/* 背景オーバーレイ（タップで閉じる） */
+.searchOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 64px; /* ヘッダー分下げる */
+  animation: fadeIn 0.15s ease;
+}
+
+/* ポップアップ本体 */
+.searchPopup {
+  width: calc(100% - var(--space-md) * 2);
+  max-width: 440px;
+  background: var(--color-bg);
+  border: 1px solid var(--color-card-border);
+  border-radius: var(--radius-md);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+  overflow: hidden;
+  animation: popIn 0.2s cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+@keyframes popIn {
+  from { opacity: 0; transform: scale(0.96) translateY(-8px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+/* 入力行 */
+.searchBar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  padding: var(--space-sm) var(--space-md);
+  border-bottom: 1px solid var(--color-card-border);
+}
+
+.searchIcon {
+  color: var(--color-text-muted);
+  flex-shrink: 0;
+}
+
+.searchInput {
+  flex: 1;
+  background: none;
+  border: none;
+  outline: none;
+  font-size: var(--font-size-sm);
+  color: var(--color-text);
+}
+
+.searchInput::placeholder {
+  color: var(--color-text-muted);
+}
+
+.searchClear {
+  background: none;
+  border: none;
+  color: var(--color-text-muted);
+  font-size: 16px;
+  cursor: pointer;
+  padding: 0 2px;
+  line-height: 1;
+}
+
+/* 候補リスト */
+.searchResults {
+  max-height: 240px;
+  overflow-y: auto;
+}
+
+.searchPlaceholder {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  text-align: center;
+  padding: var(--space-md);
+  margin: 0;
+}
+
+.noResult {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  text-align: center;
+  padding: var(--space-md);
+  margin: 0;
+}
+
+.searchResultItem {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-sm) var(--space-md);
+  background: none;
+  border: none;
+  border-bottom: 1px solid var(--color-card-border);
+  color: var(--color-text);
+  font-size: var(--font-size-sm);
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.15s;
+}
+
+.searchResultItem:last-child {
+  border-bottom: none;
+}
+
+.searchResultItem:hover,
+.searchResultItem:active {
+  background: var(--color-card);
+}
+
+/* 背表紙色のドット */
+.searchResultDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* ヘッダー右の虫眼鏡ボタン */
+.searchBtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px 8px;
+  color: var(--color-text);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.youtubeHint {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  text-align: center;
+  margin: 0;
+}

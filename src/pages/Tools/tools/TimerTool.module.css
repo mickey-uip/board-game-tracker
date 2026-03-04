@@ -1,0 +1,194 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-lg);
+  padding: var(--space-lg) var(--space-md);
+}
+
+/* 時間表示エリア */
+.display {
+  width: 220px;
+  height: 110px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-surface);
+  border: 2px solid var(--color-border-strong);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+  transition: border-color 0.3s ease;
+}
+
+.displayDone {
+  border-color: var(--color-danger);
+  box-shadow: 0 0 16px rgba(224, 80, 80, 0.3);
+}
+
+.time {
+  font-size: 56px;
+  font-weight: 700;
+  letter-spacing: 4px;
+  color: var(--color-text);
+  font-variant-numeric: tabular-nums;
+  user-select: none;
+}
+
+/* プリセットボタン */
+.presets {
+  display: flex;
+  gap: var(--space-sm);
+}
+
+.presetBtn {
+  padding: var(--space-xs) var(--space-md);
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-bg);
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease;
+}
+
+.presetBtn:hover:not(:disabled) {
+  border-color: var(--color-border-strong);
+  color: var(--color-text);
+}
+
+.presetBtn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.presetActive {
+  border-color: var(--color-primary);
+  background: var(--color-surface);
+  color: var(--color-primary);
+}
+
+/* カスタム入力エリア */
+.custom {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+.customInput {
+  width: 60px;
+  padding: var(--space-xs);
+  text-align: center;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-size: var(--font-size-md);
+  -moz-appearance: textfield;
+}
+
+.customInput::-webkit-outer-spin-button,
+.customInput::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.customInput:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.customInput::placeholder {
+  color: var(--color-text-light);
+  font-size: var(--font-size-sm);
+}
+
+.colon {
+  font-size: var(--font-size-lg);
+  font-weight: 700;
+  color: var(--color-text-muted);
+  user-select: none;
+}
+
+.customApplyBtn {
+  padding: var(--space-xs) var(--space-sm);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.customApplyBtn:hover:not(:disabled) {
+  background: var(--color-surface-2);
+}
+
+.customApplyBtn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* 操作ボタン */
+.controls {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.startBtn {
+  padding: var(--space-sm) var(--space-xl);
+  border: none;
+  border-radius: var(--radius-md);
+  background: var(--gradient-primary);
+  color: var(--color-primary-fg);
+  font-size: var(--font-size-md);
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.15s ease, transform 0.08s ease;
+}
+
+.startBtn:active {
+  transform: scale(0.96);
+}
+
+.pauseBtn {
+  padding: var(--space-sm) var(--space-xl);
+  border: 2px solid var(--color-border-strong);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  color: var(--color-text-muted);
+  font-size: var(--font-size-md);
+  font-weight: 700;
+  cursor: pointer;
+  transition: border-color 0.15s ease;
+}
+
+.pauseBtn:hover {
+  border-color: var(--color-text-muted);
+}
+
+.resetBtn {
+  padding: var(--space-sm) var(--space-md);
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-bg);
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+
+.resetBtn:hover {
+  border-color: var(--color-border-strong);
+  color: var(--color-text);
+}
+
+.doneLabel {
+  font-size: var(--font-size-lg);
+  font-weight: 700;
+  color: var(--color-danger);
+}

@@ -1,0 +1,141 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  padding: var(--space-md) var(--space-sm);
+}
+
+/* 表示エリア */
+.display {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-sm) var(--space-md);
+  min-height: 64px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 2px;
+}
+
+.expressionRow {
+  font-size: var(--font-size-xl);
+  font-weight: 600;
+  word-break: break-all;
+  text-align: right;
+  color: var(--color-text);
+}
+
+.resultRow {
+  font-size: var(--font-size-md);
+  color: var(--color-text-muted);
+}
+
+/* ボタングリッド：4列 */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-xs);
+}
+
+/* ベースボタン */
+.btn {
+  height: 56px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.1s ease, transform 0.08s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn:active {
+  opacity: 0.7;
+  transform: scale(0.95);
+}
+
+/* 数字ボタン */
+.number {
+  background: #2e2416;
+  color: var(--color-text);
+}
+
+/* 演算子ボタン */
+.operator {
+  background: #3a2d1a;
+  color: var(--color-text);
+}
+
+/* アクションボタン（C, ⌫） */
+.action {
+  background: #3a2d1a;
+  color: var(--color-text-muted);
+}
+
+/* イコールボタン：縦2行分 */
+.equals {
+  background: var(--color-primary);
+  color: var(--color-primary-fg);
+  border-color: var(--color-primary);
+  grid-row: span 2;
+}
+
+/* ── メモエリア ── */
+.memo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  margin-top: var(--space-sm);
+}
+
+.memoHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.memoLabel {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--color-text-muted);
+}
+
+.memoClearBtn {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  background: none;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: 3px 10px;
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s;
+}
+
+.memoClearBtn:hover {
+  color: var(--color-text);
+  border-color: var(--color-border-strong);
+}
+
+.memoCanvas {
+  width: 100%;
+  aspect-ratio: 3 / 2;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+  /* 罫線風の背景（白地） */
+  background:
+    repeating-linear-gradient(
+      180deg,
+      transparent 0px,
+      transparent 27px,
+      rgba(0, 0, 0, 0.08) 27px,
+      rgba(0, 0, 0, 0.08) 28px
+    ),
+    #fff0d0;
+  cursor: crosshair;
+  touch-action: none;
+  display: block;
+}

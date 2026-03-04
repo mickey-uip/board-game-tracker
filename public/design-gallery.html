@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ボードゲームトラッカー デザインギャラリー</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+    background: #1a1a1a;
+    color: #fff;
+    padding: 32px 16px;
+  }
+  h1 {
+    text-align: center;
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    margin-bottom: 8px;
+    color: #fff;
+  }
+  .subtitle {
+    text-align: center;
+    font-size: 13px;
+    color: #999;
+    margin-bottom: 48px;
+  }
+  .gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 32px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  .pattern-card {
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+  }
+  .pattern-label {
+    padding: 14px 16px 10px;
+    background: #111;
+    border-bottom: 1px solid #333;
+  }
+  .pattern-num {
+    font-size: 11px;
+    font-weight: 700;
+    color: #888;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .pattern-name {
+    font-size: 18px;
+    font-weight: 800;
+    color: #fff;
+    margin: 2px 0;
+  }
+  .pattern-concept {
+    font-size: 12px;
+    color: #aaa;
+  }
+  /* スウォッチ */
+  .swatches {
+    display: flex;
+    padding: 10px 16px;
+    gap: 6px;
+    background: #111;
+  }
+  .swatch {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    flex: 1;
+  }
+  .swatch-color {
+    width: 100%;
+    height: 28px;
+    border-radius: 6px;
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+  .swatch-label {
+    font-size: 9px;
+    color: #777;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  /* UIプレビュー */
+  .ui-preview {
+    padding: 12px;
+  }
+  /* モバイルフレーム */
+  .phone-frame {
+    border-radius: 12px;
+    overflow: hidden;
+    border: 2px solid rgba(255,255,255,0.08);
+  }
+  /* ProfileHeader */
+  .ph-topbar {
+    display: flex;
+    justify-content: flex-end;
+    gap: 6px;
+    padding: 6px 12px 0;
+  }
+  .ph-icon { font-size: 16px; opacity: 0.7; }
+  .ph-profile {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px 10px;
+  }
+  .ph-avatar {
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; font-weight: 800;
+  }
+  .ph-info { flex: 1; }
+  .ph-name { font-size: 14px; font-weight: 800; }
+  .ph-stats { display: flex; gap: 8px; margin-top: 2px; align-items: center; }
+  .ph-stat { font-size: 11px; font-weight: 700; }
+  .ph-stat-label { font-size: 9px; margin-left: 2px; opacity: 0.6; }
+  .ph-divider { width: 1px; height: 10px; opacity: 0.3; }
+  /* Cards */
+  .cards {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 6px;
+    padding: 0 10px 8px;
+  }
+  .stat-card {
+    border-radius: 8px;
+    padding: 10px;
+    text-align: center;
+  }
+  .stat-card-val { font-size: 20px; font-weight: 800; }
+  .stat-card-label { font-size: 9px; margin-top: 2px; opacity: 0.6; font-weight: 600; }
+  /* Recent list */
+  .recent-header {
+    padding: 4px 12px;
+    font-size: 10px; font-weight: 700; letter-spacing: 0.08em;
+    text-transform: uppercase; opacity: 0.5;
+  }
+  .record-item {
+    margin: 0 10px 6px;
+    border-radius: 8px;
+    padding: 8px 10px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .record-badge {
+    width: 24px; height: 24px; border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 800; flex-shrink: 0;
+  }
+  .record-info { flex: 1; }
+  .record-game { font-size: 12px; font-weight: 700; }
+  .record-meta { font-size: 10px; opacity: 0.5; margin-top: 1px; }
+  .record-rank { font-size: 13px; font-weight: 800; }
+  /* Type badge */
+  .type-badge {
+    margin: 0 10px 8px;
+    border-radius: 10px;
+    padding: 8px 12px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .type-icon { font-size: 20px; }
+  .type-info {}
+  .type-label { font-size: 9px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; opacity: 0.6; }
+  .type-title { font-size: 14px; font-weight: 800; }
+  /* BottomNav */
+  .bottom-nav {
+    display: flex;
+    border-top: 1px solid;
+    height: 52px;
+  }
+  .nav-item {
+    flex: 1; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 2px;
+  }
+  .nav-item.active {}
+  .nav-icon { font-size: 18px; line-height: 1; }
+  .nav-label { font-size: 9px; font-weight: 600; }
+  /* Button */
+  .btn-row { padding: 6px 10px 10px; display: flex; gap: 6px; }
+  .btn {
+    flex: 1; padding: 8px 12px; border-radius: 8px; border: none;
+    font-size: 12px; font-weight: 700; text-align: center; cursor: pointer;
+  }
+  .btn-outline {
+    background: transparent;
+    border: 1.5px solid;
+    font-size: 12px; font-weight: 700;
+    padding: 7px 12px; border-radius: 8px; text-align: center;
+  }
+</style>
+</head>
+<body>
+
+<h1>🎲 デザインギャラリー</h1>
+<p class="subtitle">ボードゲームトラッカー — 10パターンのデザイン案 | クリックで拡大可能</p>
+
+<div class="gallery">
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- PATTERN 1: Classic White -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="pattern-card">
+  <div class="pattern-label">
+    <div class="pattern-num">Pattern 01</div>
+    <div class="pattern-name">Classic White</div>
+    <div class="pattern-concept">シンプル・清潔感。迷ったらこれ</div>
+  </div>
+  <div class="swatches" style="background:#f8f8f8;">
+    <div class="swatch"><div class="swatch-color" style="background:#ffffff;"></div><div class="swatch-label" style="color:#555">BG</div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#f5f5f5;"></div><div class="swatch-label" style="color:#555">Surface</div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#111111;"></div><div class="swatch-label" style="color:#555">Text</div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#111111;"></div><div class="swatch-label" style="color:#555">Primary</div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#d0d0d0;"></div><div class="swatch-label" style="color:#555">Border</div></div>
+  </div>
+  <div class="ui-preview" style="background:#f5f5f5;">
+    <div class="phone-frame" style="background:#ffffff; border-color:#d0d0d0;">
+      <div class="ph-topbar" style="background:#f5f5f5;">
+        <span class="ph-icon">🔔</span><span class="ph-icon">⚙️</span>
+      </div>
+      <div class="ph-profile" style="background:#f5f5f5; border-bottom:1px solid #d0d0d0;">
+        <div class="ph-avatar" style="background:#111111; color:#ffffff;">田</div>
+        <div class="ph-info">
+          <div class="ph-name" style="color:#111111;">田中 太郎</div>
+          <div class="ph-stats">
+            <span class="ph-stat" style="color:#111111;">24<span class="ph-stat-label">プレイ</span></span>
+            <div class="ph-divider" style="background:#111;"></div>
+            <span class="ph-stat" style="color:#111111;">10<span class="ph-stat-label">勝利</span></span>
+            <div class="ph-divider" style="background:#111;"></div>
+            <span class="ph-stat" style="color:#111111;">42%<span class="ph-stat-label">勝率</span></span>
+          </div>
+        </div>
+      </div>
+      <div class="cards">
+        <div class="stat-card" style="background:#f5f5f5; color:#111;">
+          <div class="stat-card-val">24</div><div class="stat-card-label">総プレイ数</div>
+        </div>
+        <div class="stat-card" style="background:#111111; color:#ffffff;">
+          <div class="stat-card-val">42%</div><div class="stat-card-label">勝率</div>
+        </div>
+      </div>
+      <div class="type-badge" style="background:#f5f5f5; border:1px solid #d0d0d0;">
+        <span class="type-icon">🧠</span>
+        <div class="type-info">
+          <div class="type-label" style="color:#666;">あなたのタイプは</div>
+          <div class="type-title" style="color:#111;">ロジックマスター</div>
+        </div>
+      </div>
+      <div class="recent-header" style="color:#111;">直近の記録</div>
+      <div class="record-item" style="background:#f5f5f5; border:1px solid #d0d0d0;">
+        <div class="record-badge" style="background:#111; color:#fff;">1</div>
+        <div class="record-info"><div class="record-game" style="color:#111;">カタン</div><div class="record-meta" style="color:#666;">2/24 · 4人</div></div>
+        <div class="record-rank" style="color:#111;">🏆</div>
+      </div>
+      <div class="btn-row">
+        <div class="btn" style="background:#111; color:#fff;">+ 対戦を記録</div>
+        <div class="btn-outline" style="color:#111; border-color:#111;">履歴</div>
+      </div>
+      <div class="bottom-nav" style="background:#ffffff; border-color:#d0d0d0;">
+        <div class="nav-item active" style="color:#111;"><span class="nav-icon">⌂</span><span class="nav-label">ホーム</span></div>
+        <div class="nav-item" style="color:#999;"><span class="nav-icon">☰</span><span class="nav-label">記録</span></div>
+        <div class="nav-item" style="color:#999;"><span class="nav-icon">🔧</span><span class="nav-label">ツール</span></div>
+        <div class="nav-item" style="color:#999;"><span class="nav-icon">⚙</span><span class="nav-label">設定</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- PATTERN 2: Midnight Dark -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="pattern-card">
+  <div class="pattern-label">
+    <div class="pattern-num">Pattern 02</div>
+    <div class="pattern-name">Midnight Dark</div>
+    <div class="pattern-concept">ダークモード。高級感・目に優しい夜間使用</div>
+  </div>
+  <div class="swatches">
+    <div class="swatch"><div class="swatch-color" style="background:#0d0d0d;"></div><div class="swatch-label">BG</div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#1a1a1a;"></div><div class="swatch-label">Surface</div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#f0f0f0;"></div><div class="swatch-label">Text</div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#ffffff;"></div><div class="swatch-label">Primary</div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#2e2e2e;"></div><div class="swatch-label">Border</div></div>
+  </div>
+  <div class="ui-preview" style="background:#111;">
+    <div class="phone-frame" style="background:#0d0d0d; border-color:#2e2e2e;">
+      <div class="ph-topbar" style="background:#1a1a1a;">
+        <span class="ph-icon" style="color:#aaa;">🔔</span><span class="ph-icon" style="color:#aaa;">⚙️</span>
+      </div>
+      <div class="ph-profile" style="background:#1a1a1a; border-bottom:1px solid #2e2e2e;">
+        <div class="ph-avatar" style="background:#f0f0f0; color:#0d0d0d;">田</div>
+        <div class="ph-info">
+          <div class="ph-name" style="color:#f0f0f0;">田中 太郎</div>
+          <div class="ph-stats">
+            <span class="ph-stat" style="color:#f0f0f0;">24<span class="ph-stat-label">プレイ</span></span>
+            <div class="ph-divider" style="background:#fff;"></div>
+            <span class="ph-stat" style="color:#f0f0f0;">10<span class="ph-stat-label">勝利</span></span>
+            <div class="ph-divider" style="background:#fff;"></div>
+            <span class="ph-stat" style="color:#f0f0f0;">42%<span class="ph-stat-label">勝率</span></span>
+          </div>
+        </div>
+      </div>
+      <div class="cards">
+        <div class="stat-card" style="background:#1a1a1a; color:#f0f0f0; border:1px solid #2e2e2e;">
+          <div class="stat-card-val">24</div><div class="stat-card-label">総プレイ数</div>
+        </div>
+        <div class="stat-card" style="background:#f0f0f0; color:#0d0d0d;">
+          <div class="stat-card-val">42%</div><div class="stat-card-label">勝率</div>
+        </div>
+      </div>
+      <div class="type-badge" style="background:#1a1a1a; border:1px solid #2e2e2e;">
+        <span class="type-icon">🧠</span>
+        <div class="type-info">
+          <div class="type-label" style="color:#888;">あなたのタイプは</div>
+          <div class="type-title" style="color:#f0f0f0;">ロジックマスター</div>
+        </div>
+      </div>
+      <div class="recent-header" style="color:#f0f0f0;">直近の記録</div>
+      <div class="record-item" style="background:#1a1a1a; border:1px solid #2e2e2e;">
+        <div class="record-badge" style="background:#f0f0f0; color:#0d0d0d;">1</div>
+        <div class="record-info"><div class="record-game" style="color:#f0f0f0;">カタン</div><div class="record-meta" style="color:#888;">2/24 · 4人</div></div>
+        <div class="record-rank" style="color:#f0f0f0;">🏆</div>
+      </div>
+      <div class="btn-row">
+        <div class="btn" style="background:#ffffff; color:#0d0d0d;">+ 対戦を記録</div>
+        <div class="btn-outline" style="color:#f0f0f0; border-color:#444;">履歴</div>
+      </div>
+      <div class="bottom-nav" style="background:#0d0d0d; border-color:#2e2e2e;">
+        <div class="nav-item active" style="color:#f0f0f0;"><span class="nav-icon">⌂</span><span class="nav-label">ホーム</span></div>
+        <div class="nav-item" style="color:#555;"><span class="nav-icon">☰</span><span class="nav-label">記録</span></div>
+        <div class="nav-item" style="color:#555;"><span class="nav-icon">🔧</span><span class="nav-label">ツール</span></div>
+        <div class="nav-item" style="color:#555;"><span class="nav-icon">⚙</span><span class="nav-label">設定</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- PATTERN 3: Board Green -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="pattern-card">
+  <div class="pattern-label">
+    <div class="pattern-num">Pattern 03</div>
+    <div class="pattern-name">Board Green</div>
+    <div class="pattern-concept">ボードゲームのフェルトマット感。自然なゲーム感</div>
+  </div>
+  <div class="swatches" style="background:#f0f7f0;">
+    <div class="swatch"><div class="swatch-color" style="background:#ffffff;"></div><div class="swatch-label" style="color:#555">BG</div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#f0f7f0;"></div><div class="swatch-label" style="color:#555">Surface</div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#1a3320;"></div><div class="swatch-label" style="color:#555">Text</div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#1B5E20;"></div><div class="swatch-label" style="color:#555">Primary</div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#a8d5a2;"></div><div class="swatch-label" style="color:#555">Border</div></div>
+  </div>
+  <div class="ui-preview" style="background:#e8f5e8;">
+    <div class="phone-frame" style="background:#ffffff; border-color:#a8d5a2;">
+      <div class="ph-topbar" style="background:#f0f7f0;">
+        <span class="ph-icon" style="color:#1B5E20;">🔔</span><span class="ph-icon" style="color:#1B5E20;">⚙️</span>
+      </div>
+      <div class="ph-profile" style="background:#f0f7f0; border-bottom:1px solid #a8d5a2;">
+        <div class="ph-avatar" style="background:#1B5E20; color:#ffffff;">田</div>
+        <div class="ph-info">
+          <div class="ph-name" style="color:#1a3320;">田中 太郎</div>
+          <div class="ph-stats">
+            <span class="ph-stat" style="color:#1a3320;">24<span class="ph-stat-label">プレイ</span></span>
+            <div class="ph-divider" style="background:#1B5E20;"></div>
+            <span class="ph-stat" style="color:#1a3320;">10<span class="ph-stat-label">勝利</span></span>
+            <div class="ph-divider" style="background:#1B5E20;"></div>
+            <span class="ph-stat" style="color:#1a3320;">42%<span class="ph-stat-label">勝率</span></span>
+          </div>
+        </div>
+      </div>
+      <div class="cards">
+        <div class="stat-card" style="background:#f0f7f0; color:#1a3320; border:1px solid #a8d5a2;">
+          <div class="stat-card-val">24</div><div class="stat-card-label">総プレイ数</div>
+        </div>
+        <div class="stat-card" style="background:#1B5E20; color:#ffffff;">
+          <div class="stat-card-val">42%</div><div class="stat-card-label">勝率</div>
+        </div>
+      </div>
+      <div class="type-badge" style="background:#f0f7f0; border:1px solid #a8d5a2;">
+        <span class="type-icon">🌿</span>
+        <div class="type-info">
+          <div class="type-label" style="color:#4a7a4a;">あなたのタイプは</div>
+          <div class="type-title" style="color:#1a3320;">ロジックマスター</div>
+        </div>
+      </div>
+      <div class="recent-header" style="color:#1a3320;">直近の記録</div>
+      <div class="record-item" style="background:#f0f7f0; border:1px solid #a8d5a2;">
+        <div class="record-badge" style="background:#1B5E20; color:#fff;">1</div>
+        <div class="record-info"><div class="record-game" style="color:#1a3320;">カタン</div><div class="record-meta" style="color:#4a7a4a;">2/24 · 4人</div></div>
+        <div class="record-rank" style="color:#1a3320;">🏆</div>
+      </div>
+      <div class="btn-row">
+        <div class="btn" style="background:#1B5E20; color:#fff;">+ 対戦を記録</div>
+        <div class="btn-outline" style="color:#1a3320; border-color:#1B5E20;">履歴</div>
+      </div>
+      <div class="bottom-nav" style="background:#ffffff; border-color:#a8d5a2;">
+        <div class="nav-item active" style="color:#1B5E20;"><span class="nav-icon">⌂</span><span class="nav-label">ホーム</span></div>
+        <div class="nav-item" style="color:#999;"><span class="nav-icon">☰</span><span class="nav-label">記録</span></div>
+        <div class="nav-item" style="color:#999;"><span class="nav-icon">🔧</span><span class="nav-label">ツール</span></div>
+        <div class="nav-item" style="color:#999;"><span class="nav-icon">⚙</span><span class="nav-label">設定</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- PATTERN 4: Royal Navy -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="pattern-card">
+  <div class="pattern-label">
+    <div class="pattern-num">Pattern 04</div>
+    <div class="pattern-name">Royal Navy × Gold</div>
+    <div class="pattern-concept">ボードゲーム箱のクラシック配色。重厚感と高貴さ</div>
+  </div>
+  <div class="swatches">
+    <div class="swatch"><div class="swatch-color" style="background:#0a0e1a;"></div><div class="swatch-label">BG</div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#141929;"></div><div class="swatch-label">Surface</div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#e8e8f0;"></div><div class="swatch-label">Text</div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#F5C842;"></div><div class="swatch-label">Gold</div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#232840;"></div><div class="swatch-label">Border</div></div>
+  </div>
+  <div class="ui-preview" style="background:#080c16;">
+    <div class="phone-frame" style="background:#0a0e1a; border-color:#232840;">
+      <div class="ph-topbar" style="background:#141929;">
+        <span class="ph-icon" style="color:#F5C842;">🔔</span><span class="ph-icon" style="color:#F5C842;">⚙️</span>
+      </div>
+      <div class="ph-profile" style="background:#141929; border-bottom:1px solid #232840;">
+        <div class="ph-avatar" style="background:#F5C842; color:#0a0e1a;">田</div>
+        <div class="ph-info">
+          <div class="ph-name" style="color:#e8e8f0;">田中 太郎</div>
+          <div class="ph-stats">
+            <span class="ph-stat" style="color:#e8e8f0;">24<span class="ph-stat-label">プレイ</span></span>
+            <div class="ph-divider" style="background:#F5C842;"></div>
+            <span class="ph-stat" style="color:#e8e8f0;">10<span class="ph-stat-label">勝利</span></span>
+            <div class="ph-divider" style="background:#F5C842;"></div>
+            <span class="ph-stat" style="color:#e8e8f0;">42%<span class="ph-stat-label">勝率</span></span>
+          </div>
+        </div>
+      </div>
+      <div class="cards">
+        <div class="stat-card" style="background:#141929; color:#e8e8f0; border:1px solid #232840;">
+          <div class="stat-card-val">24</div><div class="stat-card-label">総プレイ数</div>
+        </div>
+        <div class="stat-card" style="background:#F5C842; color:#0a0e1a;">
+          <div class="stat-card-val">42%</div><div class="stat-card-label">勝率</div>
+        </div>
+      </div>
+      <div class="type-badge" style="background:#141929; border:1px solid #F5C84255;">
+        <span class="type-icon">👑</span>
+        <div class="type-info">
+          <div class="type-label" style="color:#8890bb;">あなたのタイプは</div>
+          <div class="type-title" style="color:#F5C842;">ロジックマスター</div>
+        </div>
+      </div>
+      <div class="recent-header" style="color:#8890bb;">直近の記録</div>
+      <div class="record-item" style="background:#141929; border:1px solid #232840;">
+        <div class="record-badge" style="background:#F5C842; color:#0a0e1a;">1</div>
+        <div class="record-info"><div class="record-game" style="color:#e8e8f0;">カタン</div><div class="record-meta" style="color:#8890bb;">2/24 · 4人</div></div>
+        <div class="record-rank" style="color:#F5C842;">👑</div>
+      </div>
+      <div class="btn-row">
+        <div class="btn" style="background:#F5C842; color:#0a0e1a;">+ 対戦を記録</div>
+        <div class="btn-outline" style="color:#F5C842; border-color:#F5C842;">履歴</div>
+      </div>
+      <div class="bottom-nav" style="background:#0a0e1a; border-color:#232840;">
+        <div class="nav-item active" style="color:#F5C842;"><span class="nav-icon">⌂</span><span class="nav-label">ホーム</span></div>
+        <div class="nav-item" style="color:#444;"><span class="nav-icon">☰</span><span class="nav-label">記録</span></div>
+        <div class="nav-item" style="color:#444;"><span class="nav-icon">🔧</span><span class="nav-label">ツール</span></div>
+        <div class="nav-item" style="color:#444;"><span class="nav-icon">⚙</span><span class="nav-label">設定</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- PATTERN 5: Warm Paper -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="pattern-card">
+  <div class="pattern-label">
+    <div class="pattern-num">Pattern 05</div>
+    <div class="pattern-name">Warm Paper</div>
+    <div class="pattern-concept">木製ボード・アナログゲームの温かみ。懐かしさ</div>
+  </div>
+  <div class="swatches" style="background:#f0e8d8;">
+    <div class="swatch"><div class="swatch-color" style="background:#FAF6EF;"></div><div class="swatch-label" style="color:#555">BG</div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#F0E8D5;"></div><div class="swatch-label" style="color:#555">Surface</div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#2C1810;"></div><div class="swatch-label" style="color:#555">Text</div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#5D3A1A;"></div><div class="swatch-label" style="color:#555">Brown</div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#C8A882;"></div><div class="swatch-label" style="color:#555">Border</div></div>
+  </div>
+  <div class="ui-preview" style="background:#e8d8c0;">
+    <div class="phone-frame" style="background:#FAF6EF; border-color:#C8A882;">
+      <div class="ph-topbar" style="background:#F0E8D5;">
+        <span class="ph-icon" style="color:#5D3A1A;">🔔</span><span class="ph-icon" style="color:#5D3A1A;">⚙️</span>
+      </div>
+      <div class="ph-profile" style="background:#F0E8D5; border-bottom:1px solid #C8A882;">
+        <div class="ph-avatar" style="background:#5D3A1A; color:#FAF6EF;">田</div>
+        <div class="ph-info">
+          <div class="ph-name" style="color:#2C1810;">田中 太郎</div>
+          <div class="ph-stats">
+            <span class="ph-stat" style="color:#2C1810;">24<span class="ph-stat-label">プレイ</span></span>
+            <div class="ph-divider" style="background:#5D3A1A;"></div>
+            <span class="ph-stat" style="color:#2C1810;">10<span class="ph-stat-label">勝利</span></span>
+            <div class="ph-divider" style="background:#5D3A1A;"></div>
+            <span class="ph-stat" style="color:#2C1810;">42%<span class="ph-stat-label">勝率</span></span>
+          </div>
+        </div>
+      </div>
+      <div class="cards">
+        <div class="stat-card" style="background:#F0E8D5; color:#2C1810; border:1px solid #C8A882;">
+          <div class="stat-card-val">24</div><div class="stat-card-label">総プレイ数</div>
+        </div>
+        <div class="stat-card" style="background:#5D3A1A; color:#FAF6EF;">
+          <div class="stat-card-val">42%</div><div class="stat-card-label">勝率</div>
+        </div>
+      </div>
+      <div class="type-badge" style="background:#F0E8D5; border:1px solid #C8A882;">
+        <span class="type-icon">🎯</span>
+        <div class="type-info">
+          <div class="type-label" style="color:#8B6340;">あなたのタイプは</div>
+          <div class="type-title" style="color:#2C1810;">ロジックマスター</div>
+        </div>
+      </div>
+      <div class="recent-header" style="color:#8B6340;">直近の記録</div>
+      <div class="record-item" style="background:#F0E8D5; border:1px solid #C8A882;">
+        <div class="record-badge" style="background:#5D3A1A; color:#FAF6EF;">1</div>
+        <div class="record-info"><div class="record-game" style="color:#2C1810;">カタン</div><div class="record-meta" style="color:#8B6340;">2/24 · 4人</div></div>
+        <div class="record-rank" style="color:#2C1810;">🏆</div>
+      </div>
+      <div class="btn-row">
+        <div class="btn" style="background:#5D3A1A; color:#FAF6EF;">+ 対戦を記録</div>
+        <div class="btn-outline" style="color:#5D3A1A; border-color:#5D3A1A;">履歴</div>
+      </div>
+      <div class="bottom-nav" style="background:#FAF6EF; border-color:#C8A882;">
+        <div class="nav-item active" style="color:#5D3A1A;"><span class="nav-icon">⌂</span><span class="nav-label">ホーム</span></div>
+        <div class="nav-item" style="color:#C8A882;"><span class="nav-icon">☰</span><span class="nav-label">記録</span></div>
+        <div class="nav-item" style="color:#C8A882;"><span class="nav-icon">🔧</span><span class="nav-label">ツール</span></div>
+        <div class="nav-item" style="color:#C8A882;"><span class="nav-icon">⚙</span><span class="nav-label">設定</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- PATTERN 6: Neon Arcade -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="pattern-card">
+  <div class="pattern-label">
+    <div class="pattern-num">Pattern 06</div>
+    <div class="pattern-name">Neon Arcade</div>
+    <div class="pattern-concept">レトロアーケード・ゲームセンター感。個性的</div>
+  </div>
+  <div class="swatches">
+    <div class="swatch"><div class="swatch-color" style="background:#080810;"></div><div class="swatch-label">BG</div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#110d20;"></div><div class="swatch-label">Surface</div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#e8e0ff;"></div><div class="swatch-label">Text</div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#A855F7;"></div><div class="swatch-label">Purple</div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#2a1f40;"></div><div class="swatch-label">Border</div></div>
+  </div>
+  <div class="ui-preview" style="background:#05050e;">
+    <div class="phone-frame" style="background:#080810; border-color:#2a1f40;">
+      <div class="ph-topbar" style="background:#110d20;">
+        <span class="ph-icon" style="color:#A855F7;">🔔</span><span class="ph-icon" style="color:#A855F7;">⚙️</span>
+      </div>
+      <div class="ph-profile" style="background:#110d20; border-bottom:1px solid #2a1f40;">
+        <div class="ph-avatar" style="background:#A855F7; color:#fff;">田</div>
+        <div class="ph-info">
+          <div class="ph-name" style="color:#e8e0ff;">田中 太郎</div>
+          <div class="ph-stats">
+            <span class="ph-stat" style="color:#e8e0ff;">24<span class="ph-stat-label">プレイ</span></span>
+            <div class="ph-divider" style="background:#A855F7;"></div>
+            <span class="ph-stat" style="color:#e8e0ff;">10<span class="ph-stat-label">勝利</span></span>
+            <div class="ph-divider" style="background:#A855F7;"></div>
+            <span class="ph-stat" style="color:#e8e0ff;">42%<span class="ph-stat-label">勝率</span></span>
+          </div>
+        </div>
+      </div>
+      <div class="cards">
+        <div class="stat-card" style="background:#110d20; color:#e8e0ff; border:1px solid #2a1f40;">
+          <div class="stat-card-val">24</div><div class="stat-card-label">総プレイ数</div>
+        </div>
+        <div class="stat-card" style="background:#A855F7; color:#fff;">
+          <div class="stat-card-val">42%</div><div class="stat-card-label">勝率</div>
+        </div>
+      </div>
+      <div class="type-badge" style="background:#110d20; border:1px solid #A855F755;">
+        <span class="type-icon">⚡</span>
+        <div class="type-info">
+          <div class="type-label" style="color:#8866cc;">あなたのタイプは</div>
+          <div class="type-title" style="color:#A855F7;">ロジックマスター</div>
+        </div>
+      </div>
+      <div class="recent-header" style="color:#8866cc;">直近の記録</div>
+      <div class="record-item" style="background:#110d20; border:1px solid #2a1f40;">
+        <div class="record-badge" style="background:#A855F7; color:#fff;">1</div>
+        <div class="record-info"><div class="record-game" style="color:#e8e0ff;">カタン</div><div class="record-meta" style="color:#8866cc;">2/24 · 4人</div></div>
+        <div class="record-rank" style="color:#A855F7;">🏆</div>
+      </div>
+      <div class="btn-row">
+        <div class="btn" style="background:#A855F7; color:#fff;">+ 対戦を記録</div>
+        <div class="btn-outline" style="color:#A855F7; border-color:#A855F7;">履歴</div>
+      </div>
+      <div class="bottom-nav" style="background:#080810; border-color:#2a1f40;">
+        <div class="nav-item active" style="color:#A855F7;"><span class="nav-icon">⌂</span><span class="nav-label">ホーム</span></div>
+        <div class="nav-item" style="color:#444;"><span class="nav-icon">☰</span><span class="nav-label">記録</span></div>
+        <div class="nav-item" style="color:#444;"><span class="nav-icon">🔧</span><span class="nav-label">ツール</span></div>
+        <div class="nav-item" style="color:#444;"><span class="nav-icon">⚙</span><span class="nav-label">設定</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- PATTERN 7: Slate Blue -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="pattern-card">
+  <div class="pattern-label">
+    <div class="pattern-num">Pattern 07</div>
+    <div class="pattern-name">Slate Blue</div>
+    <div class="pattern-concept">モダンなボードゲームカフェ感。洗練された知性</div>
+  </div>
+  <div class="swatches">
+    <div class="swatch"><div class="swatch-color" style="background:#0f172a;"></div><div class="swatch-label">BG</div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#1e293b;"></div><div class="swatch-label">Surface</div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#e2e8f0;"></div><div class="swatch-label">Text</div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#38BDF8;"></div><div class="swatch-label">Sky</div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#334155;"></div><div class="swatch-label">Border</div></div>
+  </div>
+  <div class="ui-preview" style="background:#080f1e;">
+    <div class="phone-frame" style="background:#0f172a; border-color:#334155;">
+      <div class="ph-topbar" style="background:#1e293b;">
+        <span class="ph-icon" style="color:#38BDF8;">🔔</span><span class="ph-icon" style="color:#38BDF8;">⚙️</span>
+      </div>
+      <div class="ph-profile" style="background:#1e293b; border-bottom:1px solid #334155;">
+        <div class="ph-avatar" style="background:#38BDF8; color:#0f172a;">田</div>
+        <div class="ph-info">
+          <div class="ph-name" style="color:#e2e8f0;">田中 太郎</div>
+          <div class="ph-stats">
+            <span class="ph-stat" style="color:#e2e8f0;">24<span class="ph-stat-label">プレイ</span></span>
+            <div class="ph-divider" style="background:#38BDF8;"></div>
+            <span class="ph-stat" style="color:#e2e8f0;">10<span class="ph-stat-label">勝利</span></span>
+            <div class="ph-divider" style="background:#38BDF8;"></div>
+            <span class="ph-stat" style="color:#e2e8f0;">42%<span class="ph-stat-label">勝率</span></span>
+          </div>
+        </div>
+      </div>
+      <div class="cards">
+        <div class="stat-card" style="background:#1e293b; color:#e2e8f0; border:1px solid #334155;">
+          <div class="stat-card-val">24</div><div class="stat-card-label">総プレイ数</div>
+        </div>
+        <div class="stat-card" style="background:#38BDF8; color:#0f172a;">
+          <div class="stat-card-val">42%</div><div class="stat-card-label">勝率</div>
+        </div>
+      </div>
+      <div class="type-badge" style="background:#1e293b; border:1px solid #38BDF855;">
+        <span class="type-icon">🔭</span>
+        <div class="type-info">
+          <div class="type-label" style="color:#64748b;">あなたのタイプは</div>
+          <div class="type-title" style="color:#38BDF8;">ロジックマスター</div>
+        </div>
+      </div>
+      <div class="recent-header" style="color:#64748b;">直近の記録</div>
+      <div class="record-item" style="background:#1e293b; border:1px solid #334155;">
+        <div class="record-badge" style="background:#38BDF8; color:#0f172a;">1</div>
+        <div class="record-info"><div class="record-game" style="color:#e2e8f0;">カタン</div><div class="record-meta" style="color:#64748b;">2/24 · 4人</div></div>
+        <div class="record-rank" style="color:#38BDF8;">🏆</div>
+      </div>
+      <div class="btn-row">
+        <div class="btn" style="background:#38BDF8; color:#0f172a;">+ 対戦を記録</div>
+        <div class="btn-outline" style="color:#38BDF8; border-color:#38BDF8;">履歴</div>
+      </div>
+      <div class="bottom-nav" style="background:#0f172a; border-color:#334155;">
+        <div class="nav-item active" style="color:#38BDF8;"><span class="nav-icon">⌂</span><span class="nav-label">ホーム</span></div>
+        <div class="nav-item" style="color:#475569;"><span class="nav-icon">☰</span><span class="nav-label">記録</span></div>
+        <div class="nav-item" style="color:#475569;"><span class="nav-icon">🔧</span><span class="nav-label">ツール</span></div>
+        <div class="nav-item" style="color:#475569;"><span class="nav-icon">⚙</span><span class="nav-label">設定</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- PATTERN 8: Red Card -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="pattern-card">
+  <div class="pattern-label">
+    <div class="pattern-num">Pattern 08</div>
+    <div class="pattern-name">Red Card</div>
+    <div class="pattern-concept">競技感・勝負感。情熱的でエネルギッシュ</div>
+  </div>
+  <div class="swatches" style="background:#fdf0f0;">
+    <div class="swatch"><div class="swatch-color" style="background:#ffffff;"></div><div class="swatch-label" style="color:#555">BG</div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#fff5f5;"></div><div class="swatch-label" style="color:#555">Surface</div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#1a0505;"></div><div class="swatch-label" style="color:#555">Text</div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#DC2626;"></div><div class="swatch-label" style="color:#555">Red</div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#fecaca;"></div><div class="swatch-label" style="color:#555">Border</div></div>
+  </div>
+  <div class="ui-preview" style="background:#fee2e2;">
+    <div class="phone-frame" style="background:#ffffff; border-color:#fecaca;">
+      <div class="ph-topbar" style="background:#fff5f5;">
+        <span class="ph-icon" style="color:#DC2626;">🔔</span><span class="ph-icon" style="color:#DC2626;">⚙️</span>
+      </div>
+      <div class="ph-profile" style="background:#fff5f5; border-bottom:1px solid #fecaca;">
+        <div class="ph-avatar" style="background:#DC2626; color:#fff;">田</div>
+        <div class="ph-info">
+          <div class="ph-name" style="color:#1a0505;">田中 太郎</div>
+          <div class="ph-stats">
+            <span class="ph-stat" style="color:#1a0505;">24<span class="ph-stat-label">プレイ</span></span>
+            <div class="ph-divider" style="background:#DC2626;"></div>
+            <span class="ph-stat" style="color:#1a0505;">10<span class="ph-stat-label">勝利</span></span>
+            <div class="ph-divider" style="background:#DC2626;"></div>
+            <span class="ph-stat" style="color:#1a0505;">42%<span class="ph-stat-label">勝率</span></span>
+          </div>
+        </div>
+      </div>
+      <div class="cards">
+        <div class="stat-card" style="background:#fff5f5; color:#1a0505; border:1px solid #fecaca;">
+          <div class="stat-card-val">24</div><div class="stat-card-label">総プレイ数</div>
+        </div>
+        <div class="stat-card" style="background:#DC2626; color:#fff;">
+          <div class="stat-card-val">42%</div><div class="stat-card-label">勝率</div>
+        </div>
+      </div>
+      <div class="type-badge" style="background:#fff5f5; border:1px solid #fecaca;">
+        <span class="type-icon">⚔️</span>
+        <div class="type-info">
+          <div class="type-label" style="color:#999;">あなたのタイプは</div>
+          <div class="type-title" style="color:#1a0505;">ロジックマスター</div>
+        </div>
+      </div>
+      <div class="recent-header" style="color:#999;">直近の記録</div>
+      <div class="record-item" style="background:#fff5f5; border:1px solid #fecaca;">
+        <div class="record-badge" style="background:#DC2626; color:#fff;">1</div>
+        <div class="record-info"><div class="record-game" style="color:#1a0505;">カタン</div><div class="record-meta" style="color:#999;">2/24 · 4人</div></div>
+        <div class="record-rank" style="color:#DC2626;">🏆</div>
+      </div>
+      <div class="btn-row">
+        <div class="btn" style="background:#DC2626; color:#fff;">+ 対戦を記録</div>
+        <div class="btn-outline" style="color:#DC2626; border-color:#DC2626;">履歴</div>
+      </div>
+      <div class="bottom-nav" style="background:#ffffff; border-color:#fecaca;">
+        <div class="nav-item active" style="color:#DC2626;"><span class="nav-icon">⌂</span><span class="nav-label">ホーム</span></div>
+        <div class="nav-item" style="color:#ccc;"><span class="nav-icon">☰</span><span class="nav-label">記録</span></div>
+        <div class="nav-item" style="color:#ccc;"><span class="nav-icon">🔧</span><span class="nav-label">ツール</span></div>
+        <div class="nav-item" style="color:#ccc;"><span class="nav-icon">⚙</span><span class="nav-label">設定</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- PATTERN 9: Forest Night -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="pattern-card">
+  <div class="pattern-label">
+    <div class="pattern-num">Pattern 09</div>
+    <div class="pattern-name">Forest Night</div>
+    <div class="pattern-concept">RTS・ストラテジーゲーム感。神秘的でダイナミック</div>
+  </div>
+  <div class="swatches">
+    <div class="swatch"><div class="swatch-color" style="background:#0a1a0f;"></div><div class="swatch-label">BG</div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#0f2419;"></div><div class="swatch-label">Surface</div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#ecfdf5;"></div><div class="swatch-label">Text</div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#A3E635;"></div><div class="swatch-label">Lime</div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#1a3825;"></div><div class="swatch-label">Border</div></div>
+  </div>
+  <div class="ui-preview" style="background:#060d08;">
+    <div class="phone-frame" style="background:#0a1a0f; border-color:#1a3825;">
+      <div class="ph-topbar" style="background:#0f2419;">
+        <span class="ph-icon" style="color:#A3E635;">🔔</span><span class="ph-icon" style="color:#A3E635;">⚙️</span>
+      </div>
+      <div class="ph-profile" style="background:#0f2419; border-bottom:1px solid #1a3825;">
+        <div class="ph-avatar" style="background:#A3E635; color:#0a1a0f;">田</div>
+        <div class="ph-info">
+          <div class="ph-name" style="color:#ecfdf5;">田中 太郎</div>
+          <div class="ph-stats">
+            <span class="ph-stat" style="color:#ecfdf5;">24<span class="ph-stat-label">プレイ</span></span>
+            <div class="ph-divider" style="background:#A3E635;"></div>
+            <span class="ph-stat" style="color:#ecfdf5;">10<span class="ph-stat-label">勝利</span></span>
+            <div class="ph-divider" style="background:#A3E635;"></div>
+            <span class="ph-stat" style="color:#ecfdf5;">42%<span class="ph-stat-label">勝率</span></span>
+          </div>
+        </div>
+      </div>
+      <div class="cards">
+        <div class="stat-card" style="background:#0f2419; color:#ecfdf5; border:1px solid #1a3825;">
+          <div class="stat-card-val">24</div><div class="stat-card-label">総プレイ数</div>
+        </div>
+        <div class="stat-card" style="background:#A3E635; color:#0a1a0f;">
+          <div class="stat-card-val">42%</div><div class="stat-card-label">勝率</div>
+        </div>
+      </div>
+      <div class="type-badge" style="background:#0f2419; border:1px solid #A3E63555;">
+        <span class="type-icon">🌲</span>
+        <div class="type-info">
+          <div class="type-label" style="color:#4a8040;">あなたのタイプは</div>
+          <div class="type-title" style="color:#A3E635;">ロジックマスター</div>
+        </div>
+      </div>
+      <div class="recent-header" style="color:#4a8040;">直近の記録</div>
+      <div class="record-item" style="background:#0f2419; border:1px solid #1a3825;">
+        <div class="record-badge" style="background:#A3E635; color:#0a1a0f;">1</div>
+        <div class="record-info"><div class="record-game" style="color:#ecfdf5;">カタン</div><div class="record-meta" style="color:#4a8040;">2/24 · 4人</div></div>
+        <div class="record-rank" style="color:#A3E635;">🏆</div>
+      </div>
+      <div class="btn-row">
+        <div class="btn" style="background:#A3E635; color:#0a1a0f;">+ 対戦を記録</div>
+        <div class="btn-outline" style="color:#A3E635; border-color:#A3E635;">履歴</div>
+      </div>
+      <div class="bottom-nav" style="background:#0a1a0f; border-color:#1a3825;">
+        <div class="nav-item active" style="color:#A3E635;"><span class="nav-icon">⌂</span><span class="nav-label">ホーム</span></div>
+        <div class="nav-item" style="color:#2a5030;"><span class="nav-icon">☰</span><span class="nav-label">記録</span></div>
+        <div class="nav-item" style="color:#2a5030;"><span class="nav-icon">🔧</span><span class="nav-label">ツール</span></div>
+        <div class="nav-item" style="color:#2a5030;"><span class="nav-icon">⚙</span><span class="nav-label">設定</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- PATTERN 10: Parchment -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="pattern-card">
+  <div class="pattern-label">
+    <div class="pattern-num">Pattern 10</div>
+    <div class="pattern-name">Parchment</div>
+    <div class="pattern-concept">テーブルトップRPG・クラシックゲーム。物語感</div>
+  </div>
+  <div class="swatches" style="background:#f5e8cc;">
+    <div class="swatch"><div class="swatch-color" style="background:#FFF8E7;"></div><div class="swatch-label" style="color:#555">BG</div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#F5EDD0;"></div><div class="swatch-label" style="color:#555">Surface</div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#2d1515;"></div><div class="swatch-label" style="color:#555">Text</div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#7B1D1D;"></div><div class="swatch-label" style="color:#555">Burgundy</div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#d4a85a;"></div><div class="swatch-label" style="color:#555">Border</div></div>
+  </div>
+  <div class="ui-preview" style="background:#e8d4a0;">
+    <div class="phone-frame" style="background:#FFF8E7; border-color:#d4a85a;">
+      <div class="ph-topbar" style="background:#F5EDD0;">
+        <span class="ph-icon" style="color:#7B1D1D;">🔔</span><span class="ph-icon" style="color:#7B1D1D;">⚙️</span>
+      </div>
+      <div class="ph-profile" style="background:#F5EDD0; border-bottom:1px solid #d4a85a;">
+        <div class="ph-avatar" style="background:#7B1D1D; color:#FFF8E7;">田</div>
+        <div class="ph-info">
+          <div class="ph-name" style="color:#2d1515;">田中 太郎</div>
+          <div class="ph-stats">
+            <span class="ph-stat" style="color:#2d1515;">24<span class="ph-stat-label">プレイ</span></span>
+            <div class="ph-divider" style="background:#7B1D1D;"></div>
+            <span class="ph-stat" style="color:#2d1515;">10<span class="ph-stat-label">勝利</span></span>
+            <div class="ph-divider" style="background:#7B1D1D;"></div>
+            <span class="ph-stat" style="color:#2d1515;">42%<span class="ph-stat-label">勝率</span></span>
+          </div>
+        </div>
+      </div>
+      <div class="cards">
+        <div class="stat-card" style="background:#F5EDD0; color:#2d1515; border:1px solid #d4a85a;">
+          <div class="stat-card-val">24</div><div class="stat-card-label">総プレイ数</div>
+        </div>
+        <div class="stat-card" style="background:#7B1D1D; color:#FFF8E7;">
+          <div class="stat-card-val">42%</div><div class="stat-card-label">勝率</div>
+        </div>
+      </div>
+      <div class="type-badge" style="background:#F5EDD0; border:1px solid #d4a85a;">
+        <span class="type-icon">📜</span>
+        <div class="type-info">
+          <div class="type-label" style="color:#9a7040;">あなたのタイプは</div>
+          <div class="type-title" style="color:#2d1515;">ロジックマスター</div>
+        </div>
+      </div>
+      <div class="recent-header" style="color:#9a7040;">直近の記録</div>
+      <div class="record-item" style="background:#F5EDD0; border:1px solid #d4a85a;">
+        <div class="record-badge" style="background:#7B1D1D; color:#FFF8E7;">1</div>
+        <div class="record-info"><div class="record-game" style="color:#2d1515;">カタン</div><div class="record-meta" style="color:#9a7040;">2/24 · 4人</div></div>
+        <div class="record-rank" style="color:#7B1D1D;">🏆</div>
+      </div>
+      <div class="btn-row">
+        <div class="btn" style="background:#7B1D1D; color:#FFF8E7;">+ 対戦を記録</div>
+        <div class="btn-outline" style="color:#7B1D1D; border-color:#7B1D1D;">履歴</div>
+      </div>
+      <div class="bottom-nav" style="background:#FFF8E7; border-color:#d4a85a;">
+        <div class="nav-item active" style="color:#7B1D1D;"><span class="nav-icon">⌂</span><span class="nav-label">ホーム</span></div>
+        <div class="nav-item" style="color:#d4a85a;"><span class="nav-icon">☰</span><span class="nav-label">記録</span></div>
+        <div class="nav-item" style="color:#d4a85a;"><span class="nav-icon">🔧</span><span class="nav-label">ツール</span></div>
+        <div class="nav-item" style="color:#d4a85a;"><span class="nav-icon">⚙</span><span class="nav-label">設定</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /gallery -->
+
+<div style="text-align:center; margin-top:48px; padding: 24px; color:#666; font-size:13px;">
+  気に入ったパターン番号を教えてください。<br>
+  global.css の変数を差し替えてアプリに適用します。<br>
+  <span style="color:#444; font-size:11px; margin-top:8px; display:block;">複数選んでミックスすることも可能です</span>
+</div>
+
+</body>
+</html>

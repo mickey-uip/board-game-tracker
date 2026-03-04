@@ -1,0 +1,87 @@
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.actions {
+  display: flex;
+  gap: var(--space-sm);
+  justify-content: flex-end;
+}
+
+/* ── アバター設定エリア ── */
+.avatarSection {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.avatarLabel {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--color-text-muted);
+}
+
+.avatarRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+}
+
+/* 円形プレビュー */
+.avatarPreview {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  overflow: hidden;
+  flex-shrink: 0;
+  background: var(--color-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid var(--color-border-strong);
+}
+
+.avatarImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.avatarInitial {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--color-text-muted);
+  user-select: none;
+}
+
+.avatarActions {
+  display: flex;
+  gap: var(--space-sm);
+}
+
+.avatarBtn {
+  background: transparent;
+  color: var(--color-text);
+  border: 1.5px solid var(--color-border-strong);
+  border-radius: var(--radius-sm);
+  padding: 4px 14px;
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.12s ease;
+}
+
+.avatarBtn:hover {
+  background: var(--color-surface);
+}
+
+.avatarBtnDanger {
+  color: var(--color-danger);
+  border-color: var(--color-danger);
+}
+
+.hiddenInput {
+  display: none;
+}

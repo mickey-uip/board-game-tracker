@@ -1,0 +1,75 @@
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  /* ── Ember Gold ダークテーマ ── */
+  --color-bg: #19130c;
+  --color-surface: #1a1208;
+  --color-surface-2: #221a0e;
+  --color-border: #2a2010;
+  --color-border-strong: #342a1d;
+  --color-text: #fff0d0;
+  --color-text-muted: #8a7040;
+  --color-text-light: #5a4820;
+  --color-primary: #f5c842;
+  --color-primary-fg: #19130c;
+  --color-danger: #e05050;
+
+  /* カード・ボックス背景（bgより明るく、コントラストをつける） */
+  --color-card: #211a10;
+  --color-card-border: #342a1d;
+
+  /* グラデーション（アクセント・ボタン・バッジなど） */
+  --gradient-primary: linear-gradient(135deg, #f5c842, #f97316);
+  --gradient-primary-hover: linear-gradient(135deg, #f7d060, #fb8c3a);
+
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+
+  --font-size-xs: 11px;
+  --font-size-sm: 13px;
+  --font-size-md: 15px;
+  --font-size-lg: 18px;
+  --font-size-xl: 22px;
+
+  --bottom-nav-height: 60px;
+}
+
+html, body {
+  height: 100%;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+  font-size: var(--font-size-md);
+  color: var(--color-text);
+  background: var(--color-bg);
+  -webkit-font-smoothing: antialiased;
+}
+
+#root {
+  height: 100%;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  cursor: pointer;
+  font-family: inherit;
+  font-size: inherit;
+}
+
+input, select, textarea {
+  font-family: inherit;
+  font-size: inherit;
+}

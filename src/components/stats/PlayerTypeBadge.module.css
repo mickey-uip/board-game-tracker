@@ -1,0 +1,91 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-sm);
+  padding: var(--space-lg) var(--space-md);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  text-align: left;
+}
+
+.heading {
+  font-size: var(--font-size-sm);
+  color: var(--color-text);
+  font-weight: 500;
+  letter-spacing: 0.04em;
+}
+
+.badge {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  background: var(--color-primary);
+  color: var(--color-primary-fg);
+  padding: var(--space-sm) var(--space-lg);
+  border-radius: 999px;
+}
+
+.icon {
+  font-size: 20px;
+  line-height: 1;
+}
+
+.title {
+  font-size: var(--font-size-md);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.sub {
+  font-size: var(--font-size-xs);
+  color: var(--color-text);
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━
+   タイプ別背景画像あり
+   ━━━━━━━━━━━━━━━━━━━━━━━━ */
+
+.hasImage {
+  position: relative;
+  overflow: hidden;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  /* 既存の background: var(--color-surface) をインラインスタイルで上書き */
+}
+
+/* テキスト要素を前面へ */
+.hasImage .heading,
+.hasImage .badge,
+.hasImage .sub {
+  position: relative;
+  z-index: 1;
+}
+
+/* 画像あり時のテキストは常に明るく */
+.hasImage .heading,
+.hasImage .sub {
+  color: var(--color-text);
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━
+   未判定時
+   ━━━━━━━━━━━━━━━━━━━━━━━━ */
+
+/* 未判定時 */
+.empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-md);
+  border: 1px dashed var(--color-border);
+  border-radius: var(--radius-lg);
+}
+
+.emptyText {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+}
