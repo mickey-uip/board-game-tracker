@@ -62,9 +62,7 @@ export function LoginPage() {
 
   return (
     <div className={styles.container}>
-      <div className={styles.logo}>🎲</div>
-      <h1 className={styles.title}>ボドゲトラッカー</h1>
-      <p className={styles.subtitle}>対戦記録を仲間と共有しよう</p>
+      <img src="/logo.png" alt="ボドレコ" className={styles.logo} />
 
       <div className={styles.card}>
         <div className={styles.tabs}>
