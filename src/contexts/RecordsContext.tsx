@@ -1,51 +1,114 @@
-import { createContext, useContext, useCallback, useMemo, type ReactNode } from 'react';
-import { useLocalStorage } from '../hooks/useLocalStorage';
-import { STORAGE_KEYS } from '../utils/storageKeys';
+import { createContext, useContext, useCallback, useMemo, useState, useEffect, type ReactNode } from 'react';
+import {
+  collection,
+  addDoc,
+  deleteDoc,
+  doc,
+  query,
+  where,
+  onSnapshot,
+  serverTimestamp,
+} from 'firebase/firestore';
+import { db } from '../lib/firebase';
+import { useAuth } from './AuthContext';
 import type { GameRecord, PlayerResult } from '../types';
-
-function generateId() {
-  return `record-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
-}
 
 interface RecordsContextValue {
   records: GameRecord[];
   recordsSortedByDate: GameRecord[];
   recordsByDate: { date: string; records: GameRecord[] }[];
-  addRecord: (gameId: string, date: string, playerResults: PlayerResult[]) => GameRecord;
-  deleteRecord: (id: string) => void;
+  addRecord: (gameId: string, date: string, playerResults: PlayerResult[], gameName?: string) => Promise<GameRecord>;
+  deleteRecord: (id: string) => Promise<void>;
   getRecordsByPlayerId: (playerId: string) => GameRecord[];
+  loading: boolean;
 }
 
 const RecordsContext = createContext<RecordsContextValue | null>(null);
 
 export function RecordsProvider({ children }: { children: ReactNode }) {
-  const [records, setRecords] = useLocalStorage<GameRecord[]>(STORAGE_KEYS.RECORDS, []);
+  const { user } = useAuth();
+  const [records, setRecords] = useState<GameRecord[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  // Firestore リアルタイムリスナー: 自分が参加している記録を全取得
+  useEffect(() => {
+    if (!user) {
+      setRecords([]);
+      setLoading(false);
+      return;
+    }
+
+    const q = query(
+      collection(db, 'records'),
+      where('participantUids', 'array-contains', user.uid),
+    );
+
+    const unsub = onSnapshot(q, (snap) => {
+      const recs: GameRecord[] = snap.docs.map((d) => {
+        const data = d.data();
+        return {
+          id: d.id,
+          gameId: data.gameId ?? '',
+          date: data.date ?? '',
+          playerResults: (data.playerResults ?? []).map((pr: Record<string, unknown>) => ({
+            playerId: pr.playerId as string,
+            rank: pr.rank as number,
+          })),
+          createdAt: data.createdAt?.toDate?.()?.toISOString?.() ?? new Date().toISOString(),
+        };
+      });
+      setRecords(recs);
+      setLoading(false);
+    });
+
+    return unsub;
+  }, [user]);
 
   const addRecord = useCallback(
-    (gameId: string, date: string, playerResults: PlayerResult[]) => {
-      const newRecord: GameRecord = {
-        id: generateId(),
+    async (gameId: string, date: string, playerResults: PlayerResult[], gameName?: string): Promise<GameRecord> => {
+      if (!user) throw new Error('Not authenticated');
+
+      // participantUids: 自分のuidは必ず含める
+      const participantUids = Array.from(
+        new Set([user.uid, ...playerResults.map((pr) => pr.playerId)])
+      );
+
+      const docData = {
+        gameId,
+        gameName: gameName ?? '',
+        date,
+        playerResults: playerResults.map((pr) => ({
+          playerId: pr.playerId,
+          rank: pr.rank,
+        })),
+        participantUids,
+        createdByUid: user.uid,
+        createdAt: serverTimestamp(),
+      };
+
+      const docRef = await addDoc(collection(db, 'records'), docData);
+
+      return {
+        id: docRef.id,
         gameId,
         date,
         playerResults,
         createdAt: new Date().toISOString(),
       };
-      setRecords((prev) => [newRecord, ...prev]);
-      return newRecord;
     },
-    [setRecords]
+    [user],
   );
 
   const deleteRecord = useCallback(
-    (id: string) => {
-      setRecords((prev) => prev.filter((r) => r.id !== id));
+    async (id: string) => {
+      await deleteDoc(doc(db, 'records', id));
     },
-    [setRecords]
+    [],
   );
 
   const recordsSortedByDate = useMemo(
     () => [...records].sort((a, b) => b.date.localeCompare(a.date)),
-    [records]
+    [records],
   );
 
   const recordsByDate = useMemo(() => {
@@ -64,14 +127,14 @@ export function RecordsProvider({ children }: { children: ReactNode }) {
   const getRecordsByPlayerId = useCallback(
     (playerId: string) =>
       recordsSortedByDate.filter((r) =>
-        r.playerResults.some((pr) => pr.playerId === playerId)
+        r.playerResults.some((pr) => pr.playerId === playerId),
       ),
-    [recordsSortedByDate]
+    [recordsSortedByDate],
   );
 
   const value = useMemo(
-    () => ({ records, recordsSortedByDate, recordsByDate, addRecord, deleteRecord, getRecordsByPlayerId }),
-    [records, recordsSortedByDate, recordsByDate, addRecord, deleteRecord, getRecordsByPlayerId]
+    () => ({ records, recordsSortedByDate, recordsByDate, addRecord, deleteRecord, getRecordsByPlayerId, loading }),
+    [records, recordsSortedByDate, recordsByDate, addRecord, deleteRecord, getRecordsByPlayerId, loading],
   );
 
   return <RecordsContext.Provider value={value}>{children}</RecordsContext.Provider>;

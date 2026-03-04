@@ -69,13 +69,14 @@ export function RecordFormContent({ initialDate, onSuccess }: RecordFormContentP
     !isOverMaxPlayers &&
     selectedPlayerIds.every((id) => ranks[id] !== undefined);
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!canSubmit) return;
     const playerResults = selectedPlayerIds.map((id) => ({
       playerId: id,
       rank: ranks[id],
     }));
-    addRecord(gameId, initialDate, playerResults);
+    const game = getGameById(gameId);
+    await addRecord(gameId, initialDate, playerResults, game?.name ?? '');
     onSuccess();
   };
 

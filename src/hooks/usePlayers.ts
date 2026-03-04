@@ -1,43 +1,46 @@
-import { useCallback } from 'react';
-import { useLocalStorage } from './useLocalStorage';
-import { STORAGE_KEYS } from '../utils/storageKeys';
+import { useMemo } from 'react';
+import { useAuth } from '../contexts/AuthContext';
+import { useLocalPlayers } from './useLocalPlayers';
 import type { Player } from '../types';
 
-function generateId() {
-  return `player-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
-}
-
+/**
+ * 自分 + ローカルプレイヤー（+ 将来的にフレンド）を統合して返す
+ */
 export function usePlayers() {
-  const [players, setPlayers] = useLocalStorage<Player[]>(STORAGE_KEYS.PLAYERS, []);
+  const { user, profile } = useAuth();
+  const {
+    localPlayers,
+    loading: localLoading,
+    addLocalPlayer,
+    updateLocalPlayer,
+    deleteLocalPlayer,
+  } = useLocalPlayers();
 
-  const addPlayer = useCallback(
-    (name: string) => {
-      const newPlayer: Player = {
-        id: generateId(),
-        name: name.trim(),
-        createdAt: new Date().toISOString(),
-      };
-      setPlayers((prev) => [...prev, newPlayer]);
-      return newPlayer;
-    },
-    [setPlayers]
-  );
+  // ログインユーザー自身を Player として表現
+  const selfPlayer: Player | null = useMemo(() => {
+    if (!user || !profile) return null;
+    return {
+      id: user.uid,
+      name: profile.displayName,
+      createdAt: new Date().toISOString(),
+    };
+  }, [user, profile]);
 
-  const updatePlayer = useCallback(
-    (id: string, name: string) => {
-      setPlayers((prev) =>
-        prev.map((p) => (p.id === id ? { ...p, name: name.trim() } : p))
-      );
-    },
-    [setPlayers]
-  );
+  // 全プレイヤー = 自分 + ローカル (+ フレンド: Phase 4 で追加)
+  const players: Player[] = useMemo(() => {
+    const list: Player[] = [];
+    if (selfPlayer) list.push(selfPlayer);
+    list.push(...localPlayers);
+    return list;
+  }, [selfPlayer, localPlayers]);
 
-  const deletePlayer = useCallback(
-    (id: string) => {
-      setPlayers((prev) => prev.filter((p) => p.id !== id));
-    },
-    [setPlayers]
-  );
-
-  return { players, addPlayer, updatePlayer, deletePlayer };
+  return {
+    players,
+    selfPlayer,
+    localPlayers,
+    loading: localLoading,
+    addPlayer: addLocalPlayer,
+    updatePlayer: updateLocalPlayer,
+    deletePlayer: deleteLocalPlayer,
+  };
 }

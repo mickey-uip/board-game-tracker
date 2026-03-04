@@ -63,13 +63,14 @@ export function RecordFormPage() {
     !isOverMaxPlayers &&
     selectedPlayerIds.every((id) => ranks[id] !== undefined);
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!canSubmit) return;
     const playerResults = selectedPlayerIds.map((id) => ({
       playerId: id,
       rank: ranks[id],
     }));
-    addRecord(gameId, date, playerResults);
+    const game = getGameById(gameId);
+    await addRecord(gameId, date, playerResults, game?.name ?? '');
     navigate('/records');
   };
 
