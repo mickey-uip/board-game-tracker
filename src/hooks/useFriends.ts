@@ -20,6 +20,7 @@ interface FriendDoc {
 
 export interface FriendPlayer extends Player {
   friendDocId: string; // for unfriending
+  avatarBase64: string | null;
 }
 
 /**
@@ -64,6 +65,7 @@ export function useFriends() {
             name: data.displayName ?? '???',
             createdAt: data.createdAt?.toDate?.()?.toISOString?.() ?? '',
             friendDocId: fd.id,
+            avatarBase64: data.avatarBase64 ?? null,
           });
         }
       }

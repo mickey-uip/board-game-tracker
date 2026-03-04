@@ -301,7 +301,10 @@ export function SettingsPage() {
                   <div key={friend.id} className={friendStyles.friendCard}>
                     <div className={friendStyles.friendInfo}>
                       <div className={friendStyles.friendAvatar}>
-                        {friend.name.charAt(0)}
+                        {friend.avatarBase64
+                          ? <img src={friend.avatarBase64} alt={friend.name} style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }} />
+                          : friend.name.charAt(0)
+                        }
                       </div>
                       <span className={friendStyles.friendName}>{friend.name}</span>
                     </div>
