@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PageHeader } from '../../components/layout/PageHeader';
 import { TabBar } from '../../components/ui/TabBar';
@@ -17,6 +17,8 @@ import styles from './SettingsPage.module.css';
 import friendStyles from '../Friends/FriendsPage.module.css';
 import type { Genre } from '../../types';
 
+const MAX_AVATAR_SIZE = 2 * 1024 * 1024; // 2MB
+
 const TABS = [
   { key: 'friends', label: 'フレンド' },
   { key: 'games', label: 'ゲーム' },
@@ -26,7 +28,7 @@ type TabKey = typeof TABS[number]['key'];
 
 export function SettingsPage() {
   const navigate = useNavigate();
-  const { profile, signOut } = useAuth();
+  const { profile, signOut, saveProfile } = useAuth();
   const { games, addGame, deleteGame } = useGames();
   const { getGameImage, setGameImage } = useGameImages();
   const { isFavorite, toggleFavorite } = useGameFavorites();
@@ -48,6 +50,20 @@ export function SettingsPage() {
   const [searchMessage, setSearchMessage] = useState<{ text: string; success: boolean } | null>(null);
   const [sending, setSending] = useState(false);
 
+  // コピー通知
+  const [copied, setCopied] = useState(false);
+
+  // アカウント情報メニュー
+  const [showAccountMenu, setShowAccountMenu] = useState(false);
+
+  // プロフィール編集モーダル
+  const [showEditProfile, setShowEditProfile] = useState(false);
+  const [editName, setEditName] = useState('');
+  const [editAvatar, setEditAvatar] = useState<string | null>(null);
+  const [editError, setEditError] = useState('');
+  const [editSaving, setEditSaving] = useState(false);
+  const editFileRef = useRef<HTMLInputElement>(null);
+
   const filteredGames = searchQuery.trim()
     ? games.filter((g) => g.name.toLowerCase().includes(searchQuery.toLowerCase()))
     : games;
@@ -61,6 +77,58 @@ export function SettingsPage() {
   const handleSignOut = async () => {
     await signOut();
     navigate('/login');
+  };
+
+  // フレンドコードをコピー
+  const handleCopyCode = async () => {
+    if (!profile?.friendCode) return;
+    try {
+      await navigator.clipboard.writeText(profile.friendCode);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      // fallback: do nothing
+    }
+  };
+
+  // プロフィール編集を開く
+  const openEditProfile = () => {
+    setEditName(profile?.displayName ?? '');
+    setEditAvatar(profile?.avatarBase64 ?? null);
+    setEditError('');
+    setShowAccountMenu(false);
+    setShowEditProfile(true);
+  };
+
+  // アバター画像選択
+  const handleEditFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (file.size > MAX_AVATAR_SIZE) {
+      setEditError('画像は2MB以下にしてください');
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = () => setEditAvatar(reader.result as string);
+    reader.readAsDataURL(file);
+  };
+
+  // プロフィール保存
+  const handleSaveProfile = async () => {
+    if (!editName.trim()) {
+      setEditError('名前を入力してください');
+      return;
+    }
+    setEditError('');
+    setEditSaving(true);
+    try {
+      await saveProfile({ displayName: editName.trim(), avatarBase64: editAvatar });
+      setShowEditProfile(false);
+    } catch {
+      setEditError('保存に失敗しました');
+    } finally {
+      setEditSaving(false);
+    }
   };
 
   // フレンド検索
@@ -101,7 +169,34 @@ export function SettingsPage() {
           <section className={styles.section}>
             {/* アカウント情報 */}
             <div className={styles.myPlayerSection}>
-              <p className={styles.sectionTitle}>アカウント情報</p>
+              <div className={styles.accountHeader}>
+                <p className={styles.sectionTitle}>アカウント情報</p>
+                <div className={styles.menuWrapper}>
+                  <button
+                    className={styles.menuBtn}
+                    onClick={() => setShowAccountMenu((v) => !v)}
+                    aria-label="メニューを開く"
+                  >
+                    ···
+                  </button>
+                  {showAccountMenu && (
+                    <div className={styles.overflowMenu}>
+                      <button
+                        className={styles.menuItem}
+                        onClick={openEditProfile}
+                      >
+                        編集
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </div>
+              {showAccountMenu && (
+                <div
+                  className={styles.backdrop}
+                  onClick={() => setShowAccountMenu(false)}
+                />
+              )}
               {profile && (
                 <>
                   <div className={styles.myPlayerRow}>
@@ -109,7 +204,20 @@ export function SettingsPage() {
                   </div>
                   <div className={styles.myPlayerRow}>
                     <span className={styles.myPlayerHint}>フレンドコード</span>
-                    <span className={styles.myPlayerName}>{profile.friendCode}</span>
+                    <div className={styles.friendCodeRow}>
+                      <span className={styles.myPlayerName}>{profile.friendCode}</span>
+                      <button
+                        className={styles.copyBtn}
+                        onClick={handleCopyCode}
+                        aria-label="フレンドコードをコピー"
+                      >
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+                          <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                        </svg>
+                      </button>
+                      {copied && <span className={styles.copiedToast}>コピー!</span>}
+                    </div>
                   </div>
                 </>
               )}
@@ -265,6 +373,49 @@ export function SettingsPage() {
 
       <Modal open={showGameForm} onClose={() => setShowGameForm(false)} title="ゲームを追加">
         <GameForm onSubmit={handleAddGame} onCancel={() => setShowGameForm(false)} />
+      </Modal>
+
+      {/* プロフィール編集モーダル */}
+      <Modal open={showEditProfile} onClose={() => setShowEditProfile(false)} title="プロフィール編集">
+        <div className={styles.editForm}>
+          <div className={styles.avatarEdit}>
+            <div className={styles.avatarPreview}>
+              {editAvatar
+                ? <img src={editAvatar} alt="avatar" />
+                : profile?.displayName?.charAt(0) ?? '🎮'
+              }
+            </div>
+            <button
+              className={styles.avatarUploadBtn}
+              type="button"
+              onClick={() => editFileRef.current?.click()}
+            >
+              画像を変更
+            </button>
+            <input
+              ref={editFileRef}
+              type="file"
+              accept="image/*"
+              onChange={handleEditFileChange}
+              style={{ display: 'none' }}
+            />
+          </div>
+
+          <Input
+            id="edit-name"
+            label="表示名"
+            value={editName}
+            onChange={(e) => setEditName(e.target.value)}
+            placeholder="名前を入力"
+            maxLength={20}
+          />
+
+          {editError && <p className={styles.editError}>{editError}</p>}
+
+          <Button fullWidth onClick={handleSaveProfile} disabled={editSaving}>
+            {editSaving ? '保存中...' : '保存'}
+          </Button>
+        </div>
       </Modal>
     </div>
   );
