@@ -9,10 +9,11 @@
 }
 
 .logo {
-  width: 260px;
-  max-width: 70vw;
+  display: block;
+  width: 220px;
+  max-width: 60vw;
   height: auto;
-  margin-bottom: var(--space-lg);
+  margin: 0 auto var(--space-lg);
 }
 
 .card {

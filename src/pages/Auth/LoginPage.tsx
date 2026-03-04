@@ -62,9 +62,9 @@ export function LoginPage() {
 
   return (
     <div className={styles.container}>
-      <img src="/logo.png" alt="ボドレコ" className={styles.logo} />
-
       <div className={styles.card}>
+        <img src="/logo.png" alt="ボドレコ" className={styles.logo} />
+
         <div className={styles.tabs}>
           <button
             className={styles.tab}
