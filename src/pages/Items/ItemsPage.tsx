@@ -45,7 +45,7 @@ export function ItemsPage() {
         </div>
       </div>
       <div className={styles.grid}>
-        {TOOLS.map(({ key, label, icon, description }) => (
+        {TOOLS.map(({ key, label, icon, description: _description }) => (
           <button
             key={key}
             className={styles.card}

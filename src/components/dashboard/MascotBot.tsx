@@ -35,7 +35,6 @@ const MASCOT_IMAGES = [
 const BUBBLE_W = 280;
 const BUBBLE_H = 44;
 const R = 12;
-const TAIL_X = BUBBLE_W;        // しっぽの根元X（矩形の右端）
 const TAIL_TIP_X = BUBBLE_W + 12; // しっぽの先端X
 const TAIL_Y_TOP = BUBBLE_H - 28; // しっぽ上辺Y
 const TAIL_Y_BOT = BUBBLE_H - 12; // しっぽ下辺Y

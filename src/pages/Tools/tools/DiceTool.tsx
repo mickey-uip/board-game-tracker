@@ -42,7 +42,7 @@ interface SingleDiceProps {
   rolling: boolean;
 }
 
-function SingleDice({ cubeRef, onClick, rolling }: SingleDiceProps) {
+function SingleDice({ cubeRef, onClick, rolling: _rolling }: SingleDiceProps) {
   return (
     <div
       className={styles.scene}
