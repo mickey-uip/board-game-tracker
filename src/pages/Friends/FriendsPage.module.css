@@ -1,0 +1,201 @@
+.container {
+  padding: var(--space-md);
+  padding-bottom: calc(var(--bottom-nav-height) + var(--space-xl));
+}
+
+/* フレンドコード検索 */
+.searchSection {
+  margin-bottom: var(--space-lg);
+}
+
+.searchRow {
+  display: flex;
+  gap: var(--space-sm);
+}
+
+.searchInput {
+  flex: 1;
+  padding: 10px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-size: var(--font-size-md);
+  outline: none;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.searchInput:focus {
+  border-color: var(--color-primary);
+}
+
+.searchInput::placeholder {
+  text-transform: none;
+  letter-spacing: normal;
+}
+
+.searchBtn {
+  padding: 10px 16px;
+  border: none;
+  border-radius: var(--radius-md);
+  background: var(--gradient-primary);
+  color: var(--color-primary-fg);
+  font-weight: 700;
+  font-size: var(--font-size-sm);
+  white-space: nowrap;
+}
+
+.searchBtn:disabled {
+  opacity: 0.5;
+}
+
+.searchMessage {
+  margin-top: var(--space-sm);
+  font-size: var(--font-size-sm);
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius-md);
+}
+
+.searchSuccess {
+  color: #34d399;
+  background: rgba(52, 211, 153, 0.1);
+}
+
+.searchError {
+  color: var(--color-danger);
+  background: rgba(224, 80, 80, 0.1);
+}
+
+/* セクション */
+.sectionTitle {
+  font-size: var(--font-size-md);
+  font-weight: 700;
+  color: var(--color-text);
+  margin-bottom: var(--space-sm);
+}
+
+.section {
+  margin-bottom: var(--space-lg);
+}
+
+/* リクエストカード */
+.requestCard {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-md);
+  background: var(--color-card);
+  border: 1px solid var(--color-card-border);
+  border-radius: var(--radius-md);
+  margin-bottom: var(--space-sm);
+}
+
+.requestName {
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.requestActions {
+  display: flex;
+  gap: var(--space-xs);
+}
+
+.acceptBtn {
+  padding: 6px 14px;
+  border: none;
+  border-radius: var(--radius-md);
+  background: var(--gradient-primary);
+  color: var(--color-primary-fg);
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+}
+
+.rejectBtn {
+  padding: 6px 14px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+}
+
+/* フレンドリスト */
+.friendCard {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-md);
+  background: var(--color-card);
+  border: 1px solid var(--color-card-border);
+  border-radius: var(--radius-md);
+  margin-bottom: var(--space-sm);
+}
+
+.friendInfo {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.friendAvatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--color-surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--color-text-muted);
+}
+
+.friendName {
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.removeBtn {
+  padding: 6px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-xs);
+}
+
+.pendingLabel {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+}
+
+.myCode {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-md);
+  background: var(--color-card);
+  border: 1px solid var(--color-card-border);
+  border-radius: var(--radius-md);
+  margin-bottom: var(--space-lg);
+}
+
+.myCodeLabel {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+}
+
+.myCodeValue {
+  font-size: var(--font-size-lg);
+  font-weight: 700;
+  color: var(--color-primary);
+  letter-spacing: 2px;
+}
+
+.emptyText {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  text-align: center;
+  padding: var(--space-lg);
+}

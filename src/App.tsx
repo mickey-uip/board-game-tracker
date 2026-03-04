@@ -11,6 +11,7 @@ import { SettingsPage } from './pages/Settings/SettingsPage';
 import { ItemsPage } from './pages/Items/ItemsPage';
 import { ItemDetailPage } from './pages/Items/ItemDetailPage';
 import { PrivacyPolicyPage } from './pages/PrivacyPolicy/PrivacyPolicyPage';
+import { FriendsPage } from './pages/Friends/FriendsPage';
 
 const router = createBrowserRouter([
   /* ── Public routes ── */
@@ -29,6 +30,7 @@ const router = createBrowserRouter([
       { index: true, element: <DashboardPage /> },
       { path: 'records/new', element: <Navigate to="/records" replace /> },
       { path: 'records', element: <RecordListPage /> },
+      { path: 'friends', element: <FriendsPage /> },
       { path: 'players/:id', element: <PlayerDetailPage /> },
       { path: 'tools', element: <ItemsPage /> },
       { path: 'tools/:toolKey', element: <ItemDetailPage /> },
