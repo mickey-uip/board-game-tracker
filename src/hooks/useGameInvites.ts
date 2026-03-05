@@ -25,7 +25,7 @@ export function useGameInvites() {
   const [incomingInvites, setIncomingInvites] = useState<GameInvite[]>([]);
   const [outgoingInvites, setOutgoingInvites] = useState<GameInvite[]>([]);
 
-  // ── 受信: 自分宛の pending 招待をリッスン ──
+  // ── 受信: 自分宛の pending / removed / cancelled 招待をリッスン ──
   useEffect(() => {
     if (!user) {
       setIncomingInvites([]);
@@ -34,7 +34,7 @@ export function useGameInvites() {
     const q = query(
       collection(db, 'gameInvites'),
       where('toUid', '==', user.uid),
-      where('status', '==', 'pending'),
+      where('status', 'in', ['pending', 'removed', 'cancelled']),
     );
     const unsub = onSnapshot(q, (snap) => {
       setIncomingInvites(
@@ -147,13 +147,20 @@ export function useGameInvites() {
     [],
   );
 
-  /** 特定プレイヤーへの招待を削除（✕で除外時に呼ぶ） */
+  /** 特定プレイヤーへの招待を除外通知に変更（✕で除外時に呼ぶ） */
   const removeInviteByUid = useCallback(
     async (targetUid: string) => {
       const targets = outgoingInvites.filter((inv) => inv.toUid === targetUid);
       for (const inv of targets) {
         try {
-          await deleteDoc(doc(db, 'gameInvites', inv.id));
+          if (inv.status === 'accepted') {
+            // 承諾済み → 除外通知を送る
+            await updateDoc(doc(db, 'gameInvites', inv.id), {
+              status: 'removed',
+            });
+          } else {
+            await deleteDoc(doc(db, 'gameInvites', inv.id));
+          }
         } catch {
           /* ignore */
         }
@@ -162,18 +169,37 @@ export function useGameInvites() {
     [outgoingInvites],
   );
 
-  /** 送信済み招待を全削除（フォーム離脱時に呼ぶ） */
+  /** 送信済み招待をクリーンアップ（フォーム離脱時に呼ぶ）
+   *  承諾済み → cancelled 通知、それ以外 → 削除 */
   const cleanupInvites = useCallback(
     async () => {
       for (const inv of outgoingInvites) {
         try {
-          await deleteDoc(doc(db, 'gameInvites', inv.id));
+          if (inv.status === 'accepted') {
+            await updateDoc(doc(db, 'gameInvites', inv.id), {
+              status: 'cancelled',
+            });
+          } else {
+            await deleteDoc(doc(db, 'gameInvites', inv.id));
+          }
         } catch {
           /* ignore */
         }
       }
     },
     [outgoingInvites],
+  );
+
+  /** 通知を確認して削除（受信側がOKを押した後に呼ぶ） */
+  const dismissNotification = useCallback(
+    async (inviteId: string) => {
+      try {
+        await deleteDoc(doc(db, 'gameInvites', inviteId));
+      } catch {
+        /* ignore */
+      }
+    },
+    [],
   );
 
   return {
@@ -184,5 +210,6 @@ export function useGameInvites() {
     declineInvite,
     removeInviteByUid,
     cleanupInvites,
+    dismissNotification,
   };
 }

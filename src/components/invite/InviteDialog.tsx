@@ -5,17 +5,24 @@ import { useGameInvites } from '../../hooks/useGameInvites';
 import styles from './InviteDialog.module.css';
 
 /**
- * グローバル招待ダイアログ（受信側）
- * AppShell に配置し、どの画面でも招待を受け取れるようにする
- * 10秒のカウントダウン後に自動辞退
+ * グローバル招待 & 通知ダイアログ（受信側）
+ * AppShell に配置し、どの画面でも招待・通知を受け取れるようにする
+ * - pending: 10秒カウントダウン付き招待
+ * - removed: 対戦から除外された通知
+ * - cancelled: 対戦記録が中止された通知
  */
 export function InviteDialog() {
-  const { incomingInvites, acceptInvite, declineInvite } = useGameInvites();
+  const {
+    incomingInvites,
+    acceptInvite,
+    declineInvite,
+    dismissNotification,
+  } = useGameInvites();
   const [countdown, setCountdown] = useState(10);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const currentInviteIdRef = useRef<string | null>(null);
 
-  // 最初の pending 招待を表示
+  // 最初の招待/通知を表示
   const currentInvite = incomingInvites[0] ?? null;
 
   const clearTimer = useCallback(() => {
@@ -25,7 +32,7 @@ export function InviteDialog() {
     }
   }, []);
 
-  // 新しい招待が来たらタイマーを開始
+  // pending 招待の場合のみタイマーを開始
   useEffect(() => {
     if (!currentInvite) {
       clearTimer();
@@ -36,8 +43,15 @@ export function InviteDialog() {
     // 同じ招待なら何もしない
     if (currentInviteIdRef.current === currentInvite.id) return;
 
-    // 新しい招待 → タイマーリセット
     currentInviteIdRef.current = currentInvite.id;
+
+    // pending 以外はタイマー不要
+    if (currentInvite.status !== 'pending') {
+      clearTimer();
+      return;
+    }
+
+    // pending → タイマーリセット
     setCountdown(10);
     clearTimer();
 
@@ -45,7 +59,6 @@ export function InviteDialog() {
     timerRef.current = setInterval(() => {
       setCountdown((prev) => {
         if (prev <= 1) {
-          // タイムアウト → 自動辞退
           declineInvite(inviteId);
           clearTimer();
           return 0;
@@ -69,6 +82,50 @@ export function InviteDialog() {
     declineInvite(currentInvite.id);
   };
 
+  const handleDismiss = () => {
+    dismissNotification(currentInvite.id);
+  };
+
+  // 通知タイプ別の表示
+  if (currentInvite.status === 'removed') {
+    return (
+      <Modal open={true} onClose={handleDismiss} title="対戦からの除外">
+        <div className={styles.content}>
+          <p className={styles.message}>
+            <strong>{currentInvite.fromName}</strong> さんの対戦から
+            <br />
+            除外されました。
+          </p>
+          <div className={styles.actions}>
+            <Button variant="primary" fullWidth onClick={handleDismiss}>
+              OK
+            </Button>
+          </div>
+        </div>
+      </Modal>
+    );
+  }
+
+  if (currentInvite.status === 'cancelled') {
+    return (
+      <Modal open={true} onClose={handleDismiss} title="対戦記録の中止">
+        <div className={styles.content}>
+          <p className={styles.message}>
+            <strong>{currentInvite.fromName}</strong> さんの
+            <br />
+            対戦記録が中止されました。
+          </p>
+          <div className={styles.actions}>
+            <Button variant="primary" fullWidth onClick={handleDismiss}>
+              OK
+            </Button>
+          </div>
+        </div>
+      </Modal>
+    );
+  }
+
+  // pending（通常の招待）
   return (
     <Modal open={true} onClose={handleDecline} title="対戦の招待">
       <div className={styles.content}>

@@ -4,6 +4,6 @@ export interface GameInvite {
   fromName: string;
   toUid: string;
   toName: string;
-  status: 'pending' | 'accepted' | 'declined';
+  status: 'pending' | 'accepted' | 'declined' | 'removed' | 'cancelled';
   createdAt: string;
 }
