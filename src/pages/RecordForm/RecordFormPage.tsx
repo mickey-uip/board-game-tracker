@@ -22,7 +22,7 @@ export function RecordFormPage() {
   const { friends } = usePlayers();
   const { games, getGameById } = useGames();
   const { addRecord } = useRecords();
-  const { outgoingInvites, sendInvite, cleanupInvites } = useGameInvites();
+  const { outgoingInvites, sendInvite, removeInviteByUid, cleanupInvites } = useGameInvites();
 
   const [date, setDate] = useState(todayString());
   const [gameId, setGameId] = useState('');
@@ -102,7 +102,7 @@ export function RecordFormPage() {
       });
   }, [selectedPlayerIds, user, allParticipants]);
 
-  // 承諾済みプレイヤーを除外
+  // 承諾済みプレイヤーを除外（招待も削除して再招待可能にする）
   const removePlayer = useCallback((playerId: string) => {
     if (playerId === user?.uid) return;
     setSelectedPlayerIds((prev) => prev.filter((id) => id !== playerId));
@@ -111,7 +111,8 @@ export function RecordFormPage() {
       delete next[playerId];
       return next;
     });
-  }, [user]);
+    removeInviteByUid(playerId);
+  }, [user, removeInviteByUid]);
 
   const setRank = useCallback((playerId: string, rank: number) => {
     setRanks((prev) => ({ ...prev, [playerId]: rank }));

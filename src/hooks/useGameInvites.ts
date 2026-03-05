@@ -147,6 +147,21 @@ export function useGameInvites() {
     [],
   );
 
+  /** 特定プレイヤーへの招待を削除（✕で除外時に呼ぶ） */
+  const removeInviteByUid = useCallback(
+    async (targetUid: string) => {
+      const targets = outgoingInvites.filter((inv) => inv.toUid === targetUid);
+      for (const inv of targets) {
+        try {
+          await deleteDoc(doc(db, 'gameInvites', inv.id));
+        } catch {
+          /* ignore */
+        }
+      }
+    },
+    [outgoingInvites],
+  );
+
   /** 送信済み招待を全削除（フォーム離脱時に呼ぶ） */
   const cleanupInvites = useCallback(
     async () => {
@@ -167,6 +182,7 @@ export function useGameInvites() {
     sendInvite,
     acceptInvite,
     declineInvite,
+    removeInviteByUid,
     cleanupInvites,
   };
 }
