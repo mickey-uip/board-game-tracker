@@ -201,10 +201,7 @@ export function RecordFormContent({ initialDate, onSuccess }: RecordFormContentP
         )}
 
         {/* IDでプレイヤーを招待 */}
-        <InviteByCode
-          outgoingInvites={outgoingInvites}
-          onSendInvite={sendInvite}
-        />
+        <InviteByCode onSendInvite={sendInvite} />
 
         {isOverMaxPlayers && (
           <p className={styles.playerAlert}>
