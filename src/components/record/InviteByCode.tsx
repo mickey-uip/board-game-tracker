@@ -66,17 +66,19 @@ export function InviteByCode({ outgoingInvites, onSendInvite }: InviteByCodeProp
         </p>
       )}
 
-      {/* 送信済み招待のステータス一覧 */}
-      {outgoingInvites.length > 0 && (
+      {/* 送信済み招待のステータス一覧（拒否は非表示） */}
+      {outgoingInvites.filter((inv) => inv.status !== 'declined').length > 0 && (
         <div className={styles.inviteList}>
-          {outgoingInvites.map((inv) => (
-            <div key={inv.id} className={styles.inviteItem}>
-              <span className={styles.inviteName}>{inv.toName}</span>
-              <span className={`${styles.inviteStatus} ${statusClass(inv.status)}`}>
-                {statusLabel(inv.status)}
-              </span>
-            </div>
-          ))}
+          {outgoingInvites
+            .filter((inv) => inv.status !== 'declined')
+            .map((inv) => (
+              <div key={inv.id} className={styles.inviteItem}>
+                <span className={styles.inviteName}>{inv.toName}</span>
+                <span className={`${styles.inviteStatus} ${statusClass(inv.status)}`}>
+                  {statusLabel(inv.status)}
+                </span>
+              </div>
+            ))}
         </div>
       )}
     </div>

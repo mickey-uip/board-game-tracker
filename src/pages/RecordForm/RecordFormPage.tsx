@@ -143,10 +143,12 @@ export function RecordFormPage() {
     await sendInvite(friend.friendCode);
   };
 
-  // 招待済みを除外したフレンド
+  // 招待中・承諾済みを除外したフレンド（拒否されたフレンドは再招待可能）
   const availableFriends = useMemo(() => {
     return friends.filter(
-      (f) => !outgoingInvites.find((inv) => inv.toUid === f.id),
+      (f) => !outgoingInvites.find(
+        (inv) => inv.toUid === f.id && inv.status !== 'declined',
+      ),
     );
   }, [friends, outgoingInvites]);
 
