@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { Modal } from '../ui/Modal';
 import { Button } from '../ui/Button';
 import { useGameInvites } from '../../hooks/useGameInvites';
+import { useConfetti } from '../../hooks/useConfetti';
 import styles from './InviteDialog.module.css';
 
 /**
@@ -22,6 +23,8 @@ export function InviteDialog() {
   const [countdown, setCountdown] = useState(10);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const currentInviteIdRef = useRef<string | null>(null);
+  const { fire: fireConfetti, stop: stopConfetti } = useConfetti();
+  const confettiFiredRef = useRef<string | null>(null);
 
   // 最初の招待/通知を表示
   const currentInvite = incomingInvites[0] ?? null;
@@ -84,8 +87,22 @@ export function InviteDialog() {
   };
 
   const handleDismiss = () => {
+    stopConfetti();
+    confettiFiredRef.current = null;
     dismissNotification(currentInvite.id);
   };
+
+  // 1位の場合、紙吹雪を発射
+  useEffect(() => {
+    if (
+      currentInvite?.status === 'completed' &&
+      currentInvite.rank === 1 &&
+      confettiFiredRef.current !== currentInvite.id
+    ) {
+      confettiFiredRef.current = currentInvite.id;
+      fireConfetti();
+    }
+  }, [currentInvite, fireConfetti]);
 
   // ── 対戦記録完了（祝福ポップアップ：画面中央にお知らせ風） ──
   if (currentInvite.status === 'completed') {
