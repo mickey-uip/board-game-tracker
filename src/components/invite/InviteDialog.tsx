@@ -87,32 +87,42 @@ export function InviteDialog() {
     dismissNotification(currentInvite.id);
   };
 
-  // ── 対戦記録完了（祝福ポップアップ） ──
+  // ── 対戦記録完了（祝福ポップアップ：画面中央にお知らせ風） ──
   if (currentInvite.status === 'completed') {
     return (
-      <Modal open={true} onClose={handleDismiss} title="対戦結果">
-        <div className={styles.content}>
-          {currentInvite.gameImage && (
-            <img
-              src={currentInvite.gameImage}
-              alt={currentInvite.gameName ?? ''}
-              className={styles.gameImage}
-            />
-          )}
-          <p className={styles.gameName}>{currentInvite.gameName}</p>
-          <div className={styles.rankBadge}>
-            <span className={styles.rankNumber}>{currentInvite.rank}</span>
-            <span className={styles.rankLabel}>位</span>
+      <div className={styles.notificationOverlay} onClick={handleDismiss}>
+        <div
+          className={styles.notificationCard}
+          onClick={(e) => e.stopPropagation()}
+        >
+          <div className={styles.content}>
+            {currentInvite.gameImage && (
+              <img
+                src={currentInvite.gameImage}
+                alt={currentInvite.gameName ?? ''}
+                className={styles.gameImage}
+              />
+            )}
+            <p className={styles.gameName}>{currentInvite.gameName}</p>
+            <div className={styles.rankBadge}>
+              <span className={styles.rankNumber}>{currentInvite.rank}</span>
+              <span className={styles.rankLabel}>位</span>
+            </div>
+            <p className={styles.congratsMessage}>
+              対戦を記録しました！
+              <br />
+              {currentInvite.rank === 1
+                ? '1位おめでとう！'
+                : `${currentInvite.rank}位 おつかれさま！`}
+            </p>
+            <div className={styles.actions}>
+              <Button variant="secondary" fullWidth onClick={handleDismiss}>
+                閉じる
+              </Button>
+            </div>
           </div>
-          <p className={styles.congratsMessage}>
-            対戦を記録しました！
-            <br />
-            {currentInvite.rank === 1
-              ? '1位おめでとう！'
-              : `${currentInvite.rank}位 おつかれさま！`}
-          </p>
         </div>
-      </Modal>
+      </div>
     );
   }
 
