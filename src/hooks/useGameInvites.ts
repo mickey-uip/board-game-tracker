@@ -202,18 +202,25 @@ export function useGameInvites() {
     [],
   );
 
-  /** 残留招待を強制削除（マウント時の前回セッション残り掃除用） */
-  const purgeAllInvites = useCallback(
+  /** 残留招待を強制削除（マウント時の前回セッション残り掃除用）
+   *  Firestoreに直接クエリし、リスナー状態に依存しない */
+  const purgeStaleInvites = useCallback(
     async () => {
-      for (const inv of outgoingInvites) {
+      if (!user) return;
+      const q = query(
+        collection(db, 'gameInvites'),
+        where('fromUid', '==', user.uid),
+      );
+      const snap = await getDocs(q);
+      for (const d of snap.docs) {
         try {
-          await deleteDoc(doc(db, 'gameInvites', inv.id));
+          await deleteDoc(d.ref);
         } catch {
           /* ignore */
         }
       }
     },
-    [outgoingInvites],
+    [user],
   );
 
   return {
@@ -225,6 +232,6 @@ export function useGameInvites() {
     removeInviteByUid,
     cleanupInvites,
     dismissNotification,
-    purgeAllInvites,
+    purgeStaleInvites,
   };
 }

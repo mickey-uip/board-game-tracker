@@ -23,7 +23,7 @@ export function RecordFormContent({ initialDate, onSuccess }: RecordFormContentP
   const { friends } = usePlayers();
   const { games, getGameById } = useGames();
   const { addRecord } = useRecords();
-  const { outgoingInvites, sendInvite, removeInviteByUid, cleanupInvites, purgeAllInvites } = useGameInvites();
+  const { outgoingInvites, sendInvite, removeInviteByUid, cleanupInvites, purgeStaleInvites } = useGameInvites();
 
   const [gameId, setGameId] = useState('');
   // 自分は常に選択済み
@@ -47,15 +47,11 @@ export function RecordFormContent({ initialDate, onSuccess }: RecordFormContentP
     return singleMatch ? parseInt(singleMatch[1], 10) : null;
   }, [gameId]);
 
-  // マウント時に前回セッションの残留招待をクリーンアップ
-  const mountCleanedRef = useRef(false);
+  // マウント時に前回セッションの残留招待をクリーンアップ（Firestore直接クエリ）
   useEffect(() => {
-    if (mountCleanedRef.current) return;
-    if (outgoingInvites.length === 0) return; // データ到着を待つ
-    mountCleanedRef.current = true;
-    purgeAllInvites();
+    purgeStaleInvites();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [outgoingInvites]);
+  }, []);
 
   // 手動除外したプレイヤーを追跡（useEffectが再追加しないように）
   const removedPlayerIdsRef = useRef<Set<string>>(new Set());
