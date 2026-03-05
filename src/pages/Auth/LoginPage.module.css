@@ -10,12 +10,13 @@
   overflow: hidden;
 }
 
-/* 背景画像: 暗く + ブラー */
-.container::before {
-  content: '';
+/* 背景動画: 暗く + ブラー */
+.bgVideo {
   position: absolute;
   inset: -20px; /* ブラーの端漏れ防止 */
-  background: url('/login-bg.jpg') center / cover no-repeat;
+  width: calc(100% + 40px);
+  height: calc(100% + 40px);
+  object-fit: cover;
   filter: blur(6px) brightness(0.35);
   z-index: 0;
 }

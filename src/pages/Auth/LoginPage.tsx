@@ -62,6 +62,14 @@ export function LoginPage() {
 
   return (
     <div className={styles.container}>
+      <video
+        className={styles.bgVideo}
+        src="/login/login-bg.mp4"
+        autoPlay
+        loop
+        muted
+        playsInline
+      />
       <div className={styles.card}>
         <img src="/logo.png" alt="ボドレコ" className={styles.logo} />
 
