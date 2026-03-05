@@ -22,14 +22,13 @@ export function InviteByCode({ onSendInvite }: InviteByCodeProps) {
 
   return (
     <div className={styles.container}>
-      <p className={styles.label}>IDでプレイヤーを招待</p>
       <div className={styles.inputRow}>
         <input
           className={styles.codeInput}
           type="text"
           value={friendCode}
           onChange={(e) => setFriendCode(e.target.value)}
-          placeholder="BGT-XXXXXX"
+          placeholder="IDでプレイヤーを招待"
           maxLength={10}
         />
         <button
