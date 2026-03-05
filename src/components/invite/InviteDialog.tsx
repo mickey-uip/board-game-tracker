@@ -74,6 +74,18 @@ export function InviteDialog() {
     return () => clearTimer();
   }, [currentInvite, declineInvite, clearTimer]);
 
+  // 1位の場合、紙吹雪を発射
+  useEffect(() => {
+    if (
+      currentInvite?.status === 'completed' &&
+      currentInvite.rank === 1 &&
+      confettiFiredRef.current !== currentInvite.id
+    ) {
+      confettiFiredRef.current = currentInvite.id;
+      fireConfetti();
+    }
+  }, [currentInvite, fireConfetti]);
+
   if (!currentInvite) return null;
 
   const handleAccept = () => {
@@ -91,18 +103,6 @@ export function InviteDialog() {
     confettiFiredRef.current = null;
     dismissNotification(currentInvite.id);
   };
-
-  // 1位の場合、紙吹雪を発射
-  useEffect(() => {
-    if (
-      currentInvite?.status === 'completed' &&
-      currentInvite.rank === 1 &&
-      confettiFiredRef.current !== currentInvite.id
-    ) {
-      confettiFiredRef.current = currentInvite.id;
-      fireConfetti();
-    }
-  }, [currentInvite, fireConfetti]);
 
   // ── 対戦記録完了（祝福ポップアップ：画面中央にお知らせ風） ──
   if (currentInvite.status === 'completed') {
