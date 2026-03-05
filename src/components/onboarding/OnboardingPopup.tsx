@@ -110,12 +110,15 @@ export function OnboardingPopup({ forceOpen, onClose }: OnboardingPopupProps = {
             </p>
           </div>
 
-          {/* ドットインジケーター */}
+          {/* ドットインジケーター（タップで戻れる） */}
           <div className={styles.dots}>
             {SLIDES.map((_, i) => (
-              <div
+              <button
                 key={i}
+                type="button"
                 className={`${styles.dot} ${i === currentSlide ? styles.dotActive : ''}`}
+                onClick={() => setCurrentSlide(i)}
+                aria-label={`スライド ${i + 1}`}
               />
             ))}
           </div>

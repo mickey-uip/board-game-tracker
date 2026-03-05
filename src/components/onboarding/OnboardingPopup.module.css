@@ -82,6 +82,9 @@
   width: 8px;
   height: 8px;
   border-radius: 50%;
+  border: none;
+  padding: 0;
+  cursor: pointer;
   background: var(--color-border);
   transition: background 0.2s, transform 0.2s;
 }
