@@ -226,33 +226,6 @@ export function SettingsPage() {
               )}
             </div>
 
-            {/* フレンドを追加 */}
-            <div className={friendStyles.searchSection}>
-              <p className={friendStyles.sectionTitle}>フレンドを追加</p>
-              <div className={friendStyles.searchRow}>
-                <input
-                  className={friendStyles.searchInput}
-                  type="text"
-                  value={friendCode}
-                  onChange={(e) => setFriendCode(e.target.value)}
-                  placeholder="フレンドコードを入力"
-                  maxLength={10}
-                />
-                <button
-                  className={friendStyles.searchBtn}
-                  onClick={handleFriendSearch}
-                  disabled={sending || !friendCode.trim()}
-                >
-                  {sending ? '送信中...' : '検索'}
-                </button>
-              </div>
-              {searchMessage && (
-                <p className={`${friendStyles.searchMessage} ${searchMessage.success ? friendStyles.searchSuccess : friendStyles.searchError}`}>
-                  {searchMessage.text}
-                </p>
-              )}
-            </div>
-
             {/* 受信リクエスト */}
             {incomingRequests.length > 0 && (
               <div className={friendStyles.section}>
@@ -295,6 +268,31 @@ export function SettingsPage() {
             {/* フレンドリスト */}
             <div className={friendStyles.section}>
               <p className={friendStyles.sectionTitle}>フレンド一覧（{friends.length}人）</p>
+
+              {/* フレンドコードで追加 */}
+              <div className={friendStyles.searchRow}>
+                <input
+                  className={friendStyles.searchInput}
+                  type="text"
+                  value={friendCode}
+                  onChange={(e) => setFriendCode(e.target.value)}
+                  placeholder="フレンドコードを入力して追加"
+                  maxLength={10}
+                />
+                <button
+                  className={friendStyles.searchBtn}
+                  onClick={handleFriendSearch}
+                  disabled={sending || !friendCode.trim()}
+                >
+                  {sending ? '送信中...' : '検索'}
+                </button>
+              </div>
+              {searchMessage && (
+                <p className={`${friendStyles.searchMessage} ${searchMessage.success ? friendStyles.searchSuccess : friendStyles.searchError}`}>
+                  {searchMessage.text}
+                </p>
+              )}
+
               {friends.length === 0 ? (
                 <p className={friendStyles.emptyText}>
                   フレンドコードを交換してフレンドを追加しよう
