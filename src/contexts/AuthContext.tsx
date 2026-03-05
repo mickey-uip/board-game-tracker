@@ -24,6 +24,7 @@ export interface UserProfile {
   avatarBase64: string | null;
   friendCode: string;
   createdAt: unknown; // Firestore Timestamp
+  onboardingCompleted?: boolean;
 }
 
 /* ---------- Context value ---------- */

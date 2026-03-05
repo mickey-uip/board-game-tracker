@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
 import { BottomNav } from './BottomNav';
 import { InviteDialog } from '../invite/InviteDialog';
+import { OnboardingPopup } from '../onboarding/OnboardingPopup';
 import { RecordsProvider } from '../../contexts/RecordsContext';
 import styles from './AppShell.module.css';
 
@@ -40,6 +41,7 @@ export function AppShell() {
         </main>
         <BottomNav />
         <InviteDialog />
+        <OnboardingPopup />
       </div>
     </RecordsProvider>
   );
