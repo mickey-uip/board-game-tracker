@@ -179,7 +179,8 @@ export function useGameInvites() {
             await updateDoc(doc(db, 'gameInvites', inv.id), {
               status: 'cancelled',
             });
-          } else {
+          } else if (inv.status !== 'removed' && inv.status !== 'cancelled') {
+            // removed/cancelled は通知として残す（受信者が dismiss するまで削除しない）
             await deleteDoc(doc(db, 'gameInvites', inv.id));
           }
         } catch {
@@ -214,6 +215,9 @@ export function useGameInvites() {
       const snap = await getDocs(q);
       for (const d of snap.docs) {
         try {
+          const status = d.data().status;
+          // removed/cancelled は通知として残す（受信者が dismiss するまで削除しない）
+          if (status === 'removed' || status === 'cancelled') continue;
           await deleteDoc(d.ref);
         } catch {
           /* ignore */
