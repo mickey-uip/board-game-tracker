@@ -192,13 +192,15 @@ export function useGameInvites() {
   );
 
   /** 対戦記録の完了通知を送信（記録する時に呼ぶ）
-   *  承諾済み招待を completed に更新し、ゲーム情報と順位を付与 */
+   *  承諾済み招待を completed に更新し、ゲーム情報と順位を付与
+   *  リーダー自身にも completed 通知を作成 */
   const completeInvites = useCallback(
     async (
       gameName: string,
       gameImage: string,
       playerResults: { playerId: string; rank: number }[],
     ) => {
+      // 招待プレイヤーの完了通知
       for (const inv of outgoingInvites) {
         if (inv.status !== 'accepted') continue;
         const result = playerResults.find((pr) => pr.playerId === inv.toUid);
@@ -214,8 +216,30 @@ export function useGameInvites() {
           /* ignore */
         }
       }
+
+      // リーダー自身の完了通知を作成
+      if (user && profile) {
+        const leaderResult = playerResults.find((pr) => pr.playerId === user.uid);
+        if (leaderResult) {
+          try {
+            await addDoc(collection(db, 'gameInvites'), {
+              fromUid: user.uid,
+              fromName: profile.displayName,
+              toUid: user.uid,
+              toName: profile.displayName,
+              status: 'completed',
+              gameName,
+              gameImage,
+              rank: leaderResult.rank,
+              createdAt: serverTimestamp(),
+            });
+          } catch {
+            /* ignore */
+          }
+        }
+      }
     },
-    [outgoingInvites],
+    [outgoingInvites, user, profile],
   );
 
   /** 通知を確認して削除（受信側がOKを押した後に呼ぶ） */
