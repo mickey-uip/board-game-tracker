@@ -22,12 +22,6 @@
   pointer-events: none;
 }
 
-/* コンテンツをz-index: 1で前面に */
-.container > * {
-  position: relative;
-  z-index: 1;
-}
-
 .logo {
   display: block;
   width: 220px;
@@ -37,6 +31,8 @@
 }
 
 .card {
+  position: relative;
+  z-index: 1;
   width: 100%;
   max-width: 380px;
   background: #fff0d0;
