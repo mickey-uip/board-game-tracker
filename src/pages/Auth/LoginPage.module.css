@@ -121,6 +121,28 @@
   cursor: not-allowed;
 }
 
+/* ── モード切替テキスト ── */
+.switchMode {
+  text-align: center;
+  margin: var(--space-md) 0 0;
+}
+
+.switchModeBtn {
+  background: none;
+  border: none;
+  color: #7a6230;
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  padding: var(--space-xs) var(--space-sm);
+}
+
+.switchModeBtn:active {
+  opacity: 0.6;
+}
+
 .divider {
   display: flex;
   align-items: center;

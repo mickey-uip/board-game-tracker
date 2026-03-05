@@ -65,23 +65,6 @@ export function LoginPage() {
       <div className={styles.card}>
         <img src="/logo.png" alt="ボドレコ" className={styles.logo} />
 
-        <div className={styles.tabs}>
-          <button
-            className={styles.tab}
-            data-active={mode === 'login'}
-            onClick={() => { setMode('login'); setError(''); }}
-          >
-            ログイン
-          </button>
-          <button
-            className={styles.tab}
-            data-active={mode === 'signup'}
-            onClick={() => { setMode('signup'); setError(''); }}
-          >
-            新規登録
-          </button>
-        </div>
-
         <form className={styles.form} onSubmit={handleSubmit}>
           <div className={styles.inputGroup}>
             <label className={styles.label}>メールアドレス</label>
@@ -115,6 +98,16 @@ export function LoginPage() {
             {submitting ? '処理中...' : mode === 'login' ? 'ログイン' : 'アカウント作成'}
           </button>
         </form>
+
+        <p className={styles.switchMode}>
+          <button
+            className={styles.switchModeBtn}
+            type="button"
+            onClick={() => { setMode(mode === 'login' ? 'signup' : 'login'); setError(''); }}
+          >
+            {mode === 'login' ? '新規登録はこちら' : 'ログインはこちら'}
+          </button>
+        </p>
 
         <div className={styles.divider}>または</div>
 
