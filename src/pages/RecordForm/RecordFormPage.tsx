@@ -47,6 +47,23 @@ export function RecordFormPage() {
     return singleMatch ? parseInt(singleMatch[1], 10) : null;
   }, [gameId]);
 
+  // マウント時に前回セッションの残留招待をクリーンアップ
+  const mountCleanedRef = useRef(false);
+  useEffect(() => {
+    if (mountCleanedRef.current) return;
+    mountCleanedRef.current = true;
+    for (const inv of outgoingInvites) {
+      if (inv.status !== 'pending') {
+        cleanupInvites();
+        break;
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [outgoingInvites]);
+
+  // 手動除外したプレイヤーを追跡
+  const removedPlayerIdsRef = useRef<Set<string>>(new Set());
+
   // 承諾済みの招待プレイヤーを自動追加
   const acceptedInvites = useMemo(
     () => outgoingInvites.filter((inv) => inv.status === 'accepted'),
@@ -55,6 +72,7 @@ export function RecordFormPage() {
 
   useEffect(() => {
     for (const inv of acceptedInvites) {
+      if (removedPlayerIdsRef.current.has(inv.toUid)) continue;
       setSelectedPlayerIds((prev) => {
         if (prev.includes(inv.toUid)) return prev;
         const next = [...prev, inv.toUid];
@@ -105,6 +123,7 @@ export function RecordFormPage() {
   // 承諾済みプレイヤーを除外（招待も削除して再招待可能にする）
   const removePlayer = useCallback((playerId: string) => {
     if (playerId === user?.uid) return;
+    removedPlayerIdsRef.current.add(playerId);
     setSelectedPlayerIds((prev) => prev.filter((id) => id !== playerId));
     setRanks((prev) => {
       const next = { ...prev };
@@ -137,8 +156,9 @@ export function RecordFormPage() {
     navigate('/records');
   };
 
-  // フレンドをコードで招待
+  // フレンドをコードで招待（再招待時は除外追跡をリセット）
   const handleFriendSelect = async (friendId: string) => {
+    removedPlayerIdsRef.current.delete(friendId);
     const friend = friends.find((f) => f.id === friendId);
     if (!friend || !friend.friendCode) return;
     await sendInvite(friend.friendCode);
