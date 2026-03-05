@@ -85,6 +85,12 @@ export function RecordFormPage() {
     };
   }, []);
 
+  // 招待中のプレイヤー
+  const pendingInvites = useMemo(
+    () => outgoingInvites.filter((inv) => inv.status === 'pending'),
+    [outgoingInvites],
+  );
+
   // 全参加者の名前解決用
   const allParticipants = useMemo(() => {
     const base: { id: string; name: string }[] = [];
@@ -96,13 +102,21 @@ export function RecordFormPage() {
         base.push({ id: f.id, name: f.name });
       }
     }
-    for (const inv of acceptedInvites) {
+    for (const inv of [...acceptedInvites, ...pendingInvites]) {
       if (!base.find((p) => p.id === inv.toUid)) {
         base.push({ id: inv.toUid, name: inv.toName });
       }
     }
     return base;
-  }, [user, profile, friends, acceptedInvites]);
+  }, [user, profile, friends, acceptedInvites, pendingInvites]);
+
+  // 招待中プレイヤー（自分以外）のリスト
+  const pendingPlayers = useMemo(() => {
+    return pendingInvites.map((inv) => ({
+      id: inv.toUid,
+      name: inv.toName,
+    }));
+  }, [pendingInvites]);
 
   // 承諾済みプレイヤー（自分以外）
   const acceptedPlayers = useMemo(() => {
@@ -244,11 +258,19 @@ export function RecordFormPage() {
           )}
         </div>
 
-        {/* 承諾済みプレイヤー一覧 */}
-        {acceptedPlayers.length > 0 && (
+        {/* 招待・参加確定プレイヤー一覧 */}
+        {(pendingPlayers.length > 0 || acceptedPlayers.length > 0) && (
           <div className={styles.acceptedSection}>
-            <p className={styles.fieldLabel}>参加確定（{acceptedPlayers.length}人）</p>
+            <p className={styles.fieldLabel}>
+              招待メンバー（{pendingPlayers.length + acceptedPlayers.length}人）
+            </p>
             <div className={styles.acceptedList}>
+              {pendingPlayers.map((p) => (
+                <div key={p.id} className={styles.pendingItem}>
+                  <span className={styles.acceptedName}>{p.name}</span>
+                  <span className={styles.pendingStatus}>招待中...</span>
+                </div>
+              ))}
               {acceptedPlayers.map((p) => (
                 <div key={p.id} className={styles.acceptedItem}>
                   <span className={styles.acceptedName}>{p.name}</span>
