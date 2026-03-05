@@ -5,44 +5,61 @@ import { useAuth } from '../../contexts/AuthContext';
 import { Button } from '../ui/Button';
 import styles from './OnboardingPopup.module.css';
 
-interface Slide {
+export interface OnboardingSlide {
   image?: string;
   title: string;
   description: string;
 }
 
-const SLIDES: Slide[] = [
+interface OnboardingPopupProps {
+  /** 外部から強制表示する場合 */
+  forceOpen?: boolean;
+  /** 閉じたときのコールバック */
+  onClose?: () => void;
+}
+
+const SLIDES: OnboardingSlide[] = [
   {
+    image: '/onboarding/slide1.png',
     title: 'ボードゲームレコードへようこそ！',
     description:
       'プレイヤーを登録して対戦記録をつけましょう。\n記録をしていくことで、ジャンル別の勝率やプレイヤータイプ診断が楽しめます。',
   },
   {
+    image: '/onboarding/slide2.png',
     title: '遊んだゲームの戦績を記録しよう！',
     description:
       'フレンドを対戦に招待して、ゲームの結果を記録できます。\nプレイしたゲーム数や勝率など、あなたの戦績がひと目でわかります。',
   },
   {
+    image: '/onboarding/slide3.png',
     title: '友達を追加しよう！',
     description:
       'フレンドコードを共有して友達を追加しましょう。\nフレンドと一緒に対戦記録をつければ、ランキングや相性分析も楽しめます。',
   },
 ];
 
-export function OnboardingPopup() {
+export function OnboardingPopup({ forceOpen, onClose }: OnboardingPopupProps = {}) {
   const { user, profile, refreshProfile } = useAuth();
   const [currentSlide, setCurrentSlide] = useState(0);
   const [dismissed, setDismissed] = useState(false);
 
   const isLastSlide = currentSlide === SLIDES.length - 1;
+  const isReplay = !!forceOpen;
+
+  const handleDismiss = useCallback(() => {
+    setCurrentSlide(0);
+    setDismissed(true);
+    onClose?.();
+  }, [onClose]);
 
   const handleNext = useCallback(async () => {
     if (!isLastSlide) {
       setCurrentSlide((prev) => prev + 1);
       return;
     }
-    // 最後のスライド → 完了を保存
-    if (user) {
+    // 最後のスライド → 完了を保存（初回のみ）
+    if (!isReplay && user) {
       try {
         await setDoc(
           doc(db, 'users', user.uid),
@@ -54,11 +71,14 @@ export function OnboardingPopup() {
         // ignore
       }
     }
-    setDismissed(true);
-  }, [isLastSlide, user, refreshProfile]);
+    handleDismiss();
+  }, [isLastSlide, isReplay, user, refreshProfile, handleDismiss]);
 
-  // 表示条件: プロフィールがあり、オンボーディング未完了で、まだ閉じていない
-  if (!profile || profile.onboardingCompleted || dismissed) {
+  // 表示条件
+  const showInitial = !forceOpen && profile && !profile.onboardingCompleted && !dismissed;
+  const showForced = forceOpen;
+
+  if (!showInitial && !showForced) {
     return null;
   }
 

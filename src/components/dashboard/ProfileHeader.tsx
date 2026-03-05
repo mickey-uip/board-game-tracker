@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { NOTICES } from '../../data/notices';
+import { OnboardingPopup } from '../onboarding/OnboardingPopup';
 import { calcPlayerType, PLAYER_TYPE_IMAGE } from '../../utils/playerType';
 import { useCountUp } from '../../hooks/useCountUp';
 import type { GenreWinRate } from '../../types';
@@ -23,6 +24,7 @@ export function ProfileHeader({
   genreStats,
 }: ProfileHeaderProps) {
   const [showNotices, setShowNotices] = useState(false);
+  const [showOnboarding, setShowOnboarding] = useState(false);
   const initial = playerName.charAt(0);
   const winRatePct = totalGames > 0 ? Math.round((wins / totalGames) * 100) : 0;
 
@@ -127,21 +129,36 @@ export function ProfileHeader({
               </button>
             </div>
             <div className={styles.noticeList}>
-              {NOTICES.map((n) => (
-                <div key={n.id} className={styles.noticeItem}>
-                  {n.bannerImage && (
-                    <div className={styles.noticeBanner}>
-                      <img src={n.bannerImage} alt="" className={styles.noticeBannerImg} />
-                    </div>
-                  )}
-                  <span className={styles.noticeTitle}>{n.title}</span>
-                  <p className={styles.noticeBody}>{n.body}</p>
-                  <span className={styles.noticeDate}>{n.date}</span>
-                </div>
-              ))}
+              {NOTICES.map((n) => {
+                const isWelcome = n.id === '1';
+                return (
+                  <div
+                    key={n.id}
+                    className={`${styles.noticeItem} ${isWelcome ? styles.noticeItemClickable : ''}`}
+                    onClick={isWelcome ? () => { setShowNotices(false); setShowOnboarding(true); } : undefined}
+                  >
+                    {n.bannerImage && (
+                      <div className={styles.noticeBanner}>
+                        <img src={n.bannerImage} alt="" className={styles.noticeBannerImg} />
+                      </div>
+                    )}
+                    <span className={styles.noticeTitle}>{n.title}</span>
+                    <p className={styles.noticeBody}>{n.body}</p>
+                    <span className={styles.noticeDate}>{n.date}</span>
+                  </div>
+                );
+              })}
             </div>
           </div>
         </div>
+      )}
+
+      {/* オンボーディング再表示 */}
+      {showOnboarding && (
+        <OnboardingPopup
+          forceOpen
+          onClose={() => setShowOnboarding(false)}
+        />
       )}
     </>
   );

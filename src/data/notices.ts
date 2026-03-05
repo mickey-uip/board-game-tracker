@@ -24,9 +24,9 @@ export const NOTICES: Notice[] = [
   },
   {
     id: '1',
-    title: 'ボードゲームトラッカーへようこそ！',
+    title: 'ボードゲームレコードへようこそ！',
     body: 'プレイヤーを登録して対戦記録をつけましょう。ジャンル別の勝率やプレイヤータイプ診断が楽しめます。まずは設定画面からプレイヤーを追加してください。',
     date: '2026-01-01',
-    bannerImage: '/notices/welcome.png',
+    bannerImage: '/onboarding/slide1.png',
   },
 ];
