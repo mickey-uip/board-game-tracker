@@ -8,6 +8,7 @@ import styles from './InviteDialog.module.css';
  * グローバル招待 & 通知ダイアログ（受信側）
  * AppShell に配置し、どの画面でも招待・通知を受け取れるようにする
  * - pending: 10秒カウントダウン付き招待
+ * - completed: 対戦記録完了の祝福通知
  * - removed: 対戦から除外された通知
  * - cancelled: 対戦記録が中止された通知
  */
@@ -85,6 +86,35 @@ export function InviteDialog() {
   const handleDismiss = () => {
     dismissNotification(currentInvite.id);
   };
+
+  // ── 対戦記録完了（祝福ポップアップ） ──
+  if (currentInvite.status === 'completed') {
+    return (
+      <Modal open={true} onClose={handleDismiss} title="対戦結果">
+        <div className={styles.content}>
+          {currentInvite.gameImage && (
+            <img
+              src={currentInvite.gameImage}
+              alt={currentInvite.gameName ?? ''}
+              className={styles.gameImage}
+            />
+          )}
+          <p className={styles.gameName}>{currentInvite.gameName}</p>
+          <div className={styles.rankBadge}>
+            <span className={styles.rankNumber}>{currentInvite.rank}</span>
+            <span className={styles.rankLabel}>位</span>
+          </div>
+          <p className={styles.congratsMessage}>
+            対戦を記録しました！
+            <br />
+            {currentInvite.rank === 1
+              ? '1位おめでとう！'
+              : `${currentInvite.rank}位 おつかれさま！`}
+          </p>
+        </div>
+      </Modal>
+    );
+  }
 
   // 通知タイプ別の表示
   if (currentInvite.status === 'removed') {

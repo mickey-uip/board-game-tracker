@@ -34,7 +34,7 @@ export function useGameInvites() {
     const q = query(
       collection(db, 'gameInvites'),
       where('toUid', '==', user.uid),
-      where('status', 'in', ['pending', 'removed', 'cancelled']),
+      where('status', 'in', ['pending', 'removed', 'cancelled', 'completed']),
     );
     const unsub = onSnapshot(q, (snap) => {
       setIncomingInvites(
@@ -179,10 +179,37 @@ export function useGameInvites() {
             await updateDoc(doc(db, 'gameInvites', inv.id), {
               status: 'cancelled',
             });
-          } else if (inv.status !== 'removed' && inv.status !== 'cancelled') {
-            // removed/cancelled は通知として残す（受信者が dismiss するまで削除しない）
+          } else if (inv.status !== 'removed' && inv.status !== 'cancelled' && inv.status !== 'completed') {
+            // removed/cancelled/completed は通知として残す（受信者が dismiss するまで削除しない）
             await deleteDoc(doc(db, 'gameInvites', inv.id));
           }
+        } catch {
+          /* ignore */
+        }
+      }
+    },
+    [outgoingInvites],
+  );
+
+  /** 対戦記録の完了通知を送信（記録する時に呼ぶ）
+   *  承諾済み招待を completed に更新し、ゲーム情報と順位を付与 */
+  const completeInvites = useCallback(
+    async (
+      gameName: string,
+      gameImage: string,
+      playerResults: { playerId: string; rank: number }[],
+    ) => {
+      for (const inv of outgoingInvites) {
+        if (inv.status !== 'accepted') continue;
+        const result = playerResults.find((pr) => pr.playerId === inv.toUid);
+        if (!result) continue;
+        try {
+          await updateDoc(doc(db, 'gameInvites', inv.id), {
+            status: 'completed',
+            gameName,
+            gameImage,
+            rank: result.rank,
+          });
         } catch {
           /* ignore */
         }
@@ -216,8 +243,8 @@ export function useGameInvites() {
       for (const d of snap.docs) {
         try {
           const status = d.data().status;
-          // removed/cancelled は通知として残す（受信者が dismiss するまで削除しない）
-          if (status === 'removed' || status === 'cancelled') continue;
+          // removed/cancelled/completed は通知として残す（受信者が dismiss するまで削除しない）
+          if (status === 'removed' || status === 'cancelled' || status === 'completed') continue;
           await deleteDoc(d.ref);
         } catch {
           /* ignore */
@@ -235,6 +262,7 @@ export function useGameInvites() {
     declineInvite,
     removeInviteByUid,
     cleanupInvites,
+    completeInvites,
     dismissNotification,
     purgeStaleInvites,
   };

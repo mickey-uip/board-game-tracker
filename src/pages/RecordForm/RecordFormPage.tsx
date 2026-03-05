@@ -22,7 +22,7 @@ export function RecordFormPage() {
   const { friends } = usePlayers();
   const { games, getGameById } = useGames();
   const { addRecord } = useRecords();
-  const { outgoingInvites, sendInvite, removeInviteByUid, cleanupInvites, purgeStaleInvites } = useGameInvites();
+  const { outgoingInvites, sendInvite, removeInviteByUid, cleanupInvites, completeInvites, purgeStaleInvites } = useGameInvites();
 
   const [date, setDate] = useState(todayString());
   const [gameId, setGameId] = useState('');
@@ -160,7 +160,13 @@ export function RecordFormPage() {
       rank: ranks[id],
     }));
     const game = getGameById(gameId);
-    await addRecord(gameId, date, playerResults, game?.name ?? '');
+    const gameName = game?.name ?? '';
+    // RULEBOOKからゲーム画像を取得
+    const entry = RULEBOOK.find((r) => 'preset-' + r.gameId === gameId);
+    const gameImage = entry?.coverImage ?? '';
+    // 招待参加者に完了通知を送信（cleanupの前に実行）
+    await completeInvites(gameName, gameImage, playerResults);
+    await addRecord(gameId, date, playerResults, gameName);
     navigate('/records');
   };
 

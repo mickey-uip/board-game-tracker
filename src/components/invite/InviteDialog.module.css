@@ -47,3 +47,47 @@
   gap: var(--space-sm);
   width: 100%;
 }
+
+/* ── 対戦完了ポップアップ ── */
+.gameImage {
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: var(--radius-md);
+  border: 2px solid var(--color-card-border);
+}
+
+.gameName {
+  font-size: var(--font-size-lg);
+  font-weight: 700;
+  color: var(--color-text);
+  margin: 0;
+}
+
+.rankBadge {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 2px;
+}
+
+.rankNumber {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: var(--color-primary);
+  line-height: 1;
+}
+
+.rankLabel {
+  font-size: var(--font-size-lg);
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+.congratsMessage {
+  font-size: var(--font-size-md);
+  font-weight: 600;
+  line-height: 1.6;
+  color: var(--color-text);
+  margin: 0;
+}
