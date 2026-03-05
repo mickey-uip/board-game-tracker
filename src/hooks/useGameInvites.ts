@@ -202,6 +202,20 @@ export function useGameInvites() {
     [],
   );
 
+  /** 残留招待を強制削除（マウント時の前回セッション残り掃除用） */
+  const purgeAllInvites = useCallback(
+    async () => {
+      for (const inv of outgoingInvites) {
+        try {
+          await deleteDoc(doc(db, 'gameInvites', inv.id));
+        } catch {
+          /* ignore */
+        }
+      }
+    },
+    [outgoingInvites],
+  );
+
   return {
     incomingInvites,
     outgoingInvites,
@@ -211,5 +225,6 @@ export function useGameInvites() {
     removeInviteByUid,
     cleanupInvites,
     dismissNotification,
+    purgeAllInvites,
   };
 }

@@ -23,7 +23,7 @@ export function RecordFormContent({ initialDate, onSuccess }: RecordFormContentP
   const { friends } = usePlayers();
   const { games, getGameById } = useGames();
   const { addRecord } = useRecords();
-  const { outgoingInvites, sendInvite, removeInviteByUid, cleanupInvites } = useGameInvites();
+  const { outgoingInvites, sendInvite, removeInviteByUid, cleanupInvites, purgeAllInvites } = useGameInvites();
 
   const [gameId, setGameId] = useState('');
   // 自分は常に選択済み
@@ -51,14 +51,9 @@ export function RecordFormContent({ initialDate, onSuccess }: RecordFormContentP
   const mountCleanedRef = useRef(false);
   useEffect(() => {
     if (mountCleanedRef.current) return;
+    if (outgoingInvites.length === 0) return; // データ到着を待つ
     mountCleanedRef.current = true;
-    // 既存の非pending招待を削除（前回セッションの残り）
-    for (const inv of outgoingInvites) {
-      if (inv.status !== 'pending') {
-        cleanupInvites();
-        break;
-      }
-    }
+    purgeAllInvites();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [outgoingInvites]);
 
@@ -165,11 +160,11 @@ export function RecordFormContent({ initialDate, onSuccess }: RecordFormContentP
     await sendInvite(friend.friendCode);
   };
 
-  // 既に招待中・承諾済みのフレンドを除外したリスト（拒否されたフレンドは再招待可能）
+  // pending・accepted以外のフレンドはセレクトに表示（再招待可能）
   const availableFriends = useMemo(() => {
     return friends.filter(
       (f) => !outgoingInvites.find(
-        (inv) => inv.toUid === f.id && inv.status !== 'declined',
+        (inv) => inv.toUid === f.id && (inv.status === 'pending' || inv.status === 'accepted'),
       ),
     );
   }, [friends, outgoingInvites]);

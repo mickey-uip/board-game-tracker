@@ -22,7 +22,7 @@ export function RecordFormPage() {
   const { friends } = usePlayers();
   const { games, getGameById } = useGames();
   const { addRecord } = useRecords();
-  const { outgoingInvites, sendInvite, removeInviteByUid, cleanupInvites } = useGameInvites();
+  const { outgoingInvites, sendInvite, removeInviteByUid, cleanupInvites, purgeAllInvites } = useGameInvites();
 
   const [date, setDate] = useState(todayString());
   const [gameId, setGameId] = useState('');
@@ -51,13 +51,9 @@ export function RecordFormPage() {
   const mountCleanedRef = useRef(false);
   useEffect(() => {
     if (mountCleanedRef.current) return;
+    if (outgoingInvites.length === 0) return; // データ到着を待つ
     mountCleanedRef.current = true;
-    for (const inv of outgoingInvites) {
-      if (inv.status !== 'pending') {
-        cleanupInvites();
-        break;
-      }
-    }
+    purgeAllInvites();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [outgoingInvites]);
 
@@ -164,11 +160,11 @@ export function RecordFormPage() {
     await sendInvite(friend.friendCode);
   };
 
-  // 招待中・承諾済みを除外したフレンド（拒否されたフレンドは再招待可能）
+  // pending・accepted以外のフレンドはセレクトに表示（再招待可能）
   const availableFriends = useMemo(() => {
     return friends.filter(
       (f) => !outgoingInvites.find(
-        (inv) => inv.toUid === f.id && inv.status !== 'declined',
+        (inv) => inv.toUid === f.id && (inv.status === 'pending' || inv.status === 'accepted'),
       ),
     );
   }, [friends, outgoingInvites]);
