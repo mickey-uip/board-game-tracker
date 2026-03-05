@@ -2,14 +2,12 @@ import { useState, useCallback, useMemo, useEffect, useRef } from 'react';
 import { GameSearchSelect } from './GameSearchSelect';
 import { InviteByCode } from './InviteByCode';
 import { Button } from '../ui/Button';
-import { Badge } from '../ui/Badge';
 import { PlayerRankInput } from './PlayerRankInput';
 import { usePlayers } from '../../hooks/usePlayers';
 import { useGames } from '../../hooks/useGames';
 import { useRecords } from '../../hooks/useRecords';
 import { useGameInvites } from '../../hooks/useGameInvites';
 import { useAuth } from '../../contexts/AuthContext';
-import { GENRE_LABEL } from '../../constants/genres';
 import { RULEBOOK } from '../../data/rulebook';
 import styles from './RecordFormContent.module.css';
 
@@ -26,6 +24,7 @@ export function RecordFormContent({ initialDate, onSuccess }: RecordFormContentP
   const { outgoingInvites, sendInvite, removeInviteByUid, cleanupInvites, completeInvites, purgeStaleInvites } = useGameInvites();
 
   const [gameId, setGameId] = useState('');
+  const [step, setStep] = useState<'setup' | 'rank'>('setup');
   // 自分は常に選択済み
   const [selectedPlayerIds, setSelectedPlayerIds] = useState<string[]>(
     user ? [user.uid] : [],
@@ -33,8 +32,6 @@ export function RecordFormContent({ initialDate, onSuccess }: RecordFormContentP
   const [ranks, setRanks] = useState<Record<string, number>>(
     user ? { [user.uid]: 1 } : {},
   );
-
-  const selectedGame = gameId ? getGameById(gameId) : null;
 
   // 選択ゲームの最大プレイ人数をRULEBOOKから取得
   const maxPlayers = useMemo(() => {
@@ -147,10 +144,15 @@ export function RecordFormContent({ initialDate, onSuccess }: RecordFormContentP
 
   const isOverMaxPlayers = maxPlayers !== null && selectedPlayerIds.length > maxPlayers;
 
-  const canSubmit =
+  // ステップ1: ゲーム選択済み＋2人以上＋人数超過なし
+  const canProceed =
     !!gameId &&
     selectedPlayerIds.length >= 2 &&
-    !isOverMaxPlayers &&
+    !isOverMaxPlayers;
+
+  // ステップ2: 全員の順位入力済み
+  const canSubmit =
+    canProceed &&
     selectedPlayerIds.every((id) => ranks[id] !== undefined);
 
   const handleSubmit = async () => {
@@ -189,113 +191,112 @@ export function RecordFormContent({ initialDate, onSuccess }: RecordFormContentP
 
   return (
     <div className={styles.container}>
-      {/* ゲーム選択（検索付き） */}
-      <GameSearchSelect
-        games={games}
-        value={gameId}
-        onChange={setGameId}
-      />
+      {step === 'setup' ? (
+        <>
+          {/* ゲーム選択（検索付き） */}
+          <GameSearchSelect
+            games={games}
+            value={gameId}
+            onChange={setGameId}
+          />
 
-      {/* ジャンルバッジ */}
-      {selectedGame && (
-        <div className={styles.genres}>
-          {selectedGame.genres.map((g) => (
-            <Badge key={g} label={GENRE_LABEL[g]} />
-          ))}
-        </div>
-      )}
+          {/* 参加プレイヤー */}
+          <div className={styles.field}>
+            <p className={styles.fieldLabel}>参加プレイヤー</p>
 
-      {/* 参加プレイヤー */}
-      <div className={styles.field}>
-        <p className={styles.fieldLabel}>参加プレイヤー</p>
+            {/* フレンドをセレクトで招待 */}
+            {availableFriends.length > 0 && (
+              <select
+                className={styles.friendSelectInput}
+                value=""
+                onChange={(e) => {
+                  if (e.target.value) handleFriendSelect(e.target.value);
+                }}
+              >
+                <option value="">フレンドを招待...</option>
+                {availableFriends.map((f) => (
+                  <option key={f.id} value={f.id}>{f.name}</option>
+                ))}
+              </select>
+            )}
 
-        {/* 自分（リーダー） */}
-        {user && profile && (
-          <div className={styles.leaderCard}>
-            <span className={styles.leaderName}>
-              {profile.displayName}
-            </span>
-            <span className={styles.leaderBadge}>リーダー</span>
-          </div>
-        )}
+            {/* IDでプレイヤーを招待 */}
+            <InviteByCode onSendInvite={sendInvite} />
 
-        {/* フレンドをセレクトで招待 */}
-        {availableFriends.length > 0 && (
-          <select
-            className={styles.friendSelectInput}
-            value=""
-            onChange={(e) => {
-              if (e.target.value) handleFriendSelect(e.target.value);
-            }}
-          >
-            <option value="">フレンドを招待...</option>
-            {availableFriends.map((f) => (
-              <option key={f.id} value={f.id}>{f.name}</option>
-            ))}
-          </select>
-        )}
-
-        {/* IDでプレイヤーを招待 */}
-        <InviteByCode onSendInvite={sendInvite} />
-
-        {isOverMaxPlayers && (
-          <p className={styles.playerAlert}>
-            このゲームのプレイ人数は最大 {maxPlayers} 人です
-          </p>
-        )}
-      </div>
-
-      {/* 招待・参加確定プレイヤー一覧 */}
-      {(pendingPlayers.length > 0 || acceptedPlayers.length > 0) && (
-        <div className={styles.acceptedSection}>
-          <p className={styles.fieldLabel}>
-            招待メンバー（{pendingPlayers.length + acceptedPlayers.length}人）
-          </p>
-          <div className={styles.acceptedList}>
-            {pendingPlayers.map((p) => (
-              <div key={p.id} className={styles.pendingItem}>
-                <span className={styles.acceptedName}>{p.name}</span>
-                <span className={styles.pendingStatus}>招待中...</span>
+            {/* 自分（リーダー） */}
+            {user && profile && (
+              <div className={styles.leaderCard}>
+                <span className={styles.leaderName}>
+                  {profile.displayName}
+                </span>
+                <span className={styles.leaderBadge}>リーダー</span>
               </div>
-            ))}
-            {acceptedPlayers.map((p) => (
-              <div key={p.id} className={styles.acceptedItem}>
-                <span className={styles.acceptedName}>{p.name}</span>
-                <button
-                  className={styles.acceptedRemove}
-                  onClick={() => removePlayer(p.id)}
-                  aria-label="除外"
-                >
-                  ✕
-                </button>
+            )}
+
+            {/* 招待メンバー一覧（タイトルなし） */}
+            {(pendingPlayers.length > 0 || acceptedPlayers.length > 0) && (
+              <div className={styles.acceptedList}>
+                {pendingPlayers.map((p) => (
+                  <div key={p.id} className={styles.pendingItem}>
+                    <span className={styles.acceptedName}>{p.name}</span>
+                    <span className={styles.pendingStatus}>招待中...</span>
+                  </div>
+                ))}
+                {acceptedPlayers.map((p) => (
+                  <div key={p.id} className={styles.acceptedItem}>
+                    <span className={styles.acceptedName}>{p.name}</span>
+                    <button
+                      className={styles.acceptedRemove}
+                      onClick={() => removePlayer(p.id)}
+                      aria-label="除外"
+                    >
+                      ✕
+                    </button>
+                  </div>
+                ))}
               </div>
-            ))}
+            )}
+
+            {isOverMaxPlayers && (
+              <p className={styles.playerAlert}>
+                このゲームのプレイ人数は最大 {maxPlayers} 人です
+              </p>
+            )}
           </div>
-        </div>
-      )}
 
-      {/* 順位入力 */}
-      {selectedPlayerIds.length >= 2 && (
-        <div className={styles.rankSection}>
-          <p className={styles.fieldLabel}>順位入力</p>
-          {selectedPlayerIds.map((playerId) => {
-            const player = allParticipants.find((p) => p.id === playerId);
-            return (
-              <PlayerRankInput
-                key={playerId}
-                playerName={player?.name ?? '???'}
-                rank={ranks[playerId] ?? 1}
-                maxRank={selectedPlayerIds.length}
-                onChange={(rank) => setRank(playerId, rank)}
-              />
-            );
-          })}
-        </div>
-      )}
+          <Button fullWidth onClick={() => setStep('rank')} disabled={!canProceed}>
+            結果入力へ
+          </Button>
+        </>
+      ) : (
+        <>
+          {/* 順位入力 */}
+          <div className={styles.rankSection}>
+            <p className={styles.fieldLabel}>順位入力</p>
+            {selectedPlayerIds.map((playerId) => {
+              const player = allParticipants.find((p) => p.id === playerId);
+              return (
+                <PlayerRankInput
+                  key={playerId}
+                  playerName={player?.name ?? '???'}
+                  rank={ranks[playerId] ?? 1}
+                  maxRank={selectedPlayerIds.length}
+                  onChange={(rank) => setRank(playerId, rank)}
+                />
+              );
+            })}
+          </div>
 
-      <Button fullWidth onClick={handleSubmit} disabled={!canSubmit}>
-        記録する
-      </Button>
+          <div className={styles.stepActions}>
+            <Button variant="secondary" fullWidth onClick={() => setStep('setup')}>
+              戻る
+            </Button>
+            <Button fullWidth onClick={handleSubmit} disabled={!canSubmit}>
+              記録する
+            </Button>
+          </div>
+        </>
+      )}
     </div>
   );
 }

@@ -163,3 +163,10 @@
 .acceptedRemove:active {
   color: var(--color-danger);
 }
+
+/* ── ステップ2 ボタン並び ── */
+.stepActions {
+  display: flex;
+  gap: var(--space-sm);
+  width: 100%;
+}

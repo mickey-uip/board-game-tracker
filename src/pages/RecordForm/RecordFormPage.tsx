@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { PageHeader } from '../../components/layout/PageHeader';
 import { Select } from '../../components/ui/Select';
 import { Button } from '../../components/ui/Button';
-import { Badge } from '../../components/ui/Badge';
 import { PlayerRankInput } from '../../components/record/PlayerRankInput';
 import { InviteByCode } from '../../components/record/InviteByCode';
 import { usePlayers } from '../../hooks/usePlayers';
@@ -11,7 +10,6 @@ import { useGames } from '../../hooks/useGames';
 import { useRecords } from '../../hooks/useRecords';
 import { useGameInvites } from '../../hooks/useGameInvites';
 import { useAuth } from '../../contexts/AuthContext';
-import { GENRE_LABEL } from '../../constants/genres';
 import { todayString } from '../../utils/dateUtils';
 import { RULEBOOK } from '../../data/rulebook';
 import styles from './RecordFormPage.module.css';
@@ -26,6 +24,7 @@ export function RecordFormPage() {
 
   const [date, setDate] = useState(todayString());
   const [gameId, setGameId] = useState('');
+  const [step, setStep] = useState<'setup' | 'rank'>('setup');
   // 自分は常に選択済み
   const [selectedPlayerIds, setSelectedPlayerIds] = useState<string[]>(
     user ? [user.uid] : [],
@@ -33,8 +32,6 @@ export function RecordFormPage() {
   const [ranks, setRanks] = useState<Record<string, number>>(
     user ? { [user.uid]: 1 } : {},
   );
-
-  const selectedGame = gameId ? getGameById(gameId) : null;
 
   // 選択ゲームの最大プレイ人数をRULEBOOKから取得
   const maxPlayers = useMemo(() => {
@@ -147,10 +144,13 @@ export function RecordFormPage() {
 
   const isOverMaxPlayers = maxPlayers !== null && selectedPlayerIds.length > maxPlayers;
 
-  const canSubmit =
+  const canProceed =
     !!gameId &&
     selectedPlayerIds.length >= 2 &&
-    !isOverMaxPlayers &&
+    !isOverMaxPlayers;
+
+  const canSubmit =
+    canProceed &&
     selectedPlayerIds.every((id) => ranks[id] !== undefined);
 
   const handleSubmit = async () => {
@@ -191,130 +191,129 @@ export function RecordFormPage() {
     <div>
       <PageHeader title="対戦記録" showBack />
       <div className={styles.container}>
-        {/* 日付 */}
-        <div className={styles.field}>
-          <label className={styles.fieldLabel} htmlFor="record-date">
-            日付
-          </label>
-          <input
-            id="record-date"
-            type="date"
-            className={styles.dateInput}
-            value={date}
-            onChange={(e) => setDate(e.target.value)}
-          />
-        </div>
-
-        {/* ゲーム選択 */}
-        <Select
-          label="ゲーム"
-          id="game-select"
-          placeholder="ゲームを選択"
-          options={games.map((g) => ({ value: g.id, label: g.name }))}
-          value={gameId}
-          onChange={(e) => setGameId(e.target.value)}
-        />
-
-        {/* ジャンルバッジ */}
-        {selectedGame && (
-          <div className={styles.genres}>
-            {selectedGame.genres.map((g) => (
-              <Badge key={g} label={GENRE_LABEL[g]} />
-            ))}
-          </div>
-        )}
-
-        {/* 参加プレイヤー */}
-        <div className={styles.field}>
-          <p className={styles.fieldLabel}>参加プレイヤー</p>
-
-          {/* 自分（リーダー） */}
-          {user && profile && (
-            <div className={styles.leaderCard}>
-              <span className={styles.leaderName}>
-                {profile.displayName}
-              </span>
-              <span className={styles.leaderBadge}>リーダー</span>
+        {step === 'setup' ? (
+          <>
+            {/* 日付 */}
+            <div className={styles.field}>
+              <label className={styles.fieldLabel} htmlFor="record-date">
+                日付
+              </label>
+              <input
+                id="record-date"
+                type="date"
+                className={styles.dateInput}
+                value={date}
+                onChange={(e) => setDate(e.target.value)}
+              />
             </div>
-          )}
 
-          {/* フレンドをセレクトで招待 */}
-          {availableFriends.length > 0 && (
-            <select
-              className={styles.friendSelectInput}
-              value=""
-              onChange={(e) => {
-                if (e.target.value) handleFriendSelect(e.target.value);
-              }}
-            >
-              <option value="">フレンドを招待...</option>
-              {availableFriends.map((f) => (
-                <option key={f.id} value={f.id}>{f.name}</option>
-              ))}
-            </select>
-          )}
+            {/* ゲーム選択 */}
+            <Select
+              label="ゲーム"
+              id="game-select"
+              placeholder="ゲームを選択"
+              options={games.map((g) => ({ value: g.id, label: g.name }))}
+              value={gameId}
+              onChange={(e) => setGameId(e.target.value)}
+            />
 
-          {/* IDでプレイヤーを招待 */}
-          <InviteByCode onSendInvite={sendInvite} />
+            {/* 参加プレイヤー */}
+            <div className={styles.field}>
+              <p className={styles.fieldLabel}>参加プレイヤー</p>
 
-          {isOverMaxPlayers && (
-            <p className={styles.playerAlert}>
-              このゲームのプレイ人数は最大 {maxPlayers} 人です
-            </p>
-          )}
-        </div>
+              {/* フレンドをセレクトで招待 */}
+              {availableFriends.length > 0 && (
+                <select
+                  className={styles.friendSelectInput}
+                  value=""
+                  onChange={(e) => {
+                    if (e.target.value) handleFriendSelect(e.target.value);
+                  }}
+                >
+                  <option value="">フレンドを招待...</option>
+                  {availableFriends.map((f) => (
+                    <option key={f.id} value={f.id}>{f.name}</option>
+                  ))}
+                </select>
+              )}
 
-        {/* 招待・参加確定プレイヤー一覧 */}
-        {(pendingPlayers.length > 0 || acceptedPlayers.length > 0) && (
-          <div className={styles.acceptedSection}>
-            <p className={styles.fieldLabel}>
-              招待メンバー（{pendingPlayers.length + acceptedPlayers.length}人）
-            </p>
-            <div className={styles.acceptedList}>
-              {pendingPlayers.map((p) => (
-                <div key={p.id} className={styles.pendingItem}>
-                  <span className={styles.acceptedName}>{p.name}</span>
-                  <span className={styles.pendingStatus}>招待中...</span>
+              {/* IDでプレイヤーを招待 */}
+              <InviteByCode onSendInvite={sendInvite} />
+
+              {/* 自分（リーダー） */}
+              {user && profile && (
+                <div className={styles.leaderCard}>
+                  <span className={styles.leaderName}>
+                    {profile.displayName}
+                  </span>
+                  <span className={styles.leaderBadge}>リーダー</span>
                 </div>
-              ))}
-              {acceptedPlayers.map((p) => (
-                <div key={p.id} className={styles.acceptedItem}>
-                  <span className={styles.acceptedName}>{p.name}</span>
-                  <button
-                    className={styles.acceptedRemove}
-                    onClick={() => removePlayer(p.id)}
-                    aria-label="除外"
-                  >
-                    ✕
-                  </button>
+              )}
+
+              {/* 招待メンバー一覧（タイトルなし） */}
+              {(pendingPlayers.length > 0 || acceptedPlayers.length > 0) && (
+                <div className={styles.acceptedList}>
+                  {pendingPlayers.map((p) => (
+                    <div key={p.id} className={styles.pendingItem}>
+                      <span className={styles.acceptedName}>{p.name}</span>
+                      <span className={styles.pendingStatus}>招待中...</span>
+                    </div>
+                  ))}
+                  {acceptedPlayers.map((p) => (
+                    <div key={p.id} className={styles.acceptedItem}>
+                      <span className={styles.acceptedName}>{p.name}</span>
+                      <button
+                        className={styles.acceptedRemove}
+                        onClick={() => removePlayer(p.id)}
+                        aria-label="除外"
+                      >
+                        ✕
+                      </button>
+                    </div>
+                  ))}
                 </div>
-              ))}
+              )}
+
+              {isOverMaxPlayers && (
+                <p className={styles.playerAlert}>
+                  このゲームのプレイ人数は最大 {maxPlayers} 人です
+                </p>
+              )}
             </div>
-          </div>
-        )}
 
-        {/* 順位入力 */}
-        {selectedPlayerIds.length >= 2 && (
-          <div className={styles.rankSection}>
-            <p className={styles.fieldLabel}>順位入力</p>
-            {selectedPlayerIds.map((playerId) => {
-              const player = allParticipants.find((p) => p.id === playerId);
-              return (
-                <PlayerRankInput
-                  key={playerId}
-                  playerName={player?.name ?? '???'}
-                  rank={ranks[playerId] ?? 1}
-                  maxRank={selectedPlayerIds.length}
-                  onChange={(rank) => setRank(playerId, rank)}
-                />
-              );
-            })}
-          </div>
-        )}
+            <Button fullWidth onClick={() => setStep('rank')} disabled={!canProceed}>
+              結果入力へ
+            </Button>
+          </>
+        ) : (
+          <>
+            {/* 順位入力 */}
+            <div className={styles.rankSection}>
+              <p className={styles.fieldLabel}>順位入力</p>
+              {selectedPlayerIds.map((playerId) => {
+                const player = allParticipants.find((p) => p.id === playerId);
+                return (
+                  <PlayerRankInput
+                    key={playerId}
+                    playerName={player?.name ?? '???'}
+                    rank={ranks[playerId] ?? 1}
+                    maxRank={selectedPlayerIds.length}
+                    onChange={(rank) => setRank(playerId, rank)}
+                  />
+                );
+              })}
+            </div>
 
-        <Button fullWidth onClick={handleSubmit} disabled={!canSubmit}>
-          記録する
-        </Button>
+            <div className={styles.stepActions}>
+              <Button variant="secondary" fullWidth onClick={() => setStep('setup')}>
+                戻る
+              </Button>
+              <Button fullWidth onClick={handleSubmit} disabled={!canSubmit}>
+                記録する
+              </Button>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );
