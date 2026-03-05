@@ -58,9 +58,10 @@ service cloud.firestore {
       allow create: if request.auth != null &&
         request.resource.data.fromUid == request.auth.uid;
 
-      // 更新: 受信者のみ（承諾/辞退）
+      // 更新: 送信者 or 受信者（受信者は承諾/辞退、送信者は除外/中止通知）
       allow update: if request.auth != null &&
-        resource.data.toUid == request.auth.uid;
+        (resource.data.fromUid == request.auth.uid ||
+         resource.data.toUid == request.auth.uid);
 
       // 削除: 送信者 or 受信者
       allow delete: if request.auth != null &&
