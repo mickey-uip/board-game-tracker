@@ -43,8 +43,7 @@
 }
 
 .imagePlaceholder {
-  font-size: 3rem;
-  opacity: 0.4;
+  display: none;
 }
 
 /* ── コンテンツ ── */

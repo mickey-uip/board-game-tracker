@@ -72,7 +72,7 @@ export function OnboardingPopup() {
           {slide.image ? (
             <img src={slide.image} alt={slide.title} className={styles.image} />
           ) : (
-            <span className={styles.imagePlaceholder}>🎲</span>
+            <span className={styles.imagePlaceholder} />
           )}
         </div>
 
