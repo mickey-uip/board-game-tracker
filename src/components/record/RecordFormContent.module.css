@@ -37,20 +37,6 @@
   flex-wrap: wrap;
 }
 
-.playerCheckList {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: var(--space-sm);
-}
-
-.playerCheck {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: var(--font-size-sm);
-  cursor: pointer;
-}
-
 .rankSection {
   display: flex;
   flex-direction: column;
@@ -66,4 +52,96 @@
   background: rgba(224, 82, 82, 0.1);
   border: 1px solid rgba(224, 82, 82, 0.3);
   border-radius: var(--radius-sm);
+}
+
+/* ── リーダーカード ── */
+.leaderCard {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  background: var(--color-card);
+  border: 1.5px solid var(--color-card-border);
+  border-radius: var(--radius-md);
+}
+
+.leaderName {
+  font-size: var(--font-size-md);
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.leaderBadge {
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  color: var(--color-primary);
+  background: rgba(201, 160, 67, 0.15);
+  padding: 2px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(201, 160, 67, 0.3);
+}
+
+/* ── フレンド招待セレクト ── */
+.friendSelectInput {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-size: var(--font-size-md);
+  outline: none;
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 32px;
+}
+
+.friendSelectInput:focus {
+  border-color: var(--color-primary);
+}
+
+/* ── 承諾済みプレイヤー一覧 ── */
+.acceptedSection {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.acceptedList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.acceptedItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  background: rgba(52, 211, 153, 0.08);
+  border: 1px solid rgba(52, 211, 153, 0.25);
+  border-radius: var(--radius-md);
+}
+
+.acceptedName {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.acceptedRemove {
+  background: none;
+  border: none;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+  cursor: pointer;
+  padding: 2px 6px;
+  line-height: 1;
+}
+
+.acceptedRemove:active {
+  color: var(--color-danger);
 }

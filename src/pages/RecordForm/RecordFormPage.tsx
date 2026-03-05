@@ -18,8 +18,8 @@ import styles from './RecordFormPage.module.css';
 
 export function RecordFormPage() {
   const navigate = useNavigate();
-  const { user } = useAuth();
-  const { players } = usePlayers();
+  const { user, profile } = useAuth();
+  const { friends } = usePlayers();
   const { games, getGameById } = useGames();
   const { addRecord } = useRecords();
   const { outgoingInvites, sendInvite, cleanupInvites } = useGameInvites();
@@ -73,34 +73,42 @@ export function RecordFormPage() {
     };
   }, []);
 
-  // 全参加者 = 通常プレイヤー + 招待で承諾したプレイヤー（名前解決用）
+  // 全参加者の名前解決用
   const allParticipants = useMemo(() => {
-    const base = [...players];
+    const base: { id: string; name: string }[] = [];
+    if (user && profile) {
+      base.push({ id: user.uid, name: profile.displayName });
+    }
+    for (const f of friends) {
+      if (!base.find((p) => p.id === f.id)) {
+        base.push({ id: f.id, name: f.name });
+      }
+    }
     for (const inv of acceptedInvites) {
       if (!base.find((p) => p.id === inv.toUid)) {
-        base.push({ id: inv.toUid, name: inv.toName, createdAt: '' });
+        base.push({ id: inv.toUid, name: inv.toName });
       }
     }
     return base;
-  }, [players, acceptedInvites]);
+  }, [user, profile, friends, acceptedInvites]);
 
-  const togglePlayer = useCallback((playerId: string) => {
-    // 自分は外せない
+  // 承諾済みプレイヤー（自分以外）
+  const acceptedPlayers = useMemo(() => {
+    return selectedPlayerIds
+      .filter((id) => id !== user?.uid)
+      .map((id) => {
+        const p = allParticipants.find((x) => x.id === id);
+        return { id, name: p?.name ?? '???' };
+      });
+  }, [selectedPlayerIds, user, allParticipants]);
+
+  // 承諾済みプレイヤーを除外
+  const removePlayer = useCallback((playerId: string) => {
     if (playerId === user?.uid) return;
-
-    setSelectedPlayerIds((prev) => {
-      const next = prev.includes(playerId)
-        ? prev.filter((id) => id !== playerId)
-        : [...prev, playerId];
-      if (!prev.includes(playerId)) {
-        setRanks((r) => ({ ...r, [playerId]: next.length }));
-      } else {
-        setRanks((r) => {
-          const updated = { ...r };
-          delete updated[playerId];
-          return updated;
-        });
-      }
+    setSelectedPlayerIds((prev) => prev.filter((id) => id !== playerId));
+    setRanks((prev) => {
+      const next = { ...prev };
+      delete next[playerId];
       return next;
     });
   }, [user]);
@@ -127,6 +135,20 @@ export function RecordFormPage() {
     await addRecord(gameId, date, playerResults, game?.name ?? '');
     navigate('/records');
   };
+
+  // フレンドをコードで招待
+  const handleFriendSelect = async (friendId: string) => {
+    const friend = friends.find((f) => f.id === friendId);
+    if (!friend || !friend.friendCode) return;
+    await sendInvite(friend.friendCode);
+  };
+
+  // 招待済みを除外したフレンド
+  const availableFriends = useMemo(() => {
+    return friends.filter(
+      (f) => !outgoingInvites.find((inv) => inv.toUid === f.id),
+    );
+  }, [friends, outgoingInvites]);
 
   return (
     <div>
@@ -167,23 +189,33 @@ export function RecordFormPage() {
 
         {/* 参加プレイヤー */}
         <div className={styles.field}>
-          <p className={styles.fieldLabel}>参加プレイヤー（2人以上）</p>
-          <div className={styles.playerCheckList}>
-            {players.map((player) => (
-              <label key={player.id} className={styles.playerCheck}>
-                <input
-                  type="checkbox"
-                  checked={selectedPlayerIds.includes(player.id)}
-                  onChange={() => togglePlayer(player.id)}
-                  disabled={player.id === user?.uid}
-                />
-                <span>
-                  {player.name}
-                  {player.id === user?.uid && ' (自分)'}
-                </span>
-              </label>
-            ))}
-          </div>
+          <p className={styles.fieldLabel}>参加プレイヤー</p>
+
+          {/* 自分（リーダー） */}
+          {user && profile && (
+            <div className={styles.leaderCard}>
+              <span className={styles.leaderName}>
+                {profile.displayName}
+              </span>
+              <span className={styles.leaderBadge}>リーダー</span>
+            </div>
+          )}
+
+          {/* フレンドをセレクトで招待 */}
+          {availableFriends.length > 0 && (
+            <select
+              className={styles.friendSelectInput}
+              value=""
+              onChange={(e) => {
+                if (e.target.value) handleFriendSelect(e.target.value);
+              }}
+            >
+              <option value="">フレンドを招待...</option>
+              {availableFriends.map((f) => (
+                <option key={f.id} value={f.id}>{f.name}</option>
+              ))}
+            </select>
+          )}
 
           {/* IDでプレイヤーを招待 */}
           <InviteByCode
@@ -197,6 +229,27 @@ export function RecordFormPage() {
             </p>
           )}
         </div>
+
+        {/* 承諾済みプレイヤー一覧 */}
+        {acceptedPlayers.length > 0 && (
+          <div className={styles.acceptedSection}>
+            <p className={styles.fieldLabel}>参加確定（{acceptedPlayers.length}人）</p>
+            <div className={styles.acceptedList}>
+              {acceptedPlayers.map((p) => (
+                <div key={p.id} className={styles.acceptedItem}>
+                  <span className={styles.acceptedName}>{p.name}</span>
+                  <button
+                    className={styles.acceptedRemove}
+                    onClick={() => removePlayer(p.id)}
+                    aria-label="除外"
+                  >
+                    ✕
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* 順位入力 */}
         {selectedPlayerIds.length >= 2 && (

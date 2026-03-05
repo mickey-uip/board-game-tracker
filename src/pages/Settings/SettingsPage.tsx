@@ -56,6 +56,9 @@ export function SettingsPage() {
   // アカウント情報メニュー
   const [showAccountMenu, setShowAccountMenu] = useState(false);
 
+  // フレンドカードメニュー
+  const [openFriendMenuId, setOpenFriendMenuId] = useState<string | null>(null);
+
   // プロフィール編集モーダル
   const [showEditProfile, setShowEditProfile] = useState(false);
   const [editName, setEditName] = useState('');
@@ -297,25 +300,59 @@ export function SettingsPage() {
                   フレンドコードを交換してフレンドを追加しよう
                 </p>
               ) : (
-                friends.map((friend) => (
-                  <div key={friend.id} className={friendStyles.friendCard}>
-                    <div className={friendStyles.friendInfo}>
-                      <div className={friendStyles.friendAvatar}>
-                        {friend.avatarBase64
-                          ? <img src={friend.avatarBase64} alt={friend.name} style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }} />
-                          : friend.name.charAt(0)
-                        }
+                friends.map((friend) => {
+                  const isMenuOpen = openFriendMenuId === friend.id;
+                  return (
+                    <div key={friend.id} className={friendStyles.friendCard}>
+                      <div className={friendStyles.friendInfo}>
+                        <div className={friendStyles.friendAvatar}>
+                          {friend.avatarBase64
+                            ? <img src={friend.avatarBase64} alt={friend.name} style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }} />
+                            : friend.name.charAt(0)
+                          }
+                        </div>
+                        <span className={friendStyles.friendName}>{friend.name}</span>
                       </div>
-                      <span className={friendStyles.friendName}>{friend.name}</span>
+                      <div className={friendStyles.friendMenuWrapper}>
+                        <button
+                          className={friendStyles.friendMenuBtn}
+                          onClick={() => setOpenFriendMenuId(isMenuOpen ? null : friend.id)}
+                          aria-label="メニューを開く"
+                        >
+                          ···
+                        </button>
+                        {isMenuOpen && (
+                          <div className={friendStyles.friendOverflowMenu}>
+                            <button
+                              className={friendStyles.friendMenuItem}
+                              onClick={() => {
+                                setOpenFriendMenuId(null);
+                                navigate(`/players/${friend.id}`);
+                              }}
+                            >
+                              詳細
+                            </button>
+                            <button
+                              className={`${friendStyles.friendMenuItem} ${friendStyles.friendMenuItemDanger}`}
+                              onClick={() => {
+                                setOpenFriendMenuId(null);
+                                handleRemoveFriend(friend.friendDocId);
+                              }}
+                            >
+                              削除
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                      {isMenuOpen && (
+                        <div
+                          className={friendStyles.friendBackdrop}
+                          onClick={() => setOpenFriendMenuId(null)}
+                        />
+                      )}
                     </div>
-                    <button
-                      className={friendStyles.removeBtn}
-                      onClick={() => handleRemoveFriend(friend.friendDocId)}
-                    >
-                      削除
-                    </button>
-                  </div>
-                ))
+                  );
+                })
               )}
             </div>
           </section>

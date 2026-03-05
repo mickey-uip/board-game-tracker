@@ -199,3 +199,65 @@
   text-align: center;
   padding: var(--space-lg);
 }
+
+/* フレンドカード ...メニュー */
+.friendMenuWrapper {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.friendMenuBtn {
+  background: none;
+  border: none;
+  font-size: 20px;
+  color: var(--color-text-muted);
+  padding: 4px 8px;
+  cursor: pointer;
+  line-height: 1;
+  letter-spacing: 2px;
+}
+
+.friendOverflowMenu {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 4px);
+  background: #fff0d0;
+  border: 1px solid #c8a86a;
+  border-radius: var(--radius-md);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.28);
+  min-width: 140px;
+  z-index: 100;
+  overflow: hidden;
+}
+
+.friendMenuItem {
+  display: block;
+  width: 100%;
+  padding: 12px 16px;
+  text-align: left;
+  background: none;
+  border: none;
+  border-bottom: 1px solid #d9bb8a;
+  font-size: var(--font-size-sm);
+  color: #2a1a06;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.friendMenuItem:last-child {
+  border-bottom: none;
+}
+
+.friendMenuItem:active {
+  background: #f5dfa0;
+}
+
+.friendMenuItemDanger {
+  color: #b82020;
+}
+
+.friendBackdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 99;
+}
