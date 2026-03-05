@@ -48,21 +48,23 @@ export function RecordFormContent({ initialDate, onSuccess }: RecordFormContentP
   }, [gameId]);
 
   // マウント時に前回セッションの残留招待をクリーンアップ（Firestore直接クエリ）
+  const [purgeComplete, setPurgeComplete] = useState(false);
   useEffect(() => {
-    purgeStaleInvites();
+    purgeStaleInvites().then(() => setPurgeComplete(true));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // 手動除外したプレイヤーを追跡（useEffectが再追加しないように）
   const removedPlayerIdsRef = useRef<Set<string>>(new Set());
 
-  // 承諾済みの招待プレイヤーを自動的にselectedPlayerIdsに追加
+  // 承諾済みの招待プレイヤーを自動的にselectedPlayerIdsに追加（purge完了後のみ）
   const acceptedInvites = useMemo(
     () => outgoingInvites.filter((inv) => inv.status === 'accepted'),
     [outgoingInvites],
   );
 
   useEffect(() => {
+    if (!purgeComplete) return;
     for (const inv of acceptedInvites) {
       if (removedPlayerIdsRef.current.has(inv.toUid)) continue;
       setSelectedPlayerIds((prev) => {
@@ -72,7 +74,7 @@ export function RecordFormContent({ initialDate, onSuccess }: RecordFormContentP
         return next;
       });
     }
-  }, [acceptedInvites]);
+  }, [acceptedInvites, purgeComplete]);
 
   // アンマウント時に招待をクリーンアップ
   const cleanupRef = useRef(cleanupInvites);
