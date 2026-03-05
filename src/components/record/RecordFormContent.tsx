@@ -213,7 +213,7 @@ export function RecordFormContent({ initialDate, onSuccess }: RecordFormContentP
                   if (e.target.value) handleFriendSelect(e.target.value);
                 }}
               >
-                <option value="">フレンドを招待...</option>
+                <option value="">フレンドを招待</option>
                 {availableFriends.map((f) => (
                   <option key={f.id} value={f.id}>{f.name}</option>
                 ))}
