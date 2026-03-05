@@ -270,7 +270,7 @@ export function SettingsPage() {
               <p className={friendStyles.sectionTitle}>フレンド一覧（{friends.length}人）</p>
 
               {/* フレンドコードで追加 */}
-              <div className={friendStyles.searchRow}>
+              <div className={friendStyles.searchRow} style={{ marginBottom: 'var(--space-md)' }}>
                 <input
                   className={friendStyles.searchInput}
                   type="text"
@@ -284,11 +284,11 @@ export function SettingsPage() {
                   onClick={handleFriendSearch}
                   disabled={sending || !friendCode.trim()}
                 >
-                  {sending ? '送信中...' : '検索'}
+                  {sending ? '送信中...' : '送信'}
                 </button>
               </div>
               {searchMessage && (
-                <p className={`${friendStyles.searchMessage} ${searchMessage.success ? friendStyles.searchSuccess : friendStyles.searchError}`}>
+                <p className={`${friendStyles.searchMessage} ${searchMessage.success ? friendStyles.searchSuccess : friendStyles.searchError}`} style={{ marginBottom: 'var(--space-sm)' }}>
                   {searchMessage.text}
                 </p>
               )}
