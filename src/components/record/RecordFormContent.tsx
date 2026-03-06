@@ -9,6 +9,7 @@ import { useRecords } from '../../hooks/useRecords';
 import { useGameInvites } from '../../hooks/useGameInvites';
 import { useAuth } from '../../contexts/AuthContext';
 import { RULEBOOK } from '../../data/rulebook';
+import { useGameImages } from '../../hooks/useGameImages';
 import styles from './RecordFormContent.module.css';
 
 interface RecordFormContentProps {
@@ -21,6 +22,7 @@ export function RecordFormContent({ initialDate, onSuccess }: RecordFormContentP
   const { friends } = usePlayers();
   const { games, getGameById } = useGames();
   const { addRecord } = useRecords();
+  const { getGameImage } = useGameImages();
   const { outgoingInvites, sendInvite, removeInviteByUid, cleanupInvites, completeInvites, purgeStaleInvites } = useGameInvites();
 
   const [gameId, setGameId] = useState('');
@@ -163,9 +165,8 @@ export function RecordFormContent({ initialDate, onSuccess }: RecordFormContentP
     }));
     const game = getGameById(gameId);
     const gameName = game?.name ?? '';
-    // RULEBOOKからゲーム画像を取得
-    const entry = RULEBOOK.find((r) => 'preset-' + r.gameId === gameId);
-    const gameImage = entry?.coverImage ?? '';
+    // ゲーム画像を取得（プリセット＆カスタム両対応）
+    const gameImage = getGameImage(gameId) ?? '';
     // 招待参加者に完了通知を送信（cleanupの前に実行）
     await completeInvites(gameName, gameImage, playerResults);
     await addRecord(gameId, initialDate, playerResults, gameName);

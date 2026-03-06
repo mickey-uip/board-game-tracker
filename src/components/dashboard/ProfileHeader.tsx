@@ -144,7 +144,7 @@ export function ProfileHeader({
                     )}
                     <span className={styles.noticeTitle}>{n.title}</span>
                     <p className={styles.noticeBody}>{n.body}</p>
-                    <span className={styles.noticeDate}>{n.date}</span>
+                    <span className={styles.noticeDate}>{n.date.replace(/-/g, ' / ')}</span>
                   </div>
                 );
               })}
