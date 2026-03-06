@@ -1,6 +1,5 @@
 .wrapper {
   position: fixed;
-  right: 16px;
   bottom: calc(var(--bottom-nav-height) + 16px);
   z-index: 100;
   display: flex;
@@ -10,6 +9,15 @@
   pointer-events: none;
   opacity: 1;
   transition: opacity 0.5s ease;
+
+  /* スマホ幅に合わせて右端を制限 */
+  right: 16px;
+  max-width: 480px;
+
+  /* PC: コンテンツ領域の右端に配置 */
+  @media (min-width: 480px) {
+    right: calc(50% - 240px + 16px);
+  }
 }
 
 .wrapperHidden {
