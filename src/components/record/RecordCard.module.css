@@ -167,15 +167,13 @@
   border-radius: 50%;
   border: 1.5px solid var(--color-border-strong);
   background: transparent;
-  color: var(--color-text);
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: border-color 0.2s, color 0.2s;
+  transition: border-color 0.2s;
 }
 
 .shareBtn:active {
   border-color: var(--color-primary);
-  color: var(--color-primary);
 }
