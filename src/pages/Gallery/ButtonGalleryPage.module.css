@@ -309,9 +309,9 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  background: linear-gradient(45deg, #ffc75d, #ffc708);
-  box-shadow: 0 0 24px rgba(255, 178, 8, 0.38);
-  border: 2px solid #ffe825;
+  background: linear-gradient(45deg, #f0b845, #e0a500);
+  box-shadow: 0 0 24px rgba(224, 165, 0, 0.38);
+  border: 2px solid #f0c820;
   border-radius: var(--radius-md);
   transition: background-color 0.3s ease, box-shadow 0.3s ease, text-shadow 0.3s ease;
   color: var(--color-primary-fg);
@@ -321,9 +321,9 @@
   text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
 }
 .pillBtn:hover {
-  box-shadow: 0 0 34px rgba(255, 178, 8, 0.5);
-  text-shadow: 0 0 4px #ffe825;
-  border-color: #ffe825;
+  box-shadow: 0 0 34px rgba(224, 165, 0, 0.5);
+  text-shadow: 0 0 4px #f0c820;
+  border-color: #f0c820;
 }
 .pillBtn:active {
   transform: scale(0.95);

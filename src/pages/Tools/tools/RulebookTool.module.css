@@ -329,10 +329,10 @@
   gap: var(--space-xs);
   width: 100%;
   padding: 10px 20px;
-  border: 2px solid #ffe825;
+  border: 2px solid #f0c820;
   border-radius: var(--radius-md);
-  background: linear-gradient(45deg, #ffc75d, #ffc708);
-  box-shadow: 0 0 24px rgba(255, 178, 8, 0.38);
+  background: linear-gradient(45deg, #f0b845, #e0a500);
+  box-shadow: 0 0 24px rgba(224, 165, 0, 0.38);
   color: var(--color-primary-fg);
   font-size: var(--font-size-md);
   font-weight: 600;
@@ -354,8 +354,8 @@
 }
 
 .youtubeBtn:not(:disabled):hover {
-  box-shadow: 0 0 34px rgba(255, 178, 8, 0.5);
-  text-shadow: 0 0 4px #ffe825;
+  box-shadow: 0 0 34px rgba(224, 165, 0, 0.5);
+  text-shadow: 0 0 4px #f0c820;
 }
 
 .youtubeBtn:not(:disabled):active {
