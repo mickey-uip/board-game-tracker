@@ -66,6 +66,7 @@ export function SettingsPage() {
   const [editError, setEditError] = useState('');
   const [editSaving, setEditSaving] = useState(false);
   const editFileRef = useRef<HTMLInputElement>(null);
+  const touchStartX = useRef<number | null>(null);
 
   const filteredGames = searchQuery.trim()
     ? games.filter((g) => g.name.toLowerCase().includes(searchQuery.toLowerCase()))
@@ -159,8 +160,24 @@ export function SettingsPage() {
     }
   };
 
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (touchStartX.current == null) return;
+    const diff = e.changedTouches[0].clientX - touchStartX.current;
+    const THRESHOLD = 50;
+    if (diff < -THRESHOLD && activeTab === 'friends') {
+      setActiveTab('games');
+    } else if (diff > THRESHOLD && activeTab === 'games') {
+      setActiveTab('friends');
+    }
+    touchStartX.current = null;
+  };
+
   return (
-    <div>
+    <div onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
       <PageHeader title="設定" />
       <TabBar
         tabs={[...TABS]}
