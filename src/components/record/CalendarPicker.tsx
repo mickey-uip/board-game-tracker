@@ -1,3 +1,4 @@
+import { useRef } from 'react';
 import styles from './CalendarPicker.module.css';
 import type { GameRecord } from '../../types';
 
@@ -24,6 +25,7 @@ export function CalendarPicker({
   currentMonth,
   onMonthChange,
 }: CalendarPickerProps) {
+  const touchStartX = useRef<number | null>(null);
   const [yearStr, monthStr] = currentMonth.split('-');
   const todayStr = getTodayStr();
   const year = Number(yearStr);
@@ -62,8 +64,25 @@ export function CalendarPicker({
   const toDateString = (day: number): string =>
     `${yearStr}-${monthStr}-${String(day).padStart(2, '0')}`;
 
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (touchStartX.current == null) return;
+    const diff = e.changedTouches[0].clientX - touchStartX.current;
+    const THRESHOLD = 50;
+    if (diff < -THRESHOLD) moveNextMonth();
+    else if (diff > THRESHOLD) movePrevMonth();
+    touchStartX.current = null;
+  };
+
   return (
-    <div className={styles.calendar}>
+    <div
+      className={styles.calendar}
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
+    >
       {/* 月ナビゲーション */}
       <div className={styles.nav}>
         <button className={styles.navBtn} onClick={movePrevMonth} type="button">
