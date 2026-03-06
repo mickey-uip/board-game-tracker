@@ -11,13 +11,10 @@ import { SettingsPage } from './pages/Settings/SettingsPage';
 import { ItemsPage } from './pages/Items/ItemsPage';
 import { ItemDetailPage } from './pages/Items/ItemDetailPage';
 import { PrivacyPolicyPage } from './pages/PrivacyPolicy/PrivacyPolicyPage';
-import { ButtonGalleryPage } from './pages/Gallery/ButtonGalleryPage';
-
 const router = createBrowserRouter([
   /* ── Public routes ── */
   { path: '/login', element: <LoginPage /> },
   { path: '/setup', element: <ProfileSetupPage /> },
-  { path: '/gallery', element: <ButtonGalleryPage /> },
 
   /* ── Protected routes ── */
   {
@@ -36,7 +33,6 @@ const router = createBrowserRouter([
       { path: 'tools/:toolKey', element: <ItemDetailPage /> },
       { path: 'settings', element: <SettingsPage /> },
       { path: 'privacy-policy', element: <PrivacyPolicyPage /> },
-      { path: 'gallery', element: <ButtonGalleryPage /> },
     ],
   },
 ]);

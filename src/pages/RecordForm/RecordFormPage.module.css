@@ -66,7 +66,10 @@
 .leaderName {
   font-size: var(--font-size-md);
   font-weight: 700;
-  color: var(--color-text);
+  background: var(--text-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .leaderBadge {
@@ -148,7 +151,10 @@
 .acceptedName {
   font-size: var(--font-size-sm);
   font-weight: 600;
-  color: var(--color-text);
+  background: var(--text-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .acceptedRemove {

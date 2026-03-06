@@ -12,7 +12,10 @@
 
 .heading {
   font-size: var(--font-size-sm);
-  color: var(--color-text);
+  background: var(--text-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
   font-weight: 500;
   letter-spacing: 0.04em;
 }
@@ -40,7 +43,10 @@
 
 .sub {
   font-size: var(--font-size-xs);
-  color: var(--color-text);
+  background: var(--text-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 /* ━━━━━━━━━━━━━━━━━━━━━━━━
@@ -67,7 +73,10 @@
 /* 画像あり時のテキストは常に明るく */
 .hasImage .heading,
 .hasImage .sub {
-  color: var(--color-text);
+  background: var(--text-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
   text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
 }
 

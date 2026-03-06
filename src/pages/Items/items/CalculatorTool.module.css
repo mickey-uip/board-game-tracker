@@ -24,7 +24,10 @@
   font-weight: 600;
   word-break: break-all;
   text-align: right;
-  color: var(--color-text);
+  background: var(--text-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .resultRow {

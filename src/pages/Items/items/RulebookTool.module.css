@@ -289,7 +289,10 @@
 .gameName {
   font-size: var(--font-size-lg);
   font-weight: 700;
-  color: var(--color-text);
+  background: var(--text-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
   margin: 0;
 }
 
@@ -316,7 +319,10 @@
 /* 概要テキスト */
 .summary {
   font-size: var(--font-size-sm);
-  color: var(--color-text);
+  background: var(--text-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
   line-height: 1.8;
   margin: 0;
 }
@@ -458,7 +464,10 @@
   border: none;
   cursor: pointer;
   text-align: left;
-  color: var(--color-text);
+  background: var(--text-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
   font-size: var(--font-size-md);
   transition: background 0.1s;
 }
