@@ -6,8 +6,9 @@
   border: none;
   border-radius: var(--radius-md);
   font-weight: 600;
-  transition: opacity 0.15s;
   white-space: nowrap;
+  cursor: pointer;
+  transition: box-shadow 0.3s ease, text-shadow 0.3s ease;
 }
 
 .btn:disabled {
@@ -17,12 +18,21 @@
 
 /* variants */
 .primary {
-  background: var(--gradient-primary);
+  background: linear-gradient(45deg, #ffc75d, #ffc708);
+  box-shadow: 0 0 24px rgba(255, 178, 8, 0.38);
+  border: 2px solid #ffe825;
   color: var(--color-primary-fg);
+  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
 }
 
 .primary:hover {
-  opacity: 0.88;
+  box-shadow: 0 0 34px rgba(255, 178, 8, 0.5);
+  text-shadow: 0 0 4px #ffe825;
+  border-color: #ffe825;
+}
+
+.primary:active {
+  transform: scale(0.95);
 }
 
 .secondary {
