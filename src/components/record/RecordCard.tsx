@@ -113,22 +113,27 @@ export function RecordCard({ record, game, players, onDelete, showDetail = true,
             const gameName = game?.name ?? '';
             if (myRank == null) return null;
             return (
-              <div className={styles.shareRow}>
-                <button
-                  className={styles.shareBtn}
-                  onClick={() => shareToX(getShareText(gameName, myRank, totalPlayers))}
-                >
-                  Xで共有
-                </button>
-                <button
-                  className={styles.shareBtn}
-                  onClick={async () => {
-                    const blob = await generateShareCard({ gameName, rank: myRank, totalPlayers });
-                    await shareImage(blob, 'bodoge-record.png');
-                  }}
-                >
-                  Instagramで共有
-                </button>
+              <div className={styles.shareSection}>
+                <p className={styles.shareTitle}>SNSでシェアしよう！</p>
+                <div className={styles.shareRow}>
+                  <button
+                    className={styles.shareBtn}
+                    aria-label="Xで共有"
+                    onClick={() => shareToX(getShareText(gameName, myRank, totalPlayers))}
+                  >
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                  </button>
+                  <button
+                    className={styles.shareBtn}
+                    aria-label="Instagramで共有"
+                    onClick={async () => {
+                      const blob = await generateShareCard({ gameName, rank: myRank, totalPlayers });
+                      await shareImage(blob, 'bodoge-record.png');
+                    }}
+                  >
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/><circle cx="17.5" cy="6.5" r="1.5" fill="currentColor" stroke="none"/></svg>
+                  </button>
+                </div>
               </div>
             );
           })()}
