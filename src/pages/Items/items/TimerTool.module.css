@@ -140,18 +140,25 @@
 
 .startBtn {
   padding: var(--space-sm) var(--space-xl);
-  border: none;
+  border: 2px solid #f0c820;
   border-radius: var(--radius-md);
-  background: var(--gradient-primary);
+  background: linear-gradient(45deg, #f0b845, #e0a500);
+  box-shadow: 0 0 24px rgba(224, 165, 0, 0.38);
   color: var(--color-primary-fg);
   font-size: var(--font-size-md);
   font-weight: 700;
   cursor: pointer;
-  transition: opacity 0.15s ease, transform 0.08s ease;
+  transition: box-shadow 0.3s ease, text-shadow 0.3s ease;
+  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+.startBtn:hover {
+  box-shadow: 0 0 34px rgba(224, 165, 0, 0.5);
+  text-shadow: 0 0 4px #f0c820;
 }
 
 .startBtn:active {
-  transform: scale(0.96);
+  transform: scale(0.95);
 }
 
 .pauseBtn {
