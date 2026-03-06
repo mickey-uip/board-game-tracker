@@ -329,27 +329,37 @@
   gap: var(--space-xs);
   width: 100%;
   padding: 10px 20px;
-  border: none;
+  border: 2px solid #ffe825;
   border-radius: var(--radius-md);
-  background: var(--gradient-primary);
+  background: linear-gradient(45deg, #ffc75d, #ffc708);
+  box-shadow: 0 0 24px rgba(255, 178, 8, 0.38);
   color: var(--color-primary-fg);
   font-size: var(--font-size-md);
   font-weight: 600;
   cursor: pointer;
-  transition: opacity 0.2s;
+  transition: box-shadow 0.3s ease, text-shadow 0.3s ease;
   margin-top: var(--space-xs);
   white-space: nowrap;
+  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
 }
 
 .youtubeBtn:disabled {
   background: var(--color-card);
+  border-color: var(--color-border);
+  box-shadow: none;
   color: var(--color-text-muted);
   cursor: not-allowed;
   opacity: 0.4;
+  text-shadow: none;
 }
 
 .youtubeBtn:not(:disabled):hover {
-  opacity: 0.88;
+  box-shadow: 0 0 34px rgba(255, 178, 8, 0.5);
+  text-shadow: 0 0 4px #ffe825;
+}
+
+.youtubeBtn:not(:disabled):active {
+  transform: scale(0.95);
 }
 
 /* ========== 検索ポップアップ ========== */
