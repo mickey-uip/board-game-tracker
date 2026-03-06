@@ -3,6 +3,7 @@ import { Modal } from '../ui/Modal';
 import { Button } from '../ui/Button';
 import { useGameInvites } from '../../hooks/useGameInvites';
 import { useConfetti } from '../../hooks/useConfetti';
+import { getShareText, shareToX, generateShareCard, shareImage } from '../../utils/shareCard';
 import styles from './InviteDialog.module.css';
 
 /**
@@ -132,6 +133,36 @@ export function InviteDialog() {
                 ? '1位おめでとう！'
                 : `${currentInvite.rank}位 おつかれさま！`}
             </p>
+            {currentInvite.rank != null && currentInvite.totalPlayers && (
+              <div className={styles.shareRow}>
+                <button
+                  className={styles.shareBtn}
+                  onClick={() => {
+                    const text = getShareText(
+                      currentInvite.gameName ?? '',
+                      currentInvite.rank!,
+                      currentInvite.totalPlayers!,
+                    );
+                    shareToX(text);
+                  }}
+                >
+                  Xで共有
+                </button>
+                <button
+                  className={styles.shareBtn}
+                  onClick={async () => {
+                    const blob = await generateShareCard({
+                      gameName: currentInvite.gameName ?? '',
+                      rank: currentInvite.rank!,
+                      totalPlayers: currentInvite.totalPlayers!,
+                    });
+                    await shareImage(blob, 'bodoge-record.png');
+                  }}
+                >
+                  Instagramで共有
+                </button>
+              </div>
+            )}
             <div className={styles.actions}>
               <Button variant="secondary" fullWidth onClick={handleDismiss}>
                 閉じる

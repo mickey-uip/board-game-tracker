@@ -135,3 +135,28 @@
   color: #b3a68b;
   margin: 0;
 }
+
+/* ── SNS共有ボタン ── */
+.shareRow {
+  display: flex;
+  gap: var(--space-sm);
+  width: 100%;
+}
+
+.shareBtn {
+  flex: 1;
+  padding: 10px 12px;
+  border: 1.5px solid var(--color-border-strong);
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--color-text);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s;
+}
+
+.shareBtn:active {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}

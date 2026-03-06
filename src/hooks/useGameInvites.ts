@@ -211,6 +211,7 @@ export function useGameInvites() {
             gameName,
             gameImage,
             rank: result.rank,
+            totalPlayers: playerResults.length,
           });
         } catch {
           /* ignore */
@@ -231,6 +232,7 @@ export function useGameInvites() {
               gameName,
               gameImage,
               rank: leaderResult.rank,
+              totalPlayers: playerResults.length,
               createdAt: serverTimestamp(),
             });
           } catch {

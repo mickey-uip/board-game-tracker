@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import { Badge } from '../ui/Badge';
 import { GameImageIcon } from '../game/GameImageIcon';
 import { GENRE_LABEL } from '../../constants/genres';
+import { useAuth } from '../../contexts/AuthContext';
+import { getShareText, shareToX, generateShareCard, shareImage } from '../../utils/shareCard';
 import styles from './RecordCard.module.css';
 import type { GameRecord, Game, Player } from '../../types';
 
@@ -16,6 +18,7 @@ interface RecordCardProps {
 }
 
 export function RecordCard({ record, game, players, onDelete, showDetail = true, getGameImage }: RecordCardProps) {
+  const { user } = useAuth();
   const [isExpanded, setIsExpanded] = useState(false);
   const sortedResults = [...record.playerResults].sort((a, b) => a.rank - b.rank);
   const VISIBLE_COUNT = 3;
@@ -104,6 +107,31 @@ export function RecordCard({ record, game, players, onDelete, showDetail = true,
               );
             })}
           </div>
+          {(() => {
+            const myRank = record.playerResults.find((r) => r.playerId === user?.uid)?.rank;
+            const totalPlayers = record.playerResults.length;
+            const gameName = game?.name ?? '';
+            if (myRank == null) return null;
+            return (
+              <div className={styles.shareRow}>
+                <button
+                  className={styles.shareBtn}
+                  onClick={() => shareToX(getShareText(gameName, myRank, totalPlayers))}
+                >
+                  Xで共有
+                </button>
+                <button
+                  className={styles.shareBtn}
+                  onClick={async () => {
+                    const blob = await generateShareCard({ gameName, rank: myRank, totalPlayers });
+                    await shareImage(blob, 'bodoge-record.png');
+                  }}
+                >
+                  Instagramで共有
+                </button>
+              </div>
+            );
+          })()}
         </div>
       )}
     </div>

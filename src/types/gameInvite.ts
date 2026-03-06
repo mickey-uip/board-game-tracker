@@ -10,4 +10,5 @@ export interface GameInvite {
   gameName?: string;
   gameImage?: string;
   rank?: number;
+  totalPlayers?: number;
 }
