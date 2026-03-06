@@ -135,7 +135,7 @@ export function InviteDialog() {
             </p>
             {currentInvite.rank != null && currentInvite.totalPlayers && (
               <div className={styles.shareSection}>
-                <p className={styles.shareTitle}>SNSでシェアしよう！</p>
+                <p className={styles.shareTitle}>結果をSNSでシェアしよう！</p>
                 <div className={styles.shareRow}>
                   <button
                     className={`${styles.shareBtn} ${styles.shareBtnX}`}
