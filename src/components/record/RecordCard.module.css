@@ -164,13 +164,15 @@
 .shareBtn {
   width: 44px;
   height: 44px;
-  border-radius: 50%;
+  border-radius: 10px;
   border: none;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: opacity 0.2s;
+  position: relative;
+  overflow: hidden;
 }
 
 .shareBtn:active {
@@ -182,5 +184,20 @@
 }
 
 .shareBtnIg {
-  background: linear-gradient(135deg, #FFDC80, #F77737, #E1306C, #C13584, #833AB4);
+  background: linear-gradient(135deg, #427eff 0%, #f13f79 70%) no-repeat;
+}
+
+.shareBtnIg svg {
+  position: relative;
+  z-index: 1;
+}
+
+.shareBtnIg::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: -1px;
+  width: 46px;
+  height: 28px;
+  background: radial-gradient(#ffdb2c 5%, rgba(255, 105, 34, 0.65) 55%, rgba(255, 88, 96, 0) 70%);
 }
