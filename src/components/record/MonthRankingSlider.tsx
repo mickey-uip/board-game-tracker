@@ -29,7 +29,7 @@ export function MonthRankingSlider({ ranking, month }: MonthRankingSliderProps) 
           <div className={styles.slide}>
             {emptyItems.map((item, i) => (
               <span key={i} className={styles.item}>
-                {item}
+                <span className={styles.itemText}>{item}</span>
               </span>
             ))}
           </div>
@@ -54,7 +54,9 @@ export function MonthRankingSlider({ ranking, month }: MonthRankingSliderProps) 
                   alt={`${rank + 1}位`}
                   className={styles.trophy}
                 />
-                {rank + 1}位  {entry.name}  {entry.wins}勝
+                <span className={styles.itemText}>
+                  {rank + 1}位  {entry.name}  {entry.wins}勝
+                </span>
               </span>
             );
           })}

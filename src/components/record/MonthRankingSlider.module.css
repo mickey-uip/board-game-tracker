@@ -37,16 +37,19 @@
 
 .item {
   font-size: var(--font-size-sm);
-  background: var(--text-gradient);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
   padding: var(--space-xs) var(--space-xl);
   flex-shrink: 0;
   letter-spacing: 0.03em;
   display: flex;
   align-items: center;
   gap: 6px;
+}
+
+.itemText {
+  background: var(--text-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .trophy {
@@ -61,6 +64,7 @@
   content: '·';
   margin-right: var(--space-xl);
   color: var(--color-text-muted);
+  -webkit-text-fill-color: var(--color-text-muted);
   opacity: 0.5;
 }
 
