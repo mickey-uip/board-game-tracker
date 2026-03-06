@@ -63,7 +63,7 @@ function CustomTick({ x = 0, y = 0, cx, cy, payload, highlightGenres = [] }: Cus
       textAnchor="middle"
       dominantBaseline="central"
       fontSize={12}
-      fill="#8a7040"
+      fill="#b3a68b"
       fontWeight={600}
       className={isPulse ? styles.pulseTick : undefined}
     >
