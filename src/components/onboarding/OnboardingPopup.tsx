@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import { doc, setDoc } from 'firebase/firestore';
 import { db } from '../../lib/firebase';
 import { useAuth } from '../../contexts/AuthContext';
@@ -43,6 +43,7 @@ export function OnboardingPopup({ forceOpen, onClose }: OnboardingPopupProps = {
   const { user, profile, refreshProfile } = useAuth();
   const [currentSlide, setCurrentSlide] = useState(0);
   const [dismissed, setDismissed] = useState(false);
+  const touchStartX = useRef<number | null>(null);
 
   const isLastSlide = currentSlide === SLIDES.length - 1;
   const isReplay = !!forceOpen;
@@ -84,9 +85,29 @@ export function OnboardingPopup({ forceOpen, onClose }: OnboardingPopupProps = {
 
   const slide = SLIDES[currentSlide];
 
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (touchStartX.current == null) return;
+    const diff = e.changedTouches[0].clientX - touchStartX.current;
+    const THRESHOLD = 50;
+    if (diff < -THRESHOLD && currentSlide < SLIDES.length - 1) {
+      setCurrentSlide((prev) => prev + 1);
+    } else if (diff > THRESHOLD && currentSlide > 0) {
+      setCurrentSlide((prev) => prev - 1);
+    }
+    touchStartX.current = null;
+  };
+
   return (
     <div className={styles.overlay}>
-      <div className={styles.card}>
+      <div
+        className={styles.card}
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
+      >
         {/* イメージエリア */}
         <div className={styles.imageArea}>
           {slide.image ? (
