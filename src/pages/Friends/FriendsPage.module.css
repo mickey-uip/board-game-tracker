@@ -40,7 +40,7 @@
   border: 2px solid #d4b418;
   border-radius: var(--radius-md);
   background: linear-gradient(45deg, #dca830, #c89500);
-  box-shadow: 0 0 20px rgba(200, 149, 0, 0.32);
+  box-shadow: 0 0 14px rgba(200, 149, 0, 0.28);
   color: var(--color-primary-fg);
   font-weight: 700;
   font-size: var(--font-size-sm);
@@ -51,7 +51,7 @@
 }
 
 .searchBtn:hover {
-  box-shadow: 0 0 30px rgba(200, 149, 0, 0.42);
+  box-shadow: 0 0 20px rgba(200, 149, 0, 0.36);
   text-shadow: 0 0 4px #d4b418;
 }
 
