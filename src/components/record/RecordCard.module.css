@@ -162,9 +162,9 @@
 }
 
 .shareBtn {
-  width: 44px;
-  height: 44px;
-  border-radius: 10px;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
   border: none;
   cursor: pointer;
   display: flex;
@@ -197,7 +197,7 @@
   position: absolute;
   bottom: 0;
   left: -1px;
-  width: 46px;
-  height: 28px;
+  width: 34px;
+  height: 20px;
   background: radial-gradient(#ffdb2c 5%, rgba(255, 105, 34, 0.65) 55%, rgba(255, 88, 96, 0) 70%);
 }
