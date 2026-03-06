@@ -357,7 +357,7 @@ export function SettingsPage() {
         )}
         {activeTab === 'games' && (
           <section className={styles.section}>
-            <Button variant="primary" fullWidth onClick={() => setShowGameForm(true)}>
+            <Button variant="primary" fullWidth className={styles.addGameBtn} onClick={() => setShowGameForm(true)}>
               + ゲームを追加
             </Button>
 

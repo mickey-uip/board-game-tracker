@@ -104,19 +104,32 @@
 
 .submitBtn {
   padding: 12px;
-  border: none;
+  border: 2px solid #d4b418;
   border-radius: var(--radius-md);
-  background: var(--gradient-primary);
+  background: linear-gradient(45deg, #dca830, #c89500);
+  box-shadow: 0 0 20px rgba(200, 149, 0, 0.32);
   color: var(--color-primary-fg);
   font-size: var(--font-size-md);
   font-weight: 700;
   cursor: pointer;
-  transition: opacity 0.2s;
+  transition: box-shadow 0.3s ease, text-shadow 0.3s ease;
+  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+.submitBtn:hover {
+  box-shadow: 0 0 30px rgba(200, 149, 0, 0.42);
+  text-shadow: 0 0 4px #d4b418;
+}
+
+.submitBtn:active {
+  transform: scale(0.95);
 }
 
 .submitBtn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+  box-shadow: none;
+  text-shadow: none;
 }
 
 /* ── モード切替テキスト ── */

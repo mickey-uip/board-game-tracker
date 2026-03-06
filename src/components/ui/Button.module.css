@@ -38,7 +38,18 @@
 .secondary {
   background: transparent;
   color: var(--color-text);
-  border: 1.5px solid var(--color-border-strong);
+  border: 2px solid var(--color-border-strong);
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 0 12px rgba(200, 149, 0, 0.1);
+}
+
+.secondary:hover {
+  box-shadow: 0 0 18px rgba(200, 149, 0, 0.2);
+  text-shadow: 0 0 3px rgba(212, 180, 24, 0.3);
+}
+
+.secondary:active {
+  transform: scale(0.95);
 }
 
 .ghost {
