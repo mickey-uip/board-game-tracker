@@ -10,6 +10,10 @@
   font-size: var(--font-size-sm);
   font-weight: 600;
   flex-shrink: 0;
+  background: var(--text-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .barTrack {
@@ -34,6 +38,10 @@
   width: 36px;
   text-align: right;
   flex-shrink: 0;
+  background: var(--text-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .count {

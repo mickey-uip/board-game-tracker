@@ -60,6 +60,10 @@
   font-weight: 700;
   width: 20px;
   flex-shrink: 0;
+  background: var(--text-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .rankingName {
@@ -69,4 +73,8 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  background: var(--text-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }

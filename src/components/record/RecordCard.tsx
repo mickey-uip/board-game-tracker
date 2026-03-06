@@ -59,7 +59,7 @@ export function RecordCard({ record, game, players, onDelete, showDetail = true,
         {visibleResults.map((result) => (
           <span key={result.playerId} className={styles.result}>
             <span className={styles.rank}>{result.rank}位</span>
-            <span className={result.rank === 1 ? styles.winner : ''}>
+            <span className={`${styles.playerName} ${result.rank === 1 ? styles.winner : ''}`}>
               {getPlayerName(result.playerId)}
             </span>
           </span>
@@ -67,7 +67,7 @@ export function RecordCard({ record, game, players, onDelete, showDetail = true,
         {hiddenCount > 0 && (
           <span className={styles.result}>
             <span className={styles.rank}>…</span>
-            <span>他{hiddenCount}名</span>
+            <span className={styles.playerName}>他{hiddenCount}名</span>
           </span>
         )}
       </div>
@@ -96,7 +96,7 @@ export function RecordCard({ record, game, players, onDelete, showDetail = true,
                   className={styles.playerLink}
                 >
                   <span className={styles.playerLinkRank}>{result.rank}位</span>
-                  <span className={result.rank === 1 ? styles.winner : ''}>
+                  <span className={`${styles.playerName} ${result.rank === 1 ? styles.winner : ''}`}>
                     {player.name}
                   </span>
                   <span className={styles.playerLinkArrow}>→</span>

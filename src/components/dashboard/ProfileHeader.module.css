@@ -140,6 +140,10 @@
 .summaryValue {
   font-size: var(--font-size-md);
   font-weight: 700;
+  background: var(--text-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .summaryLabel {
@@ -273,6 +277,10 @@
 .noticeTitle {
   font-weight: 700;
   font-size: var(--font-size-sm);
+  background: var(--text-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .noticeBody {

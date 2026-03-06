@@ -21,4 +21,8 @@
   font-weight: 700;
   padding-bottom: var(--space-sm);
   border-bottom: 2px solid var(--color-border-strong);
+  background: var(--text-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }

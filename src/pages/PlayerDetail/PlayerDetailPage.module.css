@@ -49,6 +49,10 @@
 .recentGame {
   flex: 1;
   font-weight: 500;
+  background: var(--text-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .rank {
@@ -59,4 +63,8 @@
 .rankWin {
   font-weight: 700;
   flex-shrink: 0;
+  background: var(--text-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
