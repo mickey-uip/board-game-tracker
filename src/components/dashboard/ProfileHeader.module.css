@@ -276,11 +276,12 @@
 
 .noticeTitle {
   font-weight: 700;
-  font-size: var(--font-size-sm);
+  font-size: var(--font-size-md);
   background: var(--text-gradient);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  padding: var(--space-xs) 0;
 }
 
 .noticeBody {

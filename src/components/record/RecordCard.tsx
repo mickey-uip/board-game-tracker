@@ -78,7 +78,7 @@ export function RecordCard({ record, game, players, onDelete, showDetail = true,
           onClick={() => setIsExpanded((prev) => !prev)}
           type="button"
         >
-          {isExpanded ? '詳細を閉じる ▲' : '詳細を見る ▼'}
+          {isExpanded ? '詳細を閉じる −' : '詳細を見る ＋'}
         </button>
       )}
 
