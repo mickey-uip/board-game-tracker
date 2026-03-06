@@ -280,7 +280,7 @@
 
 /* ========== ゲーム情報エリア ========== */
 .info {
-  padding: var(--space-md) var(--space-md) var(--space-xl);
+  padding: var(--space-md) var(--space-md) 48px;
   display: flex;
   flex-direction: column;
   gap: var(--space-sm);
@@ -319,10 +319,7 @@
 /* 概要テキスト */
 .summary {
   font-size: var(--font-size-sm);
-  background: var(--text-gradient);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: #b3a68b;
   line-height: 1.8;
   margin: 0;
 }

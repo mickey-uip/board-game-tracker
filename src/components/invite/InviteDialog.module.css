@@ -10,10 +10,7 @@
 .message {
   font-size: var(--font-size-md);
   line-height: 1.6;
-  background: var(--text-gradient);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: #b3a68b;
 }
 
 .timer {
@@ -135,9 +132,6 @@
   font-size: var(--font-size-md);
   font-weight: 600;
   line-height: 1.6;
-  background: var(--text-gradient);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: #b3a68b;
   margin: 0;
 }
