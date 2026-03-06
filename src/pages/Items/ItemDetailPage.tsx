@@ -44,7 +44,7 @@ export function ItemDetailPage() {
   return (
     <div className={styles.page}>
       <PageHeader title={label} showBack rightAction={rightAction} />
-      <div className={`${styles.content}${toolKey !== 'rulebook' ? ` ${styles.contentCentered}` : ''}`}>
+      <div className={`${styles.content}${toolKey !== 'rulebook' && toolKey !== 'calculator' ? ` ${styles.contentCentered}` : ''}`}>
         {toolKey === 'dice'       && <DiceTool />}
         {toolKey === 'coin'       && <CoinTool />}
         {toolKey === 'calculator' && <CalculatorTool />}
