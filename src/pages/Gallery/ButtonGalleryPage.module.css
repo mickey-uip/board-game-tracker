@@ -8,6 +8,10 @@
   font-weight: 700;
   margin-bottom: var(--space-lg);
   text-align: center;
+  background: var(--text-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .section {
@@ -22,6 +26,10 @@
   font-size: var(--font-size-lg);
   font-weight: 700;
   margin-bottom: var(--space-xs);
+  background: var(--text-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .sectionDesc {

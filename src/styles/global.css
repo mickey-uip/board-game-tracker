@@ -43,6 +43,9 @@
   --font-size-xl: 22px;
 
   --bottom-nav-height: 60px;
+
+  /* テキスト立体グラデーション（上から光が当たる3D風） */
+  --text-gradient: linear-gradient(to bottom, #fff6dc, #d8b878);
 }
 
 html, body {
