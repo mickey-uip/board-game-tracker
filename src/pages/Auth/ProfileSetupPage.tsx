@@ -105,6 +105,10 @@ export function ProfileSetupPage() {
           <Button variant="primary" fullWidth type="submit" disabled={submitting}>
             {submitting ? '保存中...' : 'はじめる'}
           </Button>
+
+          <p className={styles.agreement}>
+            はじめるをタップすると、<a href="/terms" className={styles.agreementLink}>利用規約</a>と<a href="/privacy-policy" className={styles.agreementLink}>プライバシーポリシー</a>に同意したものとみなされます。
+          </p>
         </form>
       </div>
     </div>

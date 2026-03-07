@@ -105,3 +105,17 @@
   font-size: var(--font-size-sm);
   text-align: center;
 }
+
+.agreement {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  text-align: center;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.agreementLink {
+  color: var(--color-text-muted);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
