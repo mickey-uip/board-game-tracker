@@ -4,7 +4,6 @@ import { MascotBot } from '../../components/dashboard/MascotBot';
 import { RecordCard } from '../../components/record/RecordCard';
 import { RadarChart } from '../../components/stats/RadarChart';
 import { PlayerTypeBadge } from '../../components/stats/PlayerTypeBadge';
-import { EmptyState } from '../../components/ui/EmptyState';
 import { useAuth } from '../../contexts/AuthContext';
 import { usePlayers } from '../../hooks/usePlayers';
 import { useRecords } from '../../hooks/useRecords';
@@ -56,24 +55,17 @@ export function DashboardPage() {
       <MascotBot />
 
       <div className={styles.container}>
-        {profile && stats.totalGames > 0 && (
+        {profile && (
           <section className={styles.section}>
             <h2 className={styles.sectionTitle}>ジャンル別勝率</h2>
             <RadarChart genreStats={stats.genreStats} highlightGenres={highlightGenres} />
           </section>
         )}
 
-        {profile && stats.totalGames > 0 && (
+        {profile && (
           <section className={styles.section}>
             <PlayerTypeBadge genreStats={stats.genreStats} heading="あなたのタイプは" />
           </section>
-        )}
-
-        {profile && stats.totalGames === 0 && (
-          <EmptyState
-            message="まだ記録がありません"
-            description="対戦後に記録を追加するとここに統計が表示されます"
-          />
         )}
 
         {profile && recentRecords.length > 0 && (
