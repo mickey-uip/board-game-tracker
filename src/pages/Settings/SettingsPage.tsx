@@ -5,6 +5,7 @@ import { TabBar } from '../../components/ui/TabBar';
 import { GameList } from '../../components/game/GameList';
 import { GameForm } from '../../components/game/GameForm';
 import { Modal } from '../../components/ui/Modal';
+import { ConfirmDialog } from '../../components/ui/ConfirmDialog';
 import { Button } from '../../components/ui/Button';
 import { Input } from '../../components/ui/Input';
 import { useAuth } from '../../contexts/AuthContext';
@@ -28,7 +29,7 @@ type TabKey = typeof TABS[number]['key'];
 
 export function SettingsPage() {
   const navigate = useNavigate();
-  const { profile, signOut, saveProfile } = useAuth();
+  const { profile, signOut, saveProfile, deleteAccount } = useAuth();
   const { games, addGame, deleteGame } = useGames();
   const { getGameImage, setGameImage } = useGameImages();
   const { isFavorite, toggleFavorite } = useGameFavorites();
@@ -59,6 +60,11 @@ export function SettingsPage() {
   // フレンドカードメニュー
   const [openFriendMenuId, setOpenFriendMenuId] = useState<string | null>(null);
 
+  // アカウント削除
+  const [showDeleteAccount, setShowDeleteAccount] = useState(false);
+  const [deleteError, setDeleteError] = useState('');
+  const [deleting, setDeleting] = useState(false);
+
   // プロフィール編集モーダル
   const [showEditProfile, setShowEditProfile] = useState(false);
   const [editName, setEditName] = useState('');
@@ -81,6 +87,25 @@ export function SettingsPage() {
   const handleSignOut = async () => {
     await signOut();
     navigate('/login');
+  };
+
+  const handleDeleteAccount = async () => {
+    setDeleting(true);
+    setDeleteError('');
+    try {
+      await deleteAccount();
+      navigate('/login');
+    } catch (err: unknown) {
+      const code = (err as { code?: string })?.code;
+      if (code === 'auth/requires-recent-login') {
+        setDeleteError('セキュリティのため、一度ログアウトして再ログインしてからもう一度お試しください。');
+      } else {
+        setDeleteError('削除に失敗しました。もう一度お試しください。');
+      }
+      setShowDeleteAccount(false);
+    } finally {
+      setDeleting(false);
+    }
   };
 
   // フレンドコードをコピー
@@ -424,7 +449,25 @@ export function SettingsPage() {
           <span>プライバシーポリシー</span>
           <span className={styles.appInfoArrow}>›</span>
         </button>
+        <button
+          className={`${styles.appInfoLink} ${styles.appInfoLinkDanger}`}
+          onClick={() => setShowDeleteAccount(true)}
+        >
+          <span>アカウントを削除</span>
+          <span className={styles.appInfoArrow}>›</span>
+        </button>
+        {deleteError && <p className={styles.deleteError}>{deleteError}</p>}
       </div>
+
+      <ConfirmDialog
+        open={showDeleteAccount}
+        title="アカウントを削除しますか？"
+        description="アカウントを削除すると、プロフィール・フレンド情報が完全に削除されます。対戦記録は他の参加者のために保持されます。この操作は取り消せません。"
+        confirmLabel={deleting ? '削除中...' : '削除'}
+        cancelLabel="キャンセル"
+        onConfirm={handleDeleteAccount}
+        onCancel={() => setShowDeleteAccount(false)}
+      />
 
       <Modal open={showGameForm} onClose={() => setShowGameForm(false)} title="ゲームを追加">
         <GameForm onSubmit={handleAddGame} onCancel={() => setShowGameForm(false)} />

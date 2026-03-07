@@ -139,6 +139,16 @@
   line-height: 1;
 }
 
+.appInfoLinkDanger {
+  color: var(--color-danger);
+}
+
+.deleteError {
+  font-size: var(--font-size-sm);
+  color: var(--color-danger);
+  padding: 0 var(--space-md);
+}
+
 /* ── フレンドコード コピーボタン ── */
 .copyBtn {
   background-color: transparent;

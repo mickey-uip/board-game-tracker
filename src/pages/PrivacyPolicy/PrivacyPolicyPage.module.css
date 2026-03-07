@@ -30,3 +30,11 @@
   line-height: 1.7;
   margin: 0;
 }
+
+.list {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  line-height: 1.7;
+  margin: 0;
+  padding-left: var(--space-lg);
+}

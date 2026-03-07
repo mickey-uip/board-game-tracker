@@ -11,7 +11,7 @@ export function PrivacyPolicyPage() {
         <section className={styles.section}>
           <h2 className={styles.sectionTitle}>はじめに</h2>
           <p className={styles.body}>
-            本アプリ（以下「当アプリ」）は、ボードゲームの対戦記録を管理するためのアプリです。
+            本アプリ「ボドゲレコード」（以下「当アプリ」）は、ボードゲームの対戦記録を管理するためのアプリです。
             当アプリのご利用にあたり、以下のプライバシーポリシーをご確認ください。
           </p>
         </section>
@@ -19,18 +19,41 @@ export function PrivacyPolicyPage() {
         <section className={styles.section}>
           <h2 className={styles.sectionTitle}>収集する情報</h2>
           <p className={styles.body}>
-            当アプリは、個人情報を一切収集しません。
-            プレイヤー名・ゲーム記録・設定などのデータはすべてお使いのデバイス内にのみ保存され、
-            外部サーバーへの送信は行いません。
+            当アプリでは、サービス提供のために以下の情報を収集・保存します。
+          </p>
+          <ul className={styles.list}>
+            <li>アカウント情報（メールアドレス、またはGoogleアカウントの認証情報）</li>
+            <li>プロフィール情報（表示名、アバター画像）</li>
+            <li>対戦記録（ゲーム名、対戦日、参加プレイヤー、順位）</li>
+            <li>フレンド関係（フレンドコード、フレンドリクエスト）</li>
+            <li>ゲーム招待情報</li>
+          </ul>
+          <p className={styles.body}>
+            また、ゲーム設定やお気に入り情報など一部のデータは、お使いのデバイスのローカルストレージにも保存されます。
           </p>
         </section>
 
         <section className={styles.section}>
           <h2 className={styles.sectionTitle}>データの保存場所</h2>
           <p className={styles.body}>
-            入力されたすべてのデータ（プレイヤー情報・対戦記録・ゲーム設定など）は、
-            お使いのデバイスのローカルストレージにのみ保存されます。
-            アプリを削除するとデータも削除されますのでご注意ください。
+            収集した情報は、Google が提供するクラウドサービス「Firebase」のサーバー上に安全に保存されます。
+            Firebase は Google Cloud のインフラを使用しており、業界標準のセキュリティ対策が施されています。
+            一部のデータ（ゲーム設定、画像キャッシュ等）はお使いのデバイスのローカルストレージにも保存されます。
+          </p>
+        </section>
+
+        <section className={styles.section}>
+          <h2 className={styles.sectionTitle}>データの利用目的</h2>
+          <p className={styles.body}>
+            収集した情報は、以下の目的でのみ使用します。
+          </p>
+          <ul className={styles.list}>
+            <li>対戦記録の保存・表示・統計分析（勝率、タイプ診断等）</li>
+            <li>フレンド機能の提供（フレンド検索・追加・招待）</li>
+            <li>アカウント管理・認証</li>
+          </ul>
+          <p className={styles.body}>
+            広告配信、マーケティング、プロファイリングなどの目的ではデータを使用しません。
           </p>
         </section>
 
@@ -38,6 +61,7 @@ export function PrivacyPolicyPage() {
           <h2 className={styles.sectionTitle}>第三者への提供</h2>
           <p className={styles.body}>
             当アプリはいかなる第三者に対しても、利用者のデータを提供・販売・共有しません。
+            Firebase はデータのホスティング基盤として利用しており、Google がお客様のデータにアクセスすることはありません。
           </p>
         </section>
 
@@ -49,11 +73,27 @@ export function PrivacyPolicyPage() {
         </section>
 
         <section className={styles.section}>
-          <h2 className={styles.sectionTitle}>外部サービスへのアクセス</h2>
+          <h2 className={styles.sectionTitle}>外部サービス</h2>
           <p className={styles.body}>
-            ルールブック画面の「YouTubeで解説動画を見る」リンクをタップした場合、
-            YouTubeアプリまたはブラウザが起動します。その際の通信はYouTube（Google）の
-            プライバシーポリシーに従います。
+            当アプリでは以下の外部サービスを利用しています。
+          </p>
+          <ul className={styles.list}>
+            <li>Firebase Authentication（ログイン・アカウント管理）</li>
+            <li>Cloud Firestore（データの保存・同期）</li>
+            <li>YouTube（ルール解説動画へのリンク）</li>
+          </ul>
+          <p className={styles.body}>
+            YouTube リンクをタップした場合、YouTube アプリまたはブラウザが起動します。
+            その際の通信は YouTube（Google）のプライバシーポリシーに従います。
+          </p>
+        </section>
+
+        <section className={styles.section}>
+          <h2 className={styles.sectionTitle}>データの削除</h2>
+          <p className={styles.body}>
+            設定画面の「アカウントを削除」から、アカウントおよび関連データ（プロフィール、フレンド情報等）を
+            完全に削除することができます。なお、対戦記録は他の参加者の統計にも影響するため、保持されます。
+            アカウント削除後のデータ復元はできませんのでご注意ください。
           </p>
         </section>
 

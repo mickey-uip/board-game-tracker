@@ -15,7 +15,17 @@ import {
   signOut as firebaseSignOut,
   type User,
 } from 'firebase/auth';
-import { doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
+import {
+  doc,
+  getDoc,
+  setDoc,
+  deleteDoc,
+  getDocs,
+  collection,
+  query,
+  where,
+  serverTimestamp,
+} from 'firebase/firestore';
 import { auth, db } from '../lib/firebase';
 
 /* ---------- Firestore user profile ---------- */
@@ -45,6 +55,8 @@ interface AuthContextValue {
   saveProfile: (data: { displayName: string; avatarBase64: string | null }) => Promise<void>;
   /** Refresh profile from Firestore */
   refreshProfile: () => Promise<void>;
+  /** Delete account and all associated data */
+  deleteAccount: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null);
@@ -136,6 +148,47 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setProfile(snap.exists() ? (snap.data() as UserProfile) : null);
   };
 
+  const deleteAccount = async () => {
+    if (!user) return;
+    const uid = user.uid;
+
+    // Helper: クエリ結果のドキュメントをすべて削除
+    const deleteQueryDocs = async (
+      col: string,
+      field: string,
+      op: '==' | 'array-contains',
+      value: string,
+    ) => {
+      const q = query(collection(db, col), where(field, op, value));
+      const snap = await getDocs(q);
+      await Promise.all(snap.docs.map((d) => deleteDoc(d.ref)));
+    };
+
+    // 1. localPlayers サブコレクション
+    const lpSnap = await getDocs(collection(db, 'users', uid, 'localPlayers'));
+    await Promise.all(lpSnap.docs.map((d) => deleteDoc(d.ref)));
+
+    // 2-3. friendRequests (fromUid / toUid)
+    await deleteQueryDocs('friendRequests', 'fromUid', '==', uid);
+    await deleteQueryDocs('friendRequests', 'toUid', '==', uid);
+
+    // 4. friends (userIds array-contains uid)
+    await deleteQueryDocs('friends', 'userIds', 'array-contains', uid);
+
+    // 5-6. gameInvites (fromUid / toUid)
+    await deleteQueryDocs('gameInvites', 'fromUid', '==', uid);
+    await deleteQueryDocs('gameInvites', 'toUid', '==', uid);
+
+    // 7. users/{uid} ドキュメント
+    await deleteDoc(doc(db, 'users', uid));
+
+    // 8. localStorage クリア
+    localStorage.clear();
+
+    // 9. Firebase Auth アカウント削除
+    await user.delete();
+  };
+
   const needsSetup = user != null && !loading && profile === null;
 
   const value = useMemo(
@@ -150,6 +203,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       signOut: signOutFn,
       saveProfile,
       refreshProfile,
+      deleteAccount,
     }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [user, profile, loading, needsSetup],
