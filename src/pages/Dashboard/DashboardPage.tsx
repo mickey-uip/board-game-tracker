@@ -48,6 +48,7 @@ export function DashboardPage() {
           wins={stats.wins}
           avatarImage={avatarImage}
           onSettingsClick={() => navigate('/settings')}
+          onAchievementsClick={() => navigate('/achievements')}
           genreStats={stats.genreStats}
         />
       )}

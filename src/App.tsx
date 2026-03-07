@@ -12,6 +12,7 @@ import { ItemsPage } from './pages/Items/ItemsPage';
 import { ItemDetailPage } from './pages/Items/ItemDetailPage';
 import { PrivacyPolicyPage } from './pages/PrivacyPolicy/PrivacyPolicyPage';
 import { TermsPage } from './pages/Terms/TermsPage';
+import { AchievementsPage } from './pages/Achievements/AchievementsPage';
 const router = createBrowserRouter([
   /* ── Public routes ── */
   { path: '/login', element: <LoginPage /> },
@@ -35,6 +36,7 @@ const router = createBrowserRouter([
       { path: 'settings', element: <SettingsPage /> },
       { path: 'privacy-policy', element: <PrivacyPolicyPage /> },
       { path: 'terms', element: <TermsPage /> },
+      { path: 'achievements', element: <AchievementsPage /> },
     ],
   },
 ]);
