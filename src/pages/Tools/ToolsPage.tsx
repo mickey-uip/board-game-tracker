@@ -43,17 +43,19 @@ export function ToolsPage() {
           <p className={styles.heroSub}>ボードゲームで使う便利機能</p>
         </div>
       </div>
-      <div className={styles.grid}>
-        {TOOLS.map(({ key, label, icon, description: _description }) => (
-          <button
-            key={key}
-            className={styles.card}
-            onClick={() => navigate(`/tools/${key}`)}
-          >
-            <img src={icon} alt={label} className={styles.cardIcon} />
-            <span className={styles.cardLabel}>{label}</span>
-          </button>
-        ))}
+      <div className={styles.contentArea}>
+        <div className={styles.grid}>
+          {TOOLS.map(({ key, label, icon, description: _description }) => (
+            <button
+              key={key}
+              className={styles.card}
+              onClick={() => navigate(`/tools/${key}`)}
+            >
+              <img src={icon} alt={label} className={styles.cardIcon} />
+              <span className={styles.cardLabel}>{label}</span>
+            </button>
+          ))}
+        </div>
       </div>
     </div>
   );
