@@ -77,13 +77,30 @@
   background: #4caf50;
 }
 
-/* 選択中 */
-.selected {
-  background: rgba(245, 200, 66, 0.12);
+/* 選択中（数字の周りだけ丸い塗り） */
+.selected .dayNumber {
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: rgba(245, 200, 66, 0.15);
 }
 
-/* 今日の日付（アンダーライン：数字と同色） */
+/* 今日の日付（アンダーライン：数字と同色、位置ずれなし） */
 .today .dayNumber {
-  border-bottom: 2px solid var(--color-text);
-  padding-bottom: 2px;
+  position: relative;
+}
+
+.today .dayNumber::after {
+  content: '';
+  position: absolute;
+  bottom: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60%;
+  height: 2px;
+  background: var(--color-text);
+  border-radius: 1px;
 }
