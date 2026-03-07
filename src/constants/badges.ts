@@ -28,7 +28,7 @@ export const BADGES: BadgeDefinition[] = [
   { id: 'win-1', category: 'win', emoji: '✌️', title: '初勝利', description: '初めての勝利をつかもう', conditionKey: 'wins>=1' },
   { id: 'win-10', category: 'win', emoji: '🏆', title: '勝利の達人', description: '10回の勝利を達成しよう', conditionKey: 'wins>=10' },
   { id: 'win-50', category: 'win', emoji: '⚡', title: '無敵', description: '50回の勝利を達成しよう', conditionKey: 'wins>=50' },
-  { id: 'win-rate', category: 'win', emoji: '💎', title: '勝率王', description: '勝率60%以上を達成しよう（10戦以上）', conditionKey: 'winRate>=0.6&&totalGames>=10' },
+  { id: 'win-100', category: 'win', emoji: '💎', title: '伝説の勝者', description: '100回の勝利を達成しよう', conditionKey: 'wins>=100' },
 
   // ── ジャンル（6） ──
   { id: 'genre-str', category: 'genre', emoji: '🧠', title: '戦略家', description: '戦略ゲームで勝利しよう', conditionKey: 'genreWin:strategy' },
