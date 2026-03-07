@@ -31,12 +31,12 @@ export const BADGES: BadgeDefinition[] = [
   { id: 'win-100', category: 'win', emoji: '💎', title: '伝説の勝者', description: '100回の勝利を達成しよう', conditionKey: 'wins>=100' },
 
   // ── ジャンル（6） ──
-  { id: 'genre-str', category: 'genre', emoji: '🧠', title: '戦略家', description: '戦略ゲームで勝利しよう', conditionKey: 'genreWin:strategy' },
-  { id: 'genre-lck', category: 'genre', emoji: '🍀', title: '幸運の持ち主', description: '運ゲームで勝利しよう', conditionKey: 'genreWin:luck' },
-  { id: 'genre-neg', category: 'genre', emoji: '🤝', title: '交渉人', description: '交渉ゲームで勝利しよう', conditionKey: 'genreWin:negotiation' },
-  { id: 'genre-cop', category: 'genre', emoji: '💪', title: '協力者', description: '協力ゲームで勝利しよう', conditionKey: 'genreWin:cooperative' },
-  { id: 'genre-mem', category: 'genre', emoji: '🔮', title: '記憶の番人', description: '記憶ゲームで勝利しよう', conditionKey: 'genreWin:memory' },
-  { id: 'genre-all', category: 'genre', emoji: '🌟', title: 'オールラウンダー', description: '全ジャンルで勝利しよう', conditionKey: 'genreWinAll' },
+  { id: 'genre-str', category: 'genre', emoji: '🧠', title: '戦略家', description: '戦略ゲームで5回勝利しよう', conditionKey: 'genreWin5:strategy' },
+  { id: 'genre-lck', category: 'genre', emoji: '🍀', title: '幸運の持ち主', description: '運ゲームで5回勝利しよう', conditionKey: 'genreWin5:luck' },
+  { id: 'genre-neg', category: 'genre', emoji: '🤝', title: '交渉人', description: '交渉ゲームで5回勝利しよう', conditionKey: 'genreWin5:negotiation' },
+  { id: 'genre-cop', category: 'genre', emoji: '💪', title: '協力者', description: '協力ゲームで5回勝利しよう', conditionKey: 'genreWin5:cooperative' },
+  { id: 'genre-mem', category: 'genre', emoji: '🔮', title: '記憶の番人', description: '記憶ゲームで5回勝利しよう', conditionKey: 'genreWin5:memory' },
+  { id: 'genre-all', category: 'genre', emoji: '🌟', title: 'オールラウンダー', description: '全ジャンルで5回ずつ勝利しよう', conditionKey: 'genreWin5All' },
 
   // ── ソーシャル（2） ──
   { id: 'social-1', category: 'social', emoji: '🤗', title: '仲間', description: 'フレンドを1人追加しよう', conditionKey: 'friends>=1' },

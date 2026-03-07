@@ -43,8 +43,6 @@ export function computeBadges(input: BadgeInput): BadgeResult[] {
       return stats.totalGames >= Number(conditionKey.split('>=')[1]);
     if (conditionKey.startsWith('wins>='))
       return stats.wins >= Number(conditionKey.split('>=')[1]);
-    if (conditionKey === 'winRate>=0.6&&totalGames>=10')
-      return stats.winRate >= 0.6 && stats.totalGames >= 10;
     if (conditionKey.startsWith('friends>='))
       return friendCount >= Number(conditionKey.split('>=')[1]);
     if (conditionKey.startsWith('uniqueGames>='))
@@ -52,13 +50,13 @@ export function computeBadges(input: BadgeInput): BadgeResult[] {
     if (conditionKey.startsWith('uniqueDays>='))
       return uniqueDays.size >= Number(conditionKey.split('>=')[1]);
 
-    // ジャンル勝利
-    if (conditionKey.startsWith('genreWin:')) {
+    // ジャンル勝利（5回以上）
+    if (conditionKey.startsWith('genreWin5:')) {
       const genre = conditionKey.split(':')[1] as Genre;
-      return genreWins[genre] > 0;
+      return genreWins[genre] >= 5;
     }
-    if (conditionKey === 'genreWinAll')
-      return ALL_GENRES.every((g) => genreWins[g] > 0);
+    if (conditionKey === 'genreWin5All')
+      return ALL_GENRES.every((g) => genreWins[g] >= 5);
 
     // プレイヤータイプ
     if (conditionKey === 'playerTypeExists')
