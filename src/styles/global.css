@@ -46,6 +46,17 @@
 
   /* テキスト立体グラデーション（上から光が当たる3D風） */
   --text-gradient: linear-gradient(to bottom, #fff6dc, #d8b878);
+
+  /* 背景斜線パターン */
+  --bg-pattern:
+    repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 8px,
+      rgba(255, 255, 255, 0.015) 8px,
+      rgba(255, 255, 255, 0.015) 16px
+    ),
+    var(--color-bg);
 }
 
 html, body {
@@ -53,15 +64,7 @@ html, body {
   font-family: 'LINE Seed JP', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
   font-size: var(--font-size-md);
   color: var(--color-text);
-  background:
-    repeating-linear-gradient(
-      45deg,
-      transparent,
-      transparent 8px,
-      rgba(255, 255, 255, 0.02) 8px,
-      rgba(255, 255, 255, 0.02) 16px
-    ),
-    var(--color-bg);
+  background-color: var(--color-bg);
   -webkit-font-smoothing: antialiased;
 }
 

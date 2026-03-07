@@ -5,6 +5,7 @@
   max-width: 480px;
   margin: 0 auto;
   padding-top: env(safe-area-inset-top, 0px);
+  background: var(--bg-pattern);
 }
 
 .main {

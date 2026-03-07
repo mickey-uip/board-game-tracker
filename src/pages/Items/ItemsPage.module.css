@@ -50,7 +50,7 @@
 .contentArea {
   position: relative;
   z-index: 1;
-  background: var(--color-bg);
+  background: var(--bg-pattern);
   min-height: calc(
     100svh
     - env(safe-area-inset-top, 0px)
