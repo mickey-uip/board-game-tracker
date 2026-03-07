@@ -79,6 +79,12 @@
   font-weight: 700;
 }
 
+.leaderTag {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  margin-left: 2px;
+}
+
 .expandBtn {
   background-color: transparent;
   border: none;

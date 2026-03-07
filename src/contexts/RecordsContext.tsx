@@ -55,6 +55,7 @@ export function RecordsProvider({ children }: { children: ReactNode }) {
             rank: pr.rank as number,
           })),
           createdAt: data.createdAt?.toDate?.()?.toISOString?.() ?? new Date().toISOString(),
+          createdByUid: (data.createdByUid as string) ?? '',
         };
       });
       setRecords(recs);
@@ -94,6 +95,7 @@ export function RecordsProvider({ children }: { children: ReactNode }) {
         date,
         playerResults,
         createdAt: new Date().toISOString(),
+        createdByUid: user.uid,
       };
     },
     [user],

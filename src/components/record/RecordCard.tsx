@@ -45,7 +45,7 @@ export function RecordCard({ record, game, players, onDelete, showDetail = true,
             </div>
           </div>
         </div>
-        {onDelete && (
+        {onDelete && record.createdByUid === user?.uid && (
           <button
             className={styles.deleteBtn}
             onClick={() => {
@@ -65,6 +65,9 @@ export function RecordCard({ record, game, players, onDelete, showDetail = true,
             <span className={`${styles.playerName} ${result.rank === 1 ? styles.winner : ''}`}>
               {getPlayerName(result.playerId)}
             </span>
+            {result.playerId === record.createdByUid && (
+              <span className={styles.leaderTag}>リーダー</span>
+            )}
           </span>
         ))}
         {hiddenCount > 0 && (

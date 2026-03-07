@@ -9,4 +9,5 @@ export type GameRecord = {
   date: string;
   playerResults: PlayerResult[];
   createdAt: string;
+  createdByUid?: string;
 };
