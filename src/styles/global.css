@@ -53,8 +53,8 @@
       45deg,
       transparent,
       transparent 8px,
-      rgba(255, 255, 255, 0.015) 8px,
-      rgba(255, 255, 255, 0.015) 16px
+      rgba(255, 255, 255, 0.013) 8px,
+      rgba(255, 255, 255, 0.013) 16px
     ),
     var(--color-bg);
 }
