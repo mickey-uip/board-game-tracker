@@ -50,12 +50,19 @@
   filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.8));
 }
 
-/* ヒーローの上にかぶさるコンテンツエリア */
+/* ヒーローの上にかぶさるコンテンツエリア
+   min-height = .main の内部表示領域に合わせ、
+   スクロール最大量 = ヒーロー高さ ぴったりになるようにする */
 .contentArea {
   position: relative;
   z-index: 1;
   background: var(--color-bg);
-  min-height: 100dvh;
+  min-height: calc(
+    100svh
+    - env(safe-area-inset-top, 0px)
+    - var(--bottom-nav-height)
+    - env(safe-area-inset-bottom, 0px)
+  );
 }
 
 /* カードグリッド：2列 */
