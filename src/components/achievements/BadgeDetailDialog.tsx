@@ -14,9 +14,17 @@ export function BadgeDetailDialog({ badge, onClose }: BadgeDetailDialogProps) {
     <div className={styles.overlay} onClick={onClose}>
       <div className={styles.card} onClick={(e) => e.stopPropagation()}>
         <div className={styles.body}>
-          <span className={`${styles.emoji} ${badge.unlocked ? '' : styles.emojiLocked}`}>
-            {badge.badge.emoji}
-          </span>
+          {badge.badge.image ? (
+            <img
+              src={badge.badge.image}
+              alt={badge.badge.title}
+              className={`${styles.badgeImage} ${badge.unlocked ? '' : styles.badgeImageLocked}`}
+            />
+          ) : (
+            <span className={`${styles.emoji} ${badge.unlocked ? '' : styles.emojiLocked}`}>
+              {badge.badge.emoji}
+            </span>
+          )}
           <h2 className={styles.title}>{badge.badge.title}</h2>
           <p className={styles.description}>{badge.badge.description}</p>
           {badge.unlocked ? (

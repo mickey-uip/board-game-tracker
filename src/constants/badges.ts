@@ -4,6 +4,7 @@ export interface BadgeDefinition {
   id: string;
   category: BadgeCategory;
   emoji: string;
+  image?: string;
   title: string;
   description: string;
   conditionKey: string;
@@ -19,14 +20,14 @@ export const BADGE_CATEGORIES: { key: BadgeCategory; label: string }[] = [
 
 export const BADGES: BadgeDefinition[] = [
   // ── プレイ（4） ──
-  { id: 'play-1', category: 'play', emoji: '🎲', title: '旅の始まり', description: '初めての対戦を記録しよう', conditionKey: 'totalGames>=1' },
+  { id: 'play-1', category: 'play', emoji: '🎲', image: '/Achievement/旅の始まり.png', title: '旅の始まり', description: '初めての対戦を記録しよう', conditionKey: 'totalGames>=1' },
   { id: 'play-10', category: 'play', emoji: '🎯', title: '見習いゲーマー', description: '10回の対戦を記録しよう', conditionKey: 'totalGames>=10' },
   { id: 'play-50', category: 'play', emoji: '🏅', title: '歴戦の亡者', description: '50回の対戦を記録しよう', conditionKey: 'totalGames>=50' },
-  { id: 'play-100', category: 'play', emoji: '👑', title: '皇帝', description: '100回の対戦を記録しよう', conditionKey: 'totalGames>=100' },
+  { id: 'play-100', category: 'play', emoji: '👑', image: '/Achievement/皇帝.png', title: '皇帝', description: '100回の対戦を記録しよう', conditionKey: 'totalGames>=100' },
 
   // ── 勝利（4） ──
-  { id: 'win-1', category: 'win', emoji: '✌️', title: 'ニューフェイス', description: '初めての勝利をつかもう', conditionKey: 'wins>=1' },
-  { id: 'win-10', category: 'win', emoji: '🏆', title: '戦場の刃', description: '10回の勝利を達成しよう', conditionKey: 'wins>=10' },
+  { id: 'win-1', category: 'win', emoji: '✌️', image: '/Achievement/ニューフェイス.png', title: 'ニューフェイス', description: '初めての勝利をつかもう', conditionKey: 'wins>=1' },
+  { id: 'win-10', category: 'win', emoji: '🏆', image: '/Achievement/戦場の刃.png', title: '戦場の刃', description: '10回の勝利を達成しよう', conditionKey: 'wins>=10' },
   { id: 'win-50', category: 'win', emoji: '⚡', title: '無双', description: '50回の勝利を達成しよう', conditionKey: 'wins>=50' },
   { id: 'win-100', category: 'win', emoji: '💎', title: '百戦錬磨', description: '100回の勝利を達成しよう', conditionKey: 'wins>=100' },
 

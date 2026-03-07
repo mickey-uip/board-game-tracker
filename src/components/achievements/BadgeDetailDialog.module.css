@@ -44,6 +44,17 @@
   opacity: 0.4;
 }
 
+.badgeImage {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+}
+
+.badgeImageLocked {
+  filter: grayscale(1);
+  opacity: 0.4;
+}
+
 .title {
   composes: gradient-text from global;
   font-size: var(--font-size-lg);

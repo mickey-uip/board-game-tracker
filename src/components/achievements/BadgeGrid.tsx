@@ -20,7 +20,11 @@ export function BadgeGrid({ badges }: BadgeGridProps) {
             onClick={() => setSelectedBadge(b)}
             aria-label={b.badge.title}
           >
-            <span className={styles.emoji}>{b.badge.emoji}</span>
+            {b.badge.image ? (
+              <img src={b.badge.image} alt={b.badge.title} className={styles.badgeImage} />
+            ) : (
+              <span className={styles.emoji}>{b.badge.emoji}</span>
+            )}
           </button>
         ))}
       </div>
