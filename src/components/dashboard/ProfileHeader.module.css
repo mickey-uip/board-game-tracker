@@ -41,7 +41,7 @@
 
 .iconBtn {
   position: relative;
-  background: none;
+  background-color: transparent;
   border: none;
   cursor: pointer;
   padding: 6px;
@@ -204,7 +204,7 @@
 .noticeCloseBtn {
   position: absolute;
   right: var(--space-md);
-  background: none;
+  background-color: transparent;
   border: none;
   font-size: var(--font-size-md);
   color: var(--color-text-muted);

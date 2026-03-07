@@ -10,7 +10,7 @@
 .tab {
   flex: 1;
   padding: var(--space-sm) var(--space-md);
-  background: none;
+  background-color: transparent;
   border: none;
   border-bottom: 2px solid transparent;
   margin-bottom: -2px;
@@ -23,6 +23,5 @@
 
 .active {
   composes: gradient-text from global;
-  background: var(--text-gradient);
   border-bottom-color: #b3a68b;
 }

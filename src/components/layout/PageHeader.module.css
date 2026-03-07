@@ -16,7 +16,7 @@
 }
 
 .backBtn {
-  background: none;
+  background-color: transparent;
   border: none;
   font-size: var(--font-size-lg);
   padding: 4px 8px;

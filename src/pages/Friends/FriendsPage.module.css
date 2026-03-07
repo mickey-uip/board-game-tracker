@@ -223,7 +223,7 @@
 }
 
 .friendMenuBtn {
-  background: none;
+  background-color: transparent;
   border: none;
   font-size: 20px;
   color: var(--color-text-muted);
@@ -250,7 +250,7 @@
   width: 100%;
   padding: 12px 16px;
   text-align: left;
-  background: none;
+  background-color: transparent;
   border: none;
   border-bottom: 1px solid #d9bb8a;
   font-size: var(--font-size-sm);

@@ -133,7 +133,7 @@
 
 .searchInput {
   flex: 1;
-  background: none;
+  background-color: transparent;
   border: none;
   outline: none;
   font-size: var(--font-size-md);
@@ -146,7 +146,7 @@
 }
 
 .searchClear {
-  background: none;
+  background-color: transparent;
   border: none;
   color: var(--color-text-muted);
   font-size: var(--font-size-sm);
@@ -169,7 +169,7 @@
   align-items: center;
   gap: var(--space-sm);
   padding: 10px var(--space-md);
-  background: none;
+  background-color: transparent;
   border: none;
   cursor: pointer;
   text-align: left;

@@ -139,7 +139,7 @@
 }
 
 .switchModeBtn {
-  background: none;
+  background-color: transparent;
   border: none;
   color: #7a6230;
   font-size: var(--font-size-sm);
