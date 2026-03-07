@@ -79,11 +79,11 @@
 
 /* 選択中 */
 .selected {
-  background: var(--color-surface);
+  background: rgba(245, 200, 66, 0.12);
 }
 
-/* 今日の日付（アンダーライン） */
+/* 今日の日付（アンダーライン：数字と同色） */
 .today .dayNumber {
-  border-bottom: 2px solid var(--color-primary);
+  border-bottom: 2px solid var(--color-text);
   padding-bottom: 2px;
 }
