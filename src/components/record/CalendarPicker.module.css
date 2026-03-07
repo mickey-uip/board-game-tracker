@@ -61,6 +61,12 @@
 }
 
 .dayNumber {
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
   font-size: var(--font-size-lg);
   font-weight: 700;
   line-height: 1;
@@ -79,12 +85,6 @@
 
 /* 選択中（数字の周りだけ丸い塗り） */
 .selected .dayNumber {
-  width: 30px;
-  height: 30px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
   background: rgba(245, 200, 66, 0.15);
 }
 
