@@ -444,6 +444,13 @@ export function SettingsPage() {
         </button>
         <button
           className={styles.appInfoLink}
+          onClick={() => navigate('/terms')}
+        >
+          <span>利用規約</span>
+          <span className={styles.appInfoArrow}>›</span>
+        </button>
+        <button
+          className={styles.appInfoLink}
           onClick={() => navigate('/privacy-policy')}
         >
           <span>プライバシーポリシー</span>

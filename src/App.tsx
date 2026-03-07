@@ -11,6 +11,7 @@ import { SettingsPage } from './pages/Settings/SettingsPage';
 import { ItemsPage } from './pages/Items/ItemsPage';
 import { ItemDetailPage } from './pages/Items/ItemDetailPage';
 import { PrivacyPolicyPage } from './pages/PrivacyPolicy/PrivacyPolicyPage';
+import { TermsPage } from './pages/Terms/TermsPage';
 const router = createBrowserRouter([
   /* ── Public routes ── */
   { path: '/login', element: <LoginPage /> },
@@ -33,6 +34,7 @@ const router = createBrowserRouter([
       { path: 'tools/:toolKey', element: <ItemDetailPage /> },
       { path: 'settings', element: <SettingsPage /> },
       { path: 'privacy-policy', element: <PrivacyPolicyPage /> },
+      { path: 'terms', element: <TermsPage /> },
     ],
   },
 ]);
