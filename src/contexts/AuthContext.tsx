@@ -152,21 +152,29 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (!user) return;
     const uid = user.uid;
 
-    // Helper: クエリ結果のドキュメントをすべて削除
+    // Helper: クエリ結果のドキュメントをすべて削除（失敗しても続行）
     const deleteQueryDocs = async (
       col: string,
       field: string,
       op: '==' | 'array-contains',
       value: string,
     ) => {
-      const q = query(collection(db, col), where(field, op, value));
-      const snap = await getDocs(q);
-      await Promise.all(snap.docs.map((d) => deleteDoc(d.ref)));
+      try {
+        const q = query(collection(db, col), where(field, op, value));
+        const snap = await getDocs(q);
+        await Promise.all(snap.docs.map((d) => deleteDoc(d.ref)));
+      } catch (e) {
+        console.warn(`[deleteAccount] ${col} (${field}) の削除をスキップ:`, e);
+      }
     };
 
     // 1. localPlayers サブコレクション
-    const lpSnap = await getDocs(collection(db, 'users', uid, 'localPlayers'));
-    await Promise.all(lpSnap.docs.map((d) => deleteDoc(d.ref)));
+    try {
+      const lpSnap = await getDocs(collection(db, 'users', uid, 'localPlayers'));
+      await Promise.all(lpSnap.docs.map((d) => deleteDoc(d.ref)));
+    } catch (e) {
+      console.warn('[deleteAccount] localPlayers の削除をスキップ:', e);
+    }
 
     // 2-3. friendRequests (fromUid / toUid)
     await deleteQueryDocs('friendRequests', 'fromUid', '==', uid);
@@ -180,12 +188,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     await deleteQueryDocs('gameInvites', 'toUid', '==', uid);
 
     // 7. users/{uid} ドキュメント
-    await deleteDoc(doc(db, 'users', uid));
+    try {
+      await deleteDoc(doc(db, 'users', uid));
+    } catch (e) {
+      console.warn('[deleteAccount] users ドキュメントの削除をスキップ:', e);
+    }
 
     // 8. localStorage クリア
     localStorage.clear();
 
-    // 9. Firebase Auth アカウント削除
+    // 9. Firebase Auth アカウント削除（これは失敗したらエラーを投げる）
     await user.delete();
   };
 

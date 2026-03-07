@@ -23,8 +23,8 @@
   --color-card-border: #342a1d;
 
   /* グラデーション（アクセント・ボタン・バッジなど） */
-  --gradient-primary: linear-gradient(135deg, #f5c842, #f97316);
-  --gradient-primary-hover: linear-gradient(135deg, #f7d060, #fb8c3a);
+  --gradient-primary: linear-gradient(45deg, #dca830, #c89500);
+  --gradient-primary-hover: linear-gradient(45deg, #e4b438, #d09e08);
 
   --radius-sm: 8px;
   --radius-md: 16px;

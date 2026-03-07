@@ -7,6 +7,8 @@ interface ConfirmDialogProps {
   description: string;
   confirmLabel?: string;
   cancelLabel?: string;
+  error?: string;
+  disabled?: boolean;
   onConfirm: () => void;
   onCancel: () => void;
 }
@@ -17,6 +19,8 @@ export function ConfirmDialog({
   description,
   confirmLabel = '削除',
   cancelLabel = 'キャンセル',
+  error,
+  disabled,
   onConfirm,
   onCancel,
 }: ConfirmDialogProps) {
@@ -35,11 +39,12 @@ export function ConfirmDialog({
               </span>
             ))}
           </p>
+          {error && <p className={styles.error}>{error}</p>}
           <div className={styles.actions}>
-            <Button variant="secondary" fullWidth onClick={onCancel}>
+            <Button variant="secondary" fullWidth onClick={onCancel} disabled={disabled}>
               {cancelLabel}
             </Button>
-            <Button variant="danger" fullWidth onClick={onConfirm}>
+            <Button variant="danger" fullWidth onClick={onConfirm} disabled={disabled}>
               {confirmLabel}
             </Button>
           </div>

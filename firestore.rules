@@ -30,6 +30,11 @@ service cloud.firestore {
       // 更新: 受信者のみ（承認/拒否）
       allow update: if request.auth != null &&
         resource.data.toUid == request.auth.uid;
+
+      // 削除: 送信者 or 受信者（アカウント削除・リクエスト取消）
+      allow delete: if request.auth != null &&
+        (resource.data.fromUid == request.auth.uid ||
+         resource.data.toUid == request.auth.uid);
     }
 
     // ── フレンド関係 ──

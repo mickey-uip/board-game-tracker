@@ -100,9 +100,9 @@ export function SettingsPage() {
       if (code === 'auth/requires-recent-login') {
         setDeleteError('セキュリティのため、一度ログアウトして再ログインしてからもう一度お試しください。');
       } else {
+        console.error('[handleDeleteAccount]', err);
         setDeleteError('削除に失敗しました。もう一度お試しください。');
       }
-      setShowDeleteAccount(false);
     } finally {
       setDeleting(false);
     }
@@ -456,7 +456,6 @@ export function SettingsPage() {
           <span>アカウントを削除</span>
           <span className={styles.appInfoArrow}>›</span>
         </button>
-        {deleteError && <p className={styles.deleteError}>{deleteError}</p>}
       </div>
 
       <ConfirmDialog
@@ -465,8 +464,10 @@ export function SettingsPage() {
         description="アカウントを削除すると、プロフィール・フレンド情報が完全に削除されます。対戦記録は他の参加者のために保持されます。この操作は取り消せません。"
         confirmLabel={deleting ? '削除中...' : '削除'}
         cancelLabel="キャンセル"
+        error={deleteError}
+        disabled={deleting}
         onConfirm={handleDeleteAccount}
-        onCancel={() => setShowDeleteAccount(false)}
+        onCancel={() => { setShowDeleteAccount(false); setDeleteError(''); }}
       />
 
       <Modal open={showGameForm} onClose={() => setShowGameForm(false)} title="ゲームを追加">

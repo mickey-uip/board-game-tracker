@@ -49,6 +49,15 @@
   text-align: center;
 }
 
+/* ── エラーメッセージ ── */
+.error {
+  font-size: var(--font-size-xs);
+  color: var(--color-danger);
+  text-align: center;
+  margin: 0;
+  line-height: 1.5;
+}
+
 /* ── ボタン ── */
 .actions {
   display: flex;

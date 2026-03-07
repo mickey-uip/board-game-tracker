@@ -1,6 +1,7 @@
 import { useState, useRef, type FormEvent } from 'react';
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
+import { Button } from '../../components/ui/Button';
 import styles from './ProfileSetupPage.module.css';
 
 const MAX_AVATAR_SIZE = 2 * 1024 * 1024; // 2MB
@@ -101,9 +102,9 @@ export function ProfileSetupPage() {
 
           {error && <p className={styles.error}>{error}</p>}
 
-          <button className={styles.submitBtn} type="submit" disabled={submitting}>
-            {submitting ? '保存中...' : '始める'}
-          </button>
+          <Button variant="primary" fullWidth type="submit" disabled={submitting}>
+            {submitting ? '保存中...' : 'はじめる'}
+          </Button>
         </form>
       </div>
     </div>

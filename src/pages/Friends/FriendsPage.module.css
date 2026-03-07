@@ -119,12 +119,14 @@
 
 .acceptBtn {
   padding: 6px 14px;
-  border: none;
+  border: 2px solid #d4b418;
   border-radius: var(--radius-md);
   background: var(--gradient-primary);
+  box-shadow: 0 0 14px rgba(200, 149, 0, 0.28);
   color: var(--color-primary-fg);
   font-size: var(--font-size-sm);
   font-weight: 700;
+  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
 }
 
 .rejectBtn {
