@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Badge } from '../ui/Badge';
 import { GameImageIcon } from '../game/GameImageIcon';
 import { GENRE_LABEL } from '../../constants/genres';
+import { ConfirmDialog } from '../ui/ConfirmDialog';
 import { useAuth } from '../../contexts/AuthContext';
 import { getShareText, shareToX, generateShareCard, shareImage } from '../../utils/shareCard';
 import styles from './RecordCard.module.css';
@@ -20,6 +21,7 @@ interface RecordCardProps {
 export function RecordCard({ record, game, players, onDelete, showDetail = true, getGameImage }: RecordCardProps) {
   const { user } = useAuth();
   const [isExpanded, setIsExpanded] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const sortedResults = [...record.playerResults].sort((a, b) => a.rank - b.rank);
   const VISIBLE_COUNT = 3;
   const visibleResults = sortedResults.slice(0, VISIBLE_COUNT);
@@ -48,9 +50,7 @@ export function RecordCard({ record, game, players, onDelete, showDetail = true,
         {onDelete && record.createdByUid === user?.uid && (
           <button
             className={styles.deleteBtn}
-            onClick={() => {
-              if (confirm('この記録を削除しますか？')) onDelete(record.id);
-            }}
+            onClick={() => setShowDeleteConfirm(true)}
             aria-label="削除"
           >
             ✕
@@ -141,6 +141,20 @@ export function RecordCard({ record, game, players, onDelete, showDetail = true,
             );
           })()}
         </div>
+      )}
+      {onDelete && (
+        <ConfirmDialog
+          open={showDeleteConfirm}
+          title="結果を本当に削除しますか？"
+          description="削除すると、このゲームの参加者全員の結果も削除されて、勝率やタイプ診断にも影響が出ます。"
+          confirmLabel="削除"
+          cancelLabel="キャンセル"
+          onConfirm={() => {
+            setShowDeleteConfirm(false);
+            onDelete(record.id);
+          }}
+          onCancel={() => setShowDeleteConfirm(false)}
+        />
       )}
     </div>
   );
