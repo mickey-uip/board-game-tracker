@@ -4,15 +4,12 @@ import { useBadges } from '../../hooks/useBadges';
 import styles from './AchievementsPage.module.css';
 
 export function AchievementsPage() {
-  const { badges, unlockedCount, totalCount } = useBadges();
+  const { badges } = useBadges();
 
   return (
     <div>
-      <PageHeader title="アチーブメント" showBack />
+      <PageHeader title="称号" showBack />
       <div className={styles.container}>
-        <p className={styles.progress}>
-          {unlockedCount} / {totalCount} 達成
-        </p>
         <BadgeGrid badges={badges} />
       </div>
     </div>

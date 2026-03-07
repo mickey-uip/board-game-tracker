@@ -13,11 +13,10 @@ export function BadgeGrid({ badges }: BadgeGridProps) {
 
   return (
     <>
-      {BADGE_CATEGORIES.map(({ key, label }) => {
+      {BADGE_CATEGORIES.map(({ key }) => {
         const categoryBadges = badges.filter((b) => b.badge.category === key);
         return (
           <section key={key} className={styles.categorySection}>
-            <h3 className={styles.categoryTitle}>{label}</h3>
             <div className={styles.grid}>
               {categoryBadges.map((b) => (
                 <button
