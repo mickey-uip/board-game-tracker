@@ -8,6 +8,7 @@
   align-items: flex-end;
   justify-content: center;
   z-index: 100;
+  animation: overlayFadeIn 0.25s ease;
 }
 
 .modal {
@@ -18,6 +19,17 @@
   max-height: 85vh;
   overflow-y: auto;
   padding: var(--space-md);
+  animation: slideUp 0.3s ease;
+}
+
+@keyframes overlayFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
 }
 
 .header {
