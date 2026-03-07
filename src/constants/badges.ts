@@ -32,12 +32,12 @@ export const BADGES: BadgeDefinition[] = [
   { id: 'win-100', category: 'win', emoji: '💎', image: '/Achievement/百戦錬磨.png', title: '百戦錬磨', description: '100回の勝利を達成しよう', conditionKey: 'wins>=100' },
 
   // ── ジャンル（6） ──
-  { id: 'genre-str', category: 'genre', emoji: '🧠', title: 'ストラテジスタ', description: '戦略ゲームで5回勝利しよう', conditionKey: 'genreWin5:strategy' },
-  { id: 'genre-lck', category: 'genre', emoji: '🍀', title: 'グッドラッカー', description: '運ゲームで5回勝利しよう', conditionKey: 'genreWin5:luck' },
+  { id: 'genre-str', category: 'genre', emoji: '🧠', image: '/Achievement/ストラテジスタ.png', title: 'ストラテジスタ', description: '戦略ゲームで5回勝利しよう', conditionKey: 'genreWin5:strategy' },
+  { id: 'genre-lck', category: 'genre', emoji: '🍀', image: '/Achievement/グッドラッカー_.png', title: 'グッドラッカー', description: '運ゲームで5回勝利しよう', conditionKey: 'genreWin5:luck' },
   { id: 'genre-neg', category: 'genre', emoji: '🤝', image: '/Achievement/ネゴシエイター.png', title: 'ネゴシエイター', description: '交渉ゲームで5回勝利しよう', conditionKey: 'genreWin5:negotiation' },
   { id: 'genre-cop', category: 'genre', emoji: '💪', title: 'コムレイズ', description: '協力ゲームで5回勝利しよう', conditionKey: 'genreWin5:cooperative' },
-  { id: 'genre-mem', category: 'genre', emoji: '🔮', title: 'レミニセンサ', description: '記憶ゲームで5回勝利しよう', conditionKey: 'genreWin5:memory' },
-  { id: 'genre-all', category: 'genre', emoji: '🌟', title: 'オールラウンダー', description: '全ジャンルで5回ずつ勝利しよう', conditionKey: 'genreWin5All' },
+  { id: 'genre-mem', category: 'genre', emoji: '🔮', image: '/Achievement/レミニセンサ.png', title: 'レミニセンサ', description: '記憶ゲームで5回勝利しよう', conditionKey: 'genreWin5:memory' },
+  { id: 'genre-all', category: 'genre', emoji: '🌟', image: '/Achievement/オールラウンダー.png', title: 'オールラウンダー', description: '全ジャンルで5回ずつ勝利しよう', conditionKey: 'genreWin5All' },
 
   // ── ソーシャル（2） ──
   { id: 'social-1', category: 'social', emoji: '🤗', image: '/Achievement/コンビ.png', title: 'コンビ', description: 'フレンドを1人追加しよう', conditionKey: 'friends>=1' },
@@ -47,5 +47,5 @@ export const BADGES: BadgeDefinition[] = [
   { id: 'spec-type', category: 'special', emoji: '🔥', title: '才能覚醒', description: 'プレイヤータイプが判明する', conditionKey: 'playerTypeExists' },
   { id: 'spec-hyb', category: 'special', emoji: '✨', image: '/Achievement/二つの魂.png', title: '二つの魂', description: 'ハイブリッドタイプになる', conditionKey: 'playerTypeHybrid' },
   { id: 'spec-coll', category: 'special', emoji: '📚', image: '/Achievement/探究心.png', title: '探究心', description: '10種類以上のゲームをプレイしよう', conditionKey: 'uniqueGames>=10' },
-  { id: 'spec-days', category: 'special', emoji: '🗓️', title: '常連', description: '7日以上プレイしよう', conditionKey: 'uniqueDays>=7' },
+  { id: 'spec-days', category: 'special', emoji: '🗓️', image: '/Achievement/常連.png', title: '常連', description: '7日以上プレイしよう', conditionKey: 'uniqueDays>=7' },
 ];
