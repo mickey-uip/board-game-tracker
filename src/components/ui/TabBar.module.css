@@ -22,9 +22,6 @@
 }
 
 .active {
+  composes: gradient-text from global;
   border-bottom-color: #b3a68b;
-  background: var(--text-gradient);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
 }

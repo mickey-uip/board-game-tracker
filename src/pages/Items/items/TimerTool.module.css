@@ -26,13 +26,10 @@
 }
 
 .time {
+  composes: gradient-text from global;
   font-size: 56px;
   font-weight: 700;
   letter-spacing: 4px;
-  background: var(--text-gradient);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
   font-variant-numeric: tabular-nums;
   user-select: none;
 }

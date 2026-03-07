@@ -29,24 +29,18 @@
 }
 
 .heroLabel {
+  composes: gradient-text from global;
   font-size: 28px;
   font-weight: 700;
   letter-spacing: 0.05em;
-  background: var(--text-gradient);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
   filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.8));
 }
 
 .heroSub {
+  composes: gradient-text from global;
   font-size: var(--font-size-sm);
   font-weight: 500;
   letter-spacing: 0.04em;
-  background: var(--text-gradient);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
   filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.8));
 }
 
@@ -105,12 +99,9 @@
 }
 
 .cardLabel {
+  composes: gradient-text from global;
   font-size: var(--font-size-md);
   font-weight: 700;
-  background: var(--text-gradient);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
 }
 
 .cardDesc {
@@ -135,10 +126,7 @@
 }
 
 .toolTitle {
+  composes: gradient-text from global;
   font-size: var(--font-size-md);
   font-weight: 700;
-  background: var(--text-gradient);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
 }

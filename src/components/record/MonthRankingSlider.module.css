@@ -46,10 +46,7 @@
 }
 
 .itemText {
-  background: var(--text-gradient);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  composes: gradient-text from global;
 }
 
 .trophy {

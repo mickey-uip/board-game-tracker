@@ -32,12 +32,9 @@
 }
 
 .gameName {
+  composes: gradient-text from global;
   font-weight: 700;
   font-size: var(--font-size-md);
-  background: var(--text-gradient);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
 }
 
 .badges {
@@ -75,10 +72,7 @@
 }
 
 .playerName {
-  background: var(--text-gradient);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  composes: gradient-text from global;
 }
 
 .winner {

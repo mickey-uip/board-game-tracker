@@ -21,12 +21,9 @@
 }
 
 .monthLabel {
+  composes: gradient-text from global;
   font-weight: 700;
   font-size: var(--font-size-md);
-  background: var(--text-gradient);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
 }
 
 .grid {
@@ -61,6 +58,7 @@
 }
 
 .dayNumber {
+  composes: gradient-text from global;
   width: 30px;
   height: 30px;
   display: flex;
@@ -70,10 +68,6 @@
   font-size: var(--font-size-lg);
   font-weight: 700;
   line-height: 1;
-  background: var(--text-gradient);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
 }
 
 /* 記録がある日の右上ドットバッジ */

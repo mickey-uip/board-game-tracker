@@ -9,14 +9,11 @@
 }
 
 .sectionTitle {
+  composes: gradient-text from global;
   font-size: var(--font-size-sm);
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  background: var(--text-gradient);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
 }
 
 .divider {
@@ -48,12 +45,9 @@
 }
 
 .myPlayerName {
+  composes: gradient-text from global;
   font-weight: 600;
   font-size: var(--font-size-md);
-  background: var(--text-gradient);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
 }
 
 .myPlayerHint {
@@ -115,15 +109,12 @@
 }
 
 .appInfoTitle {
+  composes: gradient-text from global;
   font-size: var(--font-size-xs);
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.08em;
   margin: 0;
-  background: var(--text-gradient);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
 }
 
 .appInfoLink {

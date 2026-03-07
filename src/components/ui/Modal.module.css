@@ -40,12 +40,9 @@
 }
 
 .title {
+  composes: gradient-text from global;
   font-size: var(--font-size-lg);
   font-weight: 700;
-  background: var(--text-gradient);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
 }
 
 .closeBtn {

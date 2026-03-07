@@ -76,3 +76,11 @@ input, select, textarea {
   font-family: inherit;
   font-size: inherit;
 }
+
+/* ── テキストグラデーション ユーティリティ ── */
+.gradient-text {
+  background: var(--text-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}

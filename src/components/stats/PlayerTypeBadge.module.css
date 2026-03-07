@@ -11,11 +11,8 @@
 }
 
 .heading {
+  composes: gradient-text from global;
   font-size: var(--font-size-sm);
-  background: var(--text-gradient);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
   font-weight: 500;
   letter-spacing: 0.04em;
 }
@@ -32,21 +29,15 @@
 }
 
 .title {
+  composes: gradient-text from global;
   font-size: var(--font-size-lg);
   font-weight: 700;
   letter-spacing: 0.02em;
-  background: var(--text-gradient);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
 }
 
 .sub {
+  composes: gradient-text from global;
   font-size: var(--font-size-xs);
-  background: var(--text-gradient);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
 }
 
 /* ━━━━━━━━━━━━━━━━━━━━━━━━
@@ -70,7 +61,7 @@
   z-index: 1;
 }
 
-/* 画像あり時のテキストは常に明るく */
+/* 画像あり時のテキストは常に明るく（複合セレクターではcomposes不可） */
 .hasImage .heading,
 .hasImage .sub {
   background: var(--text-gradient);

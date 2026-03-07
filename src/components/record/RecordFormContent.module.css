@@ -63,12 +63,9 @@
 }
 
 .leaderName {
+  composes: gradient-text from global;
   font-size: var(--font-size-md);
   font-weight: 700;
-  background: var(--text-gradient);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
 }
 
 .leaderBadge {
@@ -148,12 +145,9 @@
 }
 
 .acceptedName {
+  composes: gradient-text from global;
   font-size: var(--font-size-sm);
   font-weight: 600;
-  background: var(--text-gradient);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
 }
 
 .acceptedRemove {

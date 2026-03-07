@@ -163,6 +163,7 @@
 }
 
 .item {
+  composes: gradient-text from global;
   width: 100%;
   display: flex;
   align-items: center;
@@ -172,10 +173,6 @@
   border: none;
   cursor: pointer;
   text-align: left;
-  background: var(--text-gradient);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
   font-size: var(--font-size-md);
   transition: background 0.1s;
 }
