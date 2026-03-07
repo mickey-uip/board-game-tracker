@@ -70,6 +70,10 @@
   font-size: var(--font-size-lg);
   font-weight: 700;
   line-height: 1;
+  background: var(--text-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 /* 記録がある日の右上ドットバッジ */
@@ -83,9 +87,9 @@
   background: #4caf50;
 }
 
-/* 選択中（数字の周りだけ丸い塗り） */
+/* 選択中（数字の周りだけ丸い塗り、グラデーション維持のためbox-shadow使用） */
 .selected .dayNumber {
-  background: rgba(245, 200, 66, 0.15);
+  box-shadow: inset 0 0 0 100px rgba(245, 200, 66, 0.15);
 }
 
 /* 今日の日付（アンダーライン：数字と同色、位置ずれなし） */
