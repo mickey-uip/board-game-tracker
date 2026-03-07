@@ -132,7 +132,7 @@ export function CalendarPicker({
               type="button"
             >
               <span className={styles.dayNumber}>{dayNumber}</span>
-              {count > 0 && <span className={styles.badge}>{count}</span>}
+              {count > 0 && <span className={styles.badge} />}
             </button>
           );
         })}
